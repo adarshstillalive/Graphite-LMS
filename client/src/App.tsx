@@ -2,6 +2,8 @@ import { RouterProvider, createBrowserRouter, Outlet } from 'react-router-dom';
 import HeaderAuth from './components/common/HeaderAuth';
 import Login from './pages/Login';
 import Footer from './components/common/Footer';
+import Signup from './pages/Signup';
+import './app.css';
 
 const AuthLayout = () => {
   return (
@@ -21,6 +23,10 @@ const appRoute = createBrowserRouter([
       {
         path: '/auth/login',
         element: <Login />,
+      },
+      {
+        path: '/auth/signup',
+        element: <Signup />,
       },
     ],
   },

@@ -1,6 +1,5 @@
-import { FaFacebook } from 'react-icons/fa';
-import { FaXTwitter } from 'react-icons/fa6';
-import { FcGoogle } from 'react-icons/fc';
+import { Link } from 'react-router-dom';
+import SocialAuth from './SocialAuth';
 
 const LoginForm = () => {
   return (
@@ -56,36 +55,14 @@ const LoginForm = () => {
         </button>
       </form>
 
-      <div className="mt-8 w-full max-w-sm text-center">
-        <p className="text-gray-600 mb-4">Or login with</p>
-        <div className="flex justify-center gap-4">
-          <button
-            className="flex items-center justify-center"
-            aria-label="Login with Google"
-          >
-            <FcGoogle className="text-2xl transition-transform duration-200 hover:scale-125" />
-          </button>
-          <button
-            className="flex items-center justify-center"
-            aria-label="Login with Facebook"
-          >
-            <FaFacebook className="text-2xl text-blue-700 transition-transform duration-200 hover:scale-125" />
-          </button>
-          <button
-            className="flex items-center justify-center"
-            aria-label="Login with Twitter"
-          >
-            <FaXTwitter className="text-2xl transition-transform duration-200 hover:scale-125" />
-          </button>
-        </div>
-      </div>
+      <SocialAuth />
 
       <div className="mt-6 text-sm text-gray-600">
         <p>
           Don't have an account?{' '}
-          <a href="#" className="text-blue-500 hover:underline">
+          <Link to="/auth/signup" className="text-blue-500 hover:underline">
             Sign up
-          </a>
+          </Link>
         </p>
       </div>
     </div>
