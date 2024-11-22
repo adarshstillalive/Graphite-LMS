@@ -4,8 +4,13 @@ import prisma from '../../orm/prismaClient.js';
 
 class PostgresOtpRepository implements OtpRepository {
   async save(otp: EmailOtp): Promise<void> {
-    await prisma.otp.create({
-      data: {
+    await prisma.otp.upsert({
+      where: { email: otp.email },
+      update: {
+        code: otp.code,
+        expiresAt: otp.expiresAt,
+      },
+      create: {
         email: otp.email,
         code: otp.code,
         expiresAt: otp.expiresAt,

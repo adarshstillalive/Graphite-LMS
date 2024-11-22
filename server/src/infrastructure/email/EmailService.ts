@@ -5,20 +5,27 @@ class EmailService {
     service: 'gmail',
     auth: {
       type: 'OAuth2',
-      user: 'papasmenauth@gmail.com',
+      user: process.env.NODEMAILER_USER,
       clientId: process.env.NODEMAILER_CLIENT_ID,
       clientSecret: process.env.NODEMAILER_CLIENT_SECRET,
       refreshToken: process.env.NODEMAILER_REFRESH_TOKEN,
     },
   });
 
-  async sendOtp(email: string, otp: string) {
-    await this.transporter.sendMail({
-      from: 'papasmenauth@gmail.com',
-      to: email,
-      subject: 'Hello, PapasMenAuth Mail',
-      text: `Your verification OTP is ${otp}`,
-    });
+  async sendOtp(email: string, otp: string): Promise<void> {
+    try {
+      console.log('Attempting to send OTP...');
+      await this.transporter.sendMail({
+        from: process.env.NODEMAILER_USER,
+        to: email,
+        subject: 'Your Verification OTP',
+        text: `Your verification OTP is ${otp}`,
+      });
+      console.log('OTP sent successfully');
+    } catch (error) {
+      console.error('Error sending OTP:', error);
+      throw new Error('Failed to send OTP. Please try again later.');
+    }
   }
 }
 

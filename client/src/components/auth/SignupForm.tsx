@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import SocialAuth from './SocialAuth';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   checkConfirmPassword,
   checkEmail,
@@ -9,7 +9,17 @@ import {
   checkPassword,
 } from '../../utils/authUtils/validator';
 
-const SignUpForm = () => {
+interface FormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}
+
+const SignUpForm: React.FC<{ onSignup: (data: FormData) => void }> = ({
+  onSignup,
+}) => {
+  const [disableSignup, setDisableSignup] = useState(true);
   const [credentials, setCredentials] = useState({
     firstName: '',
     lastName: '',
@@ -26,35 +36,43 @@ const SignUpForm = () => {
     confirmPasswordError: '',
   });
 
-  const handleChange = (field: string, value: string) => {
-    setCredentials({ ...credentials, [field]: value });
+  const handleSubmit = (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    onSignup(credentials);
+  };
 
+  const handleChange = (field: string, value: string) => {
+    const updatedCredentials = { ...credentials, [field]: value };
+    setCredentials(updatedCredentials);
+
+    const updatedError = { ...error };
     switch (field) {
       case 'firstName':
-        setError({ ...error, firstNameError: checkFirstName(value.trim()) });
+        updatedError.firstNameError = checkFirstName(value.trim());
         break;
       case 'lastName':
-        setError({ ...error, lastNameError: checkLastName(value.trim()) });
+        updatedError.lastNameError = checkLastName(value.trim());
         break;
       case 'email':
-        setError({ ...error, emailError: checkEmail(value.trim()) });
+        updatedError.emailError = checkEmail(value.trim());
         break;
       case 'password':
-        setError({ ...error, passwordError: checkPassword(value.trim()) });
+        updatedError.passwordError = checkPassword(value.trim());
         break;
       case 'confirmPassword':
-        setError({
-          ...error,
-          confirmPasswordError: checkConfirmPassword(
-            credentials.password,
-            value.trim()
-          ),
-        });
+        updatedError.confirmPasswordError = checkConfirmPassword(
+          credentials.password,
+          value.trim()
+        );
         break;
-
       default:
         break;
     }
+    setError(updatedError);
+
+    const allFieldsFilled = Object.values(updatedCredentials).every(Boolean);
+    const noErrors = Object.values(updatedError).every((err) => !err);
+    setDisableSignup(!(allFieldsFilled && noErrors));
   };
 
   return (
@@ -66,7 +84,7 @@ const SignUpForm = () => {
         Create an account to get started
       </p>
 
-      <form className="w-full max-w-sm">
+      <form className="w-full max-w-sm" onSubmit={handleSubmit}>
         <div className="mb-4 flex gap-4">
           <div className="flex-1 relative tooltip">
             <label
@@ -230,12 +248,22 @@ const SignUpForm = () => {
           </div>
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-black font-bold text-white py-3 hover:bg-gray-900 transition duration-100"
-        >
-          Sign Up
-        </button>
+        {disableSignup ? (
+          <button
+            type="submit"
+            disabled
+            className="w-full bg-gray-500 font-bold text-white py-3"
+          >
+            Sign Up
+          </button>
+        ) : (
+          <button
+            type="submit"
+            className="w-full bg-black font-bold text-white py-3 cursor-pointer hover:bg-gray-900 transition duration-100"
+          >
+            Sign Up
+          </button>
+        )}
       </form>
 
       <SocialAuth />

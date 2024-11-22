@@ -18,6 +18,7 @@ const verifyOtpAndCreateUser = new VerifyOtpAndCreateUser(
 
 const requestOtp = async (req: Request, res: Response) => {
   const { email } = req.body;
+  console.log(email);
   try {
     await generateOtp.execute(email);
     res.status(200).json({

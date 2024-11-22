@@ -9,11 +9,15 @@ class GenerateOtp {
   ) {}
 
   async execute(email: string) {
+    console.log('reached execute');
+
     const otpCode = String(Math.floor(100000 + Math.random() * 900000));
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); //10 minutes
     const otp = new EmailOtp(email, otpCode, expiresAt);
 
     await this.otpRepository.save(otp);
+    console.log('otp saved');
+
     await this.emailService.sendOtp(email, otpCode);
   }
 }
