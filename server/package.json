@@ -4,8 +4,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon ./dist/index.js",
+    "start": "npm run build && nodemon ./dist/index.js",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "format": "prettier --write ."
@@ -15,13 +16,19 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@prisma/client": "^5.22.0",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.21.1"
+    "express": "^4.21.1",
+    "mongoose": "^8.8.2",
+    "nodemailer": "^6.9.16"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",
+    "@types/bcrypt": "^5.0.2",
+    "@types/express": "^5.0.0",
+    "@types/nodemailer": "^6.4.17",
     "@typescript-eslint/eslint-plugin": "^8.15.0",
     "@typescript-eslint/parser": "^8.15.0",
     "eslint": "^8.57.1",
@@ -32,6 +39,7 @@
     "globals": "^15.12.0",
     "nodemon": "^3.1.7",
     "prettier": "^3.3.3",
+    "prisma": "^5.22.0",
     "typescript": "^5.6.3",
     "typescript-eslint": "^8.15.0"
   }

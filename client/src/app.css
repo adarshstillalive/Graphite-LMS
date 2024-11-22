@@ -1,23 +1,3 @@
-/* .tooltip {
-  position: relative;
-}
-.error-tooltip {
-  visibility: hidden;
-  background-color: red;
-  color: white;
-  font-size: 12px;
-  text-align: center;
-  padding: 5px;
-  border-radius: 2px;
-
-  position: absolute;
-  z-index: 1;
-  top: 100%;
-  left: 100%;
-  transform: translateX(-50%);
-  white-space: nowrap;
-} */
-
 .tooltip {
   position: relative;
 }
