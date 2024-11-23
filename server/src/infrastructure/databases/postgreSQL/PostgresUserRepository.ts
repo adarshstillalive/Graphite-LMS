@@ -1,35 +1,46 @@
-import UserRepository from '../../../domain/repositories/UserRepository.js';
-import User from '../../../domain/entities/User.js';
+import UserAuth from '../../../domain/entities/UserAuth.js';
 import prisma from '../../orm/prismaClient.js';
+import UserAuthRepository from '../../../domain/repositories/UserAuthRepository.js';
 
-class PostgresUserRepository implements UserRepository {
-  async create(user: User): Promise<User> {
-    const newUser = await prisma.user.create({
-      data: {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        password: user.password,
-      },
-    });
-    return new User(
-      newUser.firstName,
-      newUser.lastName,
-      newUser.email,
-      newUser.password,
-    );
+class PostgresUserRepository implements UserAuthRepository {
+  async create(user: UserAuth): Promise<UserAuth> {
+    try {
+      const newUser = await prisma.user.create({
+        data: {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          password: user.password,
+        },
+      });
+
+      return new UserAuth(
+        newUser.firstName,
+        newUser.lastName,
+        newUser.email,
+        newUser.password,
+      );
+    } catch (error) {
+      console.error('Error creating user:', error);
+      throw new Error('Failed to create user');
+    }
   }
 
-  async findByEmail(email: string): Promise<User | null> {
-    const userRecord = await prisma.user.findUnique({ where: { email } });
-    return userRecord
-      ? new User(
-          userRecord.firstName,
-          userRecord.lastName,
-          userRecord.email,
-          userRecord.password,
-        )
-      : null;
+  async findByEmail(email: string): Promise<UserAuth | null> {
+    try {
+      const userRecord = await prisma.user.findUnique({ where: { email } });
+      return userRecord
+        ? new UserAuth(
+            userRecord.firstName,
+            userRecord.lastName,
+            userRecord.email,
+            userRecord.password,
+          )
+        : null;
+    } catch (error) {
+      console.error('Error finding user by email:', error);
+      throw new Error('Failed to find user');
+    }
   }
 }
 

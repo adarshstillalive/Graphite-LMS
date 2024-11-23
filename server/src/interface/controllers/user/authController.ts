@@ -5,20 +5,23 @@ import PostgresOtpRepository from '../../../infrastructure/databases/postgreSQL/
 import PostgresUserRepository from '../../../infrastructure/databases/postgreSQL/PostgresUserRepository.js';
 import EmailService from '../../../infrastructure/email/EmailService.js';
 import hashPassword from '../../../helpers/hashPassword.js';
+import MongoUserRepository from '../../../infrastructure/databases/mongoDB/MongoUserRepository.js';
 
 const otpRepository = new PostgresOtpRepository();
-const userRepository = new PostgresUserRepository();
+const userAuthRepository = new PostgresUserRepository();
+const userRepository = new MongoUserRepository();
 const emailService = new EmailService();
 
 const generateOtp = new GenerateOtp(otpRepository, emailService);
 const verifyOtpAndCreateUser = new VerifyOtpAndCreateUser(
   otpRepository,
+  userAuthRepository,
   userRepository,
 );
 
 const requestOtp = async (req: Request, res: Response) => {
   const { email } = req.body;
-  console.log(email);
+
   try {
     await generateOtp.execute(email);
     res.status(200).json({
@@ -35,14 +38,16 @@ const requestOtp = async (req: Request, res: Response) => {
 };
 
 const verifyAndSignup = async (req: Request, res: Response) => {
-  const { email, otp, firstname, lastname, password } = req.body;
+  const { email, otp, firstName, lastName, password } = req.body.data;
+
   try {
     const hashedPassword = await hashPassword(password);
+
     await verifyOtpAndCreateUser.execute(
       email,
       otp,
-      firstname,
-      lastname,
+      firstName,
+      lastName,
       hashedPassword,
     );
 

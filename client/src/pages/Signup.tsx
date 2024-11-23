@@ -48,8 +48,10 @@ const Signup = () => {
       // }
       console.log('User created successfully!', res);
       setOtpModalStatus(false);
-    } catch (err) {
-      setError('An unexpected error occurred during verification.');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      const { message } = err.response.data;
+      setError(message);
       console.error(err);
     }
   };
