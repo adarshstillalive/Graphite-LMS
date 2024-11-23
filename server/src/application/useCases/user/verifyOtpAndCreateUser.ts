@@ -2,6 +2,7 @@ import OtpRepository from '../../../domain/repositories/OtpRepository.js';
 import UserAuthRepository from '../../../domain/repositories/UserAuthRepository.js';
 import UserAuth from '../../../domain/entities/UserAuth.js';
 import UserRepository from '../../../domain/repositories/UserRepository.js';
+import hashPassword from '../../../utils/hashPassword.js';
 
 class VerifyOtpAndCreateUser {
   constructor(
@@ -18,6 +19,7 @@ class VerifyOtpAndCreateUser {
     password: string,
   ) {
     try {
+      const hashedPassword = await hashPassword(password);
       const otp = await this.otpRepository.findByEmail(email);
       const userExist = await this.userAuthRepository.findByEmail(email);
 
@@ -33,7 +35,7 @@ class VerifyOtpAndCreateUser {
         throw new Error('OTP expired');
       }
 
-      const user = new UserAuth(firstName, lastName, email, password);
+      const user = new UserAuth(firstName, lastName, email, hashedPassword);
       await this.userAuthRepository.create(user);
       await this.userRepository.create(user);
       await this.otpRepository.deleteByEmail(email);

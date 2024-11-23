@@ -1,4 +1,5 @@
 import userAxiosInstance from '../../axios/userAxiosInstance';
+import { ApiResponse } from '../../interfaces/Response';
 
 interface SignupData {
   firstName: string;
@@ -8,13 +9,8 @@ interface SignupData {
   otp: string;
 }
 
-interface OtpResponse {
-  success: boolean;
-  message: string;
-}
-
-export const sendOtp = async (email: string): Promise<OtpResponse> => {
-  const response = await userAxiosInstance.post<OtpResponse>(
+export const sendOtp = async (email: string): Promise<ApiResponse> => {
+  const response = await userAxiosInstance.post<ApiResponse>(
     '/api/auth/requestOtp',
     { email }
   );
@@ -22,7 +18,10 @@ export const sendOtp = async (email: string): Promise<OtpResponse> => {
   return response.data;
 };
 
-export const createUser = async (data: SignupData) => {
-  const response = await userAxiosInstance.post('/api/auth/signup', { data });
-  console.log(response);
+export const createUser = async (data: SignupData): Promise<ApiResponse> => {
+  const response = await userAxiosInstance.post<ApiResponse>(
+    '/api/auth/signup',
+    { data }
+  );
+  return response.data;
 };

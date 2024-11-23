@@ -32,3 +32,10 @@ model Otp {
   code       String
   expiresAt  DateTime
 }
+
+model RefreshToken {
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  token      String
+  expiresAt  DateTime
+}

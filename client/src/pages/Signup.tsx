@@ -2,6 +2,8 @@ import { useState } from 'react';
 import OtpModal from '../components/auth/OtpModal';
 import SignUpForm from '../components/auth/SignupForm';
 import { createUser, sendOtp } from '../services/user/loginService';
+import { useDispatch } from 'react-redux';
+import { setCurrentUser, setToken } from '../redux/slices/userSlice';
 
 interface SignupData {
   firstName: string;
@@ -14,6 +16,7 @@ const Signup = () => {
   const [otpModalStatus, setOtpModalStatus] = useState(false);
   const [credentials, setCredentials] = useState<SignupData>();
   const [error, setError] = useState<string | null>(null);
+  const dispatch = useDispatch();
 
   const signup = async (data: SignupData) => {
     setError(null);
@@ -42,11 +45,9 @@ const Signup = () => {
 
     try {
       const res = await createUser({ ...credentials, otp });
-      // if (!res.success) {
-      //   setError(res.message || 'Invalid OTP. Please try again.');
-      //   return;
-      // }
-      console.log('User created successfully!', res);
+      const { user, accessToken } = res.data;
+      dispatch(setToken(accessToken));
+      dispatch(setCurrentUser(user));
       setOtpModalStatus(false);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {

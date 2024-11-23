@@ -1,0 +1,25 @@
+import RefreshTokenRepository from '../../../domain/repositories/RefreshTokenRepository.js';
+import { generateAccessToken, verifyRefreshToken } from '../../../utils/jwt.js';
+
+class RefreshAccessToken {
+  constructor(private refreshTokenRepository: RefreshTokenRepository) {}
+
+  async execute(email: string, refreshToken: string) {
+    const verifiedRefreshToken = await verifyRefreshToken(refreshToken);
+
+    const checkRefreshTokenInDb = await this.refreshTokenRepository.checkToken(
+      email,
+      refreshToken,
+    );
+    if (!checkRefreshTokenInDb) {
+      throw new Error('Invalid refresh token');
+    }
+
+    return generateAccessToken({
+      email: verifiedRefreshToken.email,
+      role: verifiedRefreshToken.role,
+    });
+  }
+}
+
+export default RefreshAccessToken;

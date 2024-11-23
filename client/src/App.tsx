@@ -4,6 +4,8 @@ import Login from './pages/Login';
 import Footer from './components/common/Footer';
 import Signup from './pages/Signup';
 import './app.css';
+import { Provider } from 'react-redux';
+import store from './redux/store';
 
 const AuthLayout = () => {
   return (
@@ -33,7 +35,11 @@ const appRoute = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={appRoute} />;
+  return (
+    <Provider store={store}>
+      <RouterProvider router={appRoute} />;
+    </Provider>
+  );
 }
 
 export default App;

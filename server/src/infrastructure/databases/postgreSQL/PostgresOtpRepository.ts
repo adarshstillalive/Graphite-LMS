@@ -8,7 +8,7 @@ class PostgresOtpRepository implements OtpRepository {
     try {
       await prisma.otp.upsert({
         where: {
-          email: otp.email, // This works because email is @unique
+          email: otp.email,
         },
         update: {
           code: otp.code,
