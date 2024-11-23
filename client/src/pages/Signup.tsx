@@ -4,6 +4,8 @@ import SignUpForm from '../components/auth/SignupForm';
 import { createUser, sendOtp } from '../services/user/loginService';
 import { useDispatch } from 'react-redux';
 import { setCurrentUser, setToken } from '../redux/slices/userSlice';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 interface SignupData {
   firstName: string;
@@ -17,6 +19,7 @@ const Signup = () => {
   const [credentials, setCredentials] = useState<SignupData>();
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const signup = async (data: SignupData) => {
     setError(null);
@@ -24,15 +27,17 @@ const Signup = () => {
     setCredentials({ firstName, lastName, email, password });
 
     try {
-      const res = await sendOtp(email);
-      if (!res.success) {
-        setError(res.message || 'Failed to send OTP. Please try again.');
-        return;
-      }
+      await sendOtp(email);
       setOtpModalStatus(true);
-    } catch (err) {
-      setError('An unexpected error occurred. Please try again later.');
-      console.error(err);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        const { message } = error.response.data;
+        setError(message);
+        console.error(message);
+      } else {
+        console.error('An unexpected error occurred:', error);
+        setError('An unexpected error occurred.');
+      }
     }
   };
 
@@ -49,11 +54,16 @@ const Signup = () => {
       dispatch(setToken(accessToken));
       dispatch(setCurrentUser(user));
       setOtpModalStatus(false);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      const { message } = err.response.data;
-      setError(message);
-      console.error(err);
+      navigate('/');
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        const { message } = error.response.data;
+        setError(message);
+        console.error(message);
+      } else {
+        console.error('An unexpected error occurred:', error);
+        setError('An unexpected error occurred.');
+      }
     }
   };
 
@@ -64,15 +74,17 @@ const Signup = () => {
     }
 
     try {
-      const res = await sendOtp(credentials.email);
-      if (!res.success) {
-        setError(res.message || 'Failed to resend OTP. Please try again.');
-        return;
-      }
+      await sendOtp(credentials.email);
       console.log('OTP resent successfully!');
-    } catch (err) {
-      setError('An unexpected error occurred while resending OTP.');
-      console.error(err);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        const { message } = error.response.data;
+        setError(message);
+        console.error(message);
+      } else {
+        console.error('An unexpected error occurred:', error);
+        setError('An unexpected error occurred.');
+      }
     }
   };
 

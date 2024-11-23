@@ -9,6 +9,7 @@ import MongoUserRepository from '../../../infrastructure/databases/mongoDB/Mongo
 import GenerateAndAddTokens from '../../../application/useCases/token/generateAndAddTokens.js';
 import PostgresRefreshTokenRepository from '../../../infrastructure/databases/postgreSQL/PostgresRefreshTokenRepository.js';
 import { createResponse } from '../../../utils/createResponse.js';
+import LoginUser from '../../../application/useCases/user/loginUser.js';
 
 const otpRepository = new PostgresOtpRepository();
 const userAuthRepository = new PostgresUserRepository();
@@ -22,6 +23,7 @@ const verifyOtpAndCreateUser = new VerifyOtpAndCreateUser(
   userAuthRepository,
   userRepository,
 );
+const loginUser = new LoginUser(userAuthRepository);
 const generateAndAddToken = new GenerateAndAddTokens(refreshTokenRepository);
 
 const requestOtp = async (req: Request, res: Response) => {
@@ -73,7 +75,35 @@ const verifyAndSignup = async (req: Request, res: Response) => {
   }
 };
 
+const login = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+  try {
+    await loginUser.execute(email, password);
+    const user = await userRepository.findByEmail(email);
+    const { accessToken, refreshToken } = await generateAndAddToken.execute(
+      email,
+      'User',
+    );
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    const data = { user, accessToken };
+
+    res.status(200).json(createResponse(true, 'Login successful', data));
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(400).json(createResponse(false, error?.message));
+  }
+};
+
 export default {
   requestOtp,
   verifyAndSignup,
+  login,
 };

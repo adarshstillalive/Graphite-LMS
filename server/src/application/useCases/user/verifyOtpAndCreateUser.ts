@@ -2,7 +2,7 @@ import OtpRepository from '../../../domain/repositories/OtpRepository.js';
 import UserAuthRepository from '../../../domain/repositories/UserAuthRepository.js';
 import UserAuth from '../../../domain/entities/UserAuth.js';
 import UserRepository from '../../../domain/repositories/UserRepository.js';
-import hashPassword from '../../../utils/hashPassword.js';
+import { hashPassword } from '../../../utils/hashPassword.js';
 
 class VerifyOtpAndCreateUser {
   constructor(

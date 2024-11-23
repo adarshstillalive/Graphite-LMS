@@ -39,6 +39,13 @@ const SignUpForm: React.FC<{ onSignup: (data: FormData) => void }> = ({
   const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     onSignup(credentials);
+    setCredentials({
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    });
   };
 
   const handleChange = (field: string, value: string) => {

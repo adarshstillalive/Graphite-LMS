@@ -9,6 +9,11 @@ interface SignupData {
   otp: string;
 }
 
+interface LoginData {
+  email: string;
+  password: string;
+}
+
 export const sendOtp = async (email: string): Promise<ApiResponse> => {
   const response = await userAxiosInstance.post<ApiResponse>(
     '/api/auth/requestOtp',
@@ -22,6 +27,14 @@ export const createUser = async (data: SignupData): Promise<ApiResponse> => {
   const response = await userAxiosInstance.post<ApiResponse>(
     '/api/auth/signup',
     { data }
+  );
+  return response.data;
+};
+
+export const loginUser = async (data: LoginData): Promise<ApiResponse> => {
+  const response = await userAxiosInstance.post<ApiResponse>(
+    '/api/auth/login',
+    data
   );
   return response.data;
 };

@@ -3,7 +3,14 @@ import SocialAuth from './SocialAuth';
 import { useState } from 'react';
 import { checkEmail, checkPassword } from '../../utils/authUtils/validator';
 
-const LoginForm = () => {
+interface FormData {
+  email: string;
+  password: string;
+}
+
+const LoginForm: React.FC<{ onLogin: (data: FormData) => void }> = ({
+  onLogin,
+}) => {
   const [credentials, setCredentials] = useState({
     email: '',
     password: '',
@@ -14,19 +21,38 @@ const LoginForm = () => {
     passwordError: '',
   });
 
+  const [disableSignup, setDisableSignup] = useState(true);
+
+  const handleSubmit = (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    onLogin(credentials);
+    setCredentials({
+      email: '',
+      password: '',
+    });
+  };
+
   const handleChange = (field: string, value: string) => {
-    setCredentials({ ...credentials, [field]: value });
+    const updatedCredentials = { ...credentials, [field]: value };
+    setCredentials(updatedCredentials);
+
+    const updatedError = { ...error };
     switch (field) {
       case 'email':
-        setError({ ...error, emailError: checkEmail(value) });
+        updatedError.emailError = checkEmail(value.trim());
         break;
       case 'password':
-        setError({ ...error, passwordError: checkPassword(value) });
+        updatedError.passwordError = checkPassword(value.trim());
         break;
 
       default:
         break;
     }
+    setError(updatedError);
+
+    const allFieldsFilled = Object.values(updatedCredentials).every(Boolean);
+    const noErrors = Object.values(updatedError).every((err) => !err);
+    setDisableSignup(!(allFieldsFilled && noErrors));
   };
   return (
     <div className="w-full max-w-md mx-auto px-4 py-8 items-center flex flex-col justify-center">
@@ -37,7 +63,7 @@ const LoginForm = () => {
         Welcome back! Please enter your credentials to access your account.
       </p>
 
-      <form className="w-full max-w-sm">
+      <form onSubmit={(e) => handleSubmit(e)} className="w-full max-w-sm">
         <div className="mb-4 relative tooltip">
           <label
             htmlFor="email"
@@ -105,12 +131,22 @@ const LoginForm = () => {
           </p>
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-black font-bold text-white py-3 hover:bg-gray-900 transition duration-100"
-        >
-          Login
-        </button>
+        {disableSignup ? (
+          <button
+            type="submit"
+            disabled
+            className="w-full bg-gray-500 font-bold text-white py-3"
+          >
+            Login
+          </button>
+        ) : (
+          <button
+            type="submit"
+            className="w-full bg-black font-bold text-white py-3 cursor-pointer hover:bg-gray-900 transition duration-100"
+          >
+            Login
+          </button>
+        )}
       </form>
 
       <SocialAuth />

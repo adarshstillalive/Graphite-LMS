@@ -6,6 +6,7 @@ import Signup from './pages/Signup';
 import './app.css';
 import { Provider } from 'react-redux';
 import store from './redux/store';
+import Home from './pages/Home';
 
 const AuthLayout = () => {
   return (
@@ -20,6 +21,10 @@ const AuthLayout = () => {
 const appRoute = createBrowserRouter([
   {
     path: '/',
+    element: <Home />,
+  },
+  {
+    path: '/auth',
     element: <AuthLayout />,
     children: [
       {
