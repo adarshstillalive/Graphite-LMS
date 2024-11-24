@@ -4,12 +4,14 @@ export interface ISocialAccount {
   createdAt?: Date;
 }
 
-export interface User {
+export interface IUser {
   firstName?: string;
   lastName?: string;
   email: string;
   password?: string;
   isBlocked?: boolean;
+  isInstructor?: boolean;
+  isAdmin?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
   socialAccounts?: ISocialAccount[];

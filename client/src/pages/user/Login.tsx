@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import LoginForm from '../components/auth/LoginForm';
-import { loginUser } from '../services/user/loginService';
+import LoginForm from '../../components/user/auth/LoginForm';
+import { loginUser } from '../../services/user/loginService';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { setCurrentUser, setToken } from '../redux/slices/userSlice';
+import { setCurrentUser, setToken } from '../../redux/slices/user/userSlice';
 import axios from 'axios';
 
 interface LoginData {

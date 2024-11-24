@@ -8,6 +8,8 @@ class User {
     public password?: string,
     public socialAccounts?: ISocialAccount[],
     public isSocialAuthenticated?: boolean,
+    public isInstructor?: boolean,
+    public isAdmin?: boolean,
     public isBlocked?: boolean,
     public createdAt?: Date,
     public updatedAt?: Date,

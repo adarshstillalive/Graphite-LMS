@@ -1,52 +1,37 @@
-import { RouterProvider, createBrowserRouter, Outlet } from 'react-router-dom';
-import HeaderAuth from './components/common/HeaderAuth';
-import Login from './pages/Login';
-import Footer from './components/common/Footer';
-import Signup from './pages/Signup';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import './app.css';
 import { Provider } from 'react-redux';
 import store from './redux/store';
-import Home from './pages/Home';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistStore } from 'redux-persist';
+import appRoutes from './routes/appRoutes';
 
-const AuthLayout = () => {
-  return (
-    <>
-      <HeaderAuth />
-      <Outlet />
-      <Footer />
-    </>
-  );
-};
+const persistor = persistStore(store);
 
-const appRoute = createBrowserRouter([
-  {
-    path: '/',
-    element: <Home />,
+const appRoute = createBrowserRouter(appRoutes, {
+  future: {
+    v7_relativeSplatPath: true,
+    v7_fetcherPersist: true,
+    v7_normalizeFormMethod: true,
+    v7_partialHydration: true,
+    v7_skipActionErrorRevalidation: true,
   },
-  {
-    path: '/auth',
-    element: <AuthLayout />,
-    children: [
-      {
-        path: '/auth/login',
-        element: <Login />,
-      },
-      {
-        path: '/auth/signup',
-        element: <Signup />,
-      },
-    ],
-  },
-]);
+});
 
 function App() {
   return (
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-      <Provider store={store}>
-        <RouterProvider router={appRoute} />;
-      </Provider>
-    </GoogleOAuthProvider>
+    <PersistGate persistor={persistor}>
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+        <Provider store={store}>
+          <RouterProvider
+            future={{ v7_startTransition: true }}
+            router={appRoute}
+          />
+          ;
+        </Provider>
+      </GoogleOAuthProvider>
+    </PersistGate>
   );
 }
 

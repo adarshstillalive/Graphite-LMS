@@ -11,6 +11,8 @@ export interface IUser extends Document {
   email: string;
   password?: string;
   isBlocked?: boolean;
+  isInstructor?: boolean;
+  isAdmin?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
   socialAccounts?: ISocialAccount[];
@@ -32,6 +34,14 @@ const userSchema: Schema<IUser> = new Schema({
     type: String,
   },
   isBlocked: {
+    type: Boolean,
+    default: false,
+  },
+  isInstructor: {
+    type: Boolean,
+    default: false,
+  },
+  isAdmin: {
     type: Boolean,
     default: false,
   },

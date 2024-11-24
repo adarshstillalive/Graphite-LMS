@@ -35,6 +35,8 @@ class MongoUserRepository implements UserRepository {
         userData.socialAccounts,
         userData.isSocialAuthenticated,
         userData.isBlocked,
+        userData.isInstructor,
+        userData.isAdmin,
         userData.createdAt,
         userData.updatedAt,
       );
@@ -79,6 +81,8 @@ class MongoUserRepository implements UserRepository {
         userData.socialAccounts,
         userData.isSocialAuthenticated,
         userData.isBlocked,
+        userData.isInstructor,
+        userData.isAdmin,
         userData.createdAt,
         userData.updatedAt,
       );

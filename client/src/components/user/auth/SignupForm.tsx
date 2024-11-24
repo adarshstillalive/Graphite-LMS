@@ -7,7 +7,7 @@ import {
   checkFirstName,
   checkLastName,
   checkPassword,
-} from '../../utils/authUtils/validator';
+} from '../../../utils/authUtils/validator';
 
 interface FormData {
   firstName: string;

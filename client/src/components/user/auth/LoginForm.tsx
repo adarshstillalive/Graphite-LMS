@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import SocialAuth from './SocialAuth';
 import { useState } from 'react';
-import { checkEmail, checkPassword } from '../../utils/authUtils/validator';
+import { checkEmail, checkPassword } from '../../../utils/authUtils/validator';
 
 interface FormData {
   email: string;

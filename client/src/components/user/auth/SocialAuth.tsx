@@ -1,10 +1,10 @@
 import { GoogleLogin } from '@react-oauth/google';
 import { FaFacebook } from 'react-icons/fa';
 import { FaXTwitter } from 'react-icons/fa6';
-import { googleAuth } from '../../services/user/loginService';
+import { googleAuth } from '../../../services/user/loginService';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { setCurrentUser, setToken } from '../../redux/slices/userSlice';
+import { setCurrentUser, setToken } from '../../../redux/slices/user/userSlice';
 
 const SocialAuth = () => {
   const dispatch = useDispatch();

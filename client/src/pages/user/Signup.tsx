@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import OtpModal from '../components/auth/OtpModal';
-import SignUpForm from '../components/auth/SignupForm';
-import { createUser, sendOtp } from '../services/user/loginService';
+import OtpModal from '../../components/user/auth/OtpModal';
+import SignUpForm from '../../components/user/auth/SignupForm';
+import { createUser, sendOtp } from '../../services/user/loginService';
 import { useDispatch } from 'react-redux';
-import { setCurrentUser, setToken } from '../redux/slices/userSlice';
+import { setCurrentUser, setToken } from '../../redux/slices/user/userSlice';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
