@@ -1,8 +1,19 @@
 import { Outlet } from 'react-router-dom';
-import HeaderAuth from '../components/user/common/HeaderAuth';
 import Footer from '../components/user/common/Footer';
+import Header from '../components/user/common/Header';
+import HeaderAuth from '../components/common/HeaderAuth';
 
-const UserLayout = () => {
+export const UserLayout = () => {
+  return (
+    <>
+      <Header />
+      <Outlet />
+      <Footer />
+    </>
+  );
+};
+
+export const UserAuthLayout = () => {
   return (
     <>
       <HeaderAuth />
@@ -11,5 +22,3 @@ const UserLayout = () => {
     </>
   );
 };
-
-export default UserLayout;

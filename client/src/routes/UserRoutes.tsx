@@ -1,10 +1,10 @@
-import UserLayout from '../layouts/UserLayout';
+import { UserAuthLayout } from '../layouts/UserLayout';
 import Login from '../pages/user/Login';
 import Signup from '../pages/user/Signup';
 
 const UserRoutes = {
   path: '/auth',
-  element: <UserLayout />,
+  element: <UserAuthLayout />,
   children: [
     {
       path: '/auth/login',

@@ -27,20 +27,7 @@ class MongoUserRepository implements UserRepository {
       if (userData?.isBlocked) {
         throw new Error('User blocked, contact Admin');
       }
-      const user = new User(
-        userData.firstName,
-        userData.lastName,
-        userData.email,
-        userData.password,
-        userData.socialAccounts,
-        userData.isSocialAuthenticated,
-        userData.isBlocked,
-        userData.isInstructor,
-        userData.isAdmin,
-        userData.createdAt,
-        userData.updatedAt,
-      );
-      return user;
+      return userData;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log('Error in verifying otp and creating user', error);
@@ -73,20 +60,8 @@ class MongoUserRepository implements UserRepository {
       if (!userData) {
         throw new Error('Database error');
       }
-      const user = new User(
-        userData.firstName,
-        userData.lastName,
-        userData.email,
-        userData.password,
-        userData.socialAccounts,
-        userData.isSocialAuthenticated,
-        userData.isBlocked,
-        userData.isInstructor,
-        userData.isAdmin,
-        userData.createdAt,
-        userData.updatedAt,
-      );
-      return user;
+
+      return userData;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log('Error in updating user social provider details', error);

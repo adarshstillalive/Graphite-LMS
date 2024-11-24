@@ -4,6 +4,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import userRoute from './interface/routes/userRoutes.js';
+import adminRoute from './interface/routes/adminRoute.js';
 dotenv.config();
 
 mongoose
@@ -27,6 +28,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use('/', userRoute);
+app.use('/admin', adminRoute);
 
 app.listen(PORT, () => {
   console.log(`Server running at ${process.env.SERVER_URL}${PORT}`);

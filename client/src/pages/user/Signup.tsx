@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import { setCurrentUser, setToken } from '../../redux/slices/user/userSlice';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import HeaderAuth from '../../components/common/HeaderAuth';
 
 interface SignupData {
   firstName: string;
@@ -95,30 +96,33 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-full flex flex-col md:flex-row pt-16">
-      <div className="w-full md:w-1/2 flex items-center justify-center">
-        <SignUpForm onSignup={signup} />
-      </div>
-      <div className="hidden md:flex w-full md:w-1/2 items-center justify-center p-4 md:p-8 lg:p-16">
-        <img
-          alt="Signup ad"
-          src="/display/auth_signup.png"
-          className="md:max-h-96-full max-w-full object-contain"
-        />
-      </div>
-      {otpModalStatus && (
-        <OtpModal
-          onVerify={verifyOtp}
-          onResendOtp={resendOtp}
-          onCancel={cancelOtp}
-        />
-      )}
-      {error && (
-        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded-md shadow-md">
-          {error}
+    <>
+      <HeaderAuth />
+      <div className="min-h-full flex flex-col md:flex-row pt-16">
+        <div className="w-full md:w-1/2 flex items-center justify-center">
+          <SignUpForm onSignup={signup} />
         </div>
-      )}
-    </div>
+        <div className="hidden md:flex w-full md:w-1/2 items-center justify-center p-4 md:p-8 lg:p-16">
+          <img
+            alt="Signup ad"
+            src="/display/auth_signup.png"
+            className="md:max-h-96-full max-w-full object-contain"
+          />
+        </div>
+        {otpModalStatus && (
+          <OtpModal
+            onVerify={verifyOtp}
+            onResendOtp={resendOtp}
+            onCancel={cancelOtp}
+          />
+        )}
+        {error && (
+          <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded-md shadow-md">
+            {error}
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

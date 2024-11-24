@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { setCurrentUser, setToken } from '../../redux/slices/user/userSlice';
 import axios from 'axios';
+import HeaderAuth from '../../components/common/HeaderAuth';
 
 interface LoginData {
   email: string;
@@ -41,24 +42,27 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-full flex flex-col md:flex-row pt-16">
-      <div className="hidden md:flex w-full md:w-1/2 items-center justify-center p-4 md:p-8 lg:p-16">
-        <img
-          alt="Login ad"
-          src="/display/auth_login.png"
-          className="md:max-h-96-full max-w-full object-contain"
-        />
-      </div>
-
-      <div className="w-full md:w-1/2 flex items-center justify-center">
-        <LoginForm onLogin={login} />
-      </div>
-      {error && (
-        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded-md shadow-md">
-          {error}
+    <>
+      <HeaderAuth />
+      <div className="min-h-full flex flex-col md:flex-row pt-16">
+        <div className="hidden md:flex w-full md:w-1/2 items-center justify-center p-4 md:p-8 lg:p-16">
+          <img
+            alt="Login ad"
+            src="/display/auth_login.png"
+            className="md:max-h-96-full max-w-full object-contain"
+          />
         </div>
-      )}
-    </div>
+
+        <div className="w-full md:w-1/2 flex items-center justify-center">
+          <LoginForm onLogin={login} />
+        </div>
+        {error && (
+          <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded-md shadow-md">
+            {error}
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 
