@@ -38,3 +38,11 @@ export const loginUser = async (data: LoginData): Promise<ApiResponse> => {
   );
   return response.data;
 };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const googleAuth = async (data: any): Promise<ApiResponse> => {
+  const response = await userAxiosInstance.post<ApiResponse>('/auth/google', {
+    credential: data,
+  });
+  return response.data;
+};

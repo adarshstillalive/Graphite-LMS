@@ -10,4 +10,6 @@ userRoute.post('/api/auth/requestOtp', authController.requestOtp);
 userRoute.post('/api/auth/signup', authController.verifyAndSignup);
 userRoute.post('/api/auth/login', authController.login);
 
+userRoute.post('/auth/google', authController.googleSignIn);
+
 export default userRoute;

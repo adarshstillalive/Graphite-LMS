@@ -7,6 +7,7 @@ import './app.css';
 import { Provider } from 'react-redux';
 import store from './redux/store';
 import Home from './pages/Home';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const AuthLayout = () => {
   return (
@@ -41,9 +42,11 @@ const appRoute = createBrowserRouter([
 
 function App() {
   return (
-    <Provider store={store}>
-      <RouterProvider router={appRoute} />;
-    </Provider>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+      <Provider store={store}>
+        <RouterProvider router={appRoute} />;
+      </Provider>
+    </GoogleOAuthProvider>
   );
 }
 

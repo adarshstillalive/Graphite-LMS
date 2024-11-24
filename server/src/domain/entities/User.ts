@@ -6,11 +6,11 @@ class User {
     public lastName?: string,
     public email?: string,
     public password?: string,
+    public socialAccounts?: ISocialAccount[],
+    public isSocialAuthenticated?: boolean,
     public isBlocked?: boolean,
     public createdAt?: Date,
     public updatedAt?: Date,
-    public socialAccounts?: ISocialAccount[],
-    public isSocialAuthenticated?: boolean,
   ) {}
 }
 

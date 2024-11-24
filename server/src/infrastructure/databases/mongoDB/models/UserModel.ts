@@ -2,7 +2,6 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 export interface ISocialAccount {
   provider: 'Facebook' | 'Google' | 'X';
-  socialToken: string;
   createdAt?: Date;
 }
 
@@ -49,10 +48,6 @@ const userSchema: Schema<IUser> = new Schema({
       provider: {
         type: String,
         enum: ['Facebook', 'Google', 'X'],
-      },
-      socialToken: {
-        type: String,
-        required: true,
       },
       createdAt: {
         type: Date,

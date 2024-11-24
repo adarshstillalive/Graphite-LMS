@@ -10,6 +10,8 @@ import GenerateAndAddTokens from '../../../application/useCases/token/generateAn
 import PostgresRefreshTokenRepository from '../../../infrastructure/databases/postgreSQL/PostgresRefreshTokenRepository.js';
 import { createResponse } from '../../../utils/createResponse.js';
 import LoginUser from '../../../application/useCases/user/loginUser.js';
+import GoogleAuth from '../../../application/useCases/social/googleAuth.js';
+import CreateUserInDb from '../../../application/useCases/user/createUserInDb.js';
 
 const otpRepository = new PostgresOtpRepository();
 const userAuthRepository = new PostgresUserRepository();
@@ -25,7 +27,12 @@ const verifyOtpAndCreateUser = new VerifyOtpAndCreateUser(
 );
 const loginUser = new LoginUser(userAuthRepository);
 const generateAndAddToken = new GenerateAndAddTokens(refreshTokenRepository);
-
+const createUserInDb = new CreateUserInDb(userAuthRepository, userRepository);
+const googleAuth = new GoogleAuth(
+  userRepository,
+  userAuthRepository,
+  createUserInDb,
+);
 const requestOtp = async (req: Request, res: Response) => {
   const { email } = req.body;
 
@@ -102,8 +109,33 @@ const login = async (req: Request, res: Response) => {
   }
 };
 
+const googleSignIn = async (req: Request, res: Response) => {
+  try {
+    const { credential } = req.body;
+    const { user, email } = await googleAuth.execute(credential);
+    const { accessToken, refreshToken } = await generateAndAddToken.execute(
+      email,
+      'User',
+    );
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    const data = { user, accessToken };
+
+    res.status(200).json(createResponse(true, 'Login successful', data));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(400).json(createResponse(false, error?.message));
+  }
+};
+
 export default {
   requestOtp,
   verifyAndSignup,
   login,
+  googleSignIn,
 };
