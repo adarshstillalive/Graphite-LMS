@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import userRoute from './interface/routes/userRoutes.js';
 import adminRoute from './interface/routes/adminRoute.js';
+import instructorRoute from './interface/routes/instructorRoute.js';
 dotenv.config();
 
 mongoose
@@ -29,6 +30,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use('/', userRoute);
 app.use('/admin', adminRoute);
+app.use('/instructor', instructorRoute);
 
 app.listen(PORT, () => {
   console.log(`Server running at ${process.env.SERVER_URL}${PORT}`);

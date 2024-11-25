@@ -1,23 +1,23 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 interface AppState {
-  user: 'user' | 'instructor';
+  role: 'user' | 'instructor';
 }
 
 const initialState: AppState = {
-  user: 'user',
+  role: 'user',
 };
 
 const appSlice = createSlice({
   name: 'app',
   initialState,
   reducers: {
-    setUser: (state) => {
-      state.user = state.user === 'user' ? 'instructor' : 'user';
+    setRole: (state) => {
+      state.role = state.role === 'user' ? 'instructor' : 'user';
     },
   },
 });
 
-export const { setUser } = appSlice.actions;
+export const { setRole } = appSlice.actions;
 
 export default appSlice.reducer;
