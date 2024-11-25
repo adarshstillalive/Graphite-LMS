@@ -29,3 +29,13 @@ export const verifyRefreshToken = async (
   ) as Payload;
   return decoded;
 };
+
+export const verifyAccessToken = async (
+  accessToken: string,
+): Promise<Payload> => {
+  const decoded = jwt.verify(
+    accessToken,
+    `${process.env.JWT_SECRET}`,
+  ) as Payload;
+  return decoded;
+};

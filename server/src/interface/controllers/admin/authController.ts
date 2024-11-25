@@ -37,7 +37,6 @@ const login = async (req: Request, res: Response) => {
   try {
     await loginUser.execute(email, password);
     const user = await userRepository.findByEmail(email);
-    console.log(user);
 
     if (!user?.isAdmin) {
       throw new Error('Not a valid admin');

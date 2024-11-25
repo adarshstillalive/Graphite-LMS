@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 class InstructorRequest {
   constructor(
-    public userId?: mongoose.Types.ObjectId,
+    public userId: mongoose.Types.ObjectId | undefined,
     public expertise?: string[],
     public qualifications?: string[],
     public additionalInfo?: string[],

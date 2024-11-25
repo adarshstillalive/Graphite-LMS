@@ -1,180 +1,175 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import {
+  fetchRequest,
+  sendRequest,
+} from '../../services/instructor/commonService';
 
-const Request = () => {
-  const [formData, setFormData] = useState({
-    expertise: [''],
-    qualifications: [''],
-    additionalInfo: [''],
+import RequestDetails, {
+  RequestDetailsProps,
+} from '../../components/instructor/RequestDetails';
+import RequestFormSection from '../../components/instructor/RequestForm';
+import RequestFieldList from '../../components/instructor/RequestFieldList';
+
+const Request: React.FC = () => {
+  const [expertise, setExpertise] = useState<string[]>([]);
+  const [qualifications, setQualifications] = useState<string[]>([]);
+  const [additionalInfo, setAdditionalInfo] = useState<string[]>([]);
+
+  const [newExpertise, setNewExpertise] = useState('');
+  const [newQualification, setNewQualification] = useState('');
+  const [newAdditionalInfo, setNewAdditionalInfo] = useState('');
+  const [showRequest, setShowRequest] = useState(false);
+  const [requestObj, setRequestObj] = useState<RequestDetailsProps>({
+    expertise: [],
+    qualifications: [],
+    additionalInfo: [],
+    isApproved: null,
+    isRejected: null,
+    rejectedReason: '',
+    createdAt: '',
   });
 
-  const [loading, setLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-
-  const handleInputChange = (
-    index: number,
-    field: keyof typeof formData,
-    value: string
+  const addField = (
+    value: string,
+    setter: React.Dispatch<React.SetStateAction<string[]>>,
+    currentArray: string[]
   ) => {
-    const updatedArray = [...formData[field]];
-    updatedArray[index] = value;
-    setFormData({ ...formData, [field]: updatedArray });
-  };
-
-  const addField = (field: keyof typeof formData) => {
-    setFormData({ ...formData, [field]: [...formData[field], ''] });
-  };
-
-  const removeField = (field: keyof typeof formData, index: number) => {
-    const updatedArray = [...formData[field]];
-    updatedArray.splice(index, 1);
-    setFormData({ ...formData, [field]: updatedArray });
-  };
-
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setLoading(true);
-    setSuccessMessage('');
-    setErrorMessage('');
-
-    try {
-      const response = await axios.post('/api/instructor-requests', formData);
-      setSuccessMessage('Request submitted successfully!');
-      setFormData({
-        expertise: [''],
-        qualifications: [''],
-        additionalInfo: [''],
-      });
-    } catch (error: any) {
-      setErrorMessage(
-        error.response?.data?.message || 'Failed to submit the request'
-      );
-    } finally {
-      setLoading(false);
+    if (value.trim() && !currentArray.includes(value.trim())) {
+      setter([...currentArray, value.trim()]);
     }
   };
 
-  return (
-    <div className="max-w-3xl h-screen mx-auto p-6 bg-white shadow-md rounded-lg">
-      <h1 className="text-2xl font-bold mb-6">Instructor Request</h1>
-      <form onSubmit={handleSubmit}>
-        {/* Expertise Section */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-2">Expertise</label>
-          {formData.expertise.map((item, index) => (
-            <div key={index} className="flex items-center gap-3 mb-2">
-              <input
-                type="text"
-                value={item}
-                onChange={(e) =>
-                  handleInputChange(index, 'expertise', e.target.value)
-                }
-                className="border rounded p-2 w-full"
-                placeholder="Enter your area of expertise"
-              />
-              <button
-                type="button"
-                onClick={() => removeField('expertise', index)}
-                className="text-red-500 hover:underline"
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => addField('expertise')}
-            className="text-blue-500 hover:underline"
-          >
-            Add Expertise
-          </button>
+  const removeField = (
+    index: number,
+    setter: React.Dispatch<React.SetStateAction<string[]>>,
+    currentArray: string[]
+  ) => {
+    setter(currentArray.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const data = { expertise, qualifications, additionalInfo };
+      const response = await sendRequest(data);
+
+      if (response.success) {
+        alert('Instructor request submitted successfully!');
+        setExpertise([]);
+        setQualifications([]);
+        setAdditionalInfo([]);
+      } else {
+        alert('Failed to submit instructor request.');
+      }
+    } catch (error) {
+      console.error('Submission error:', error);
+      alert('An error occurred while submitting the request.');
+    }
+  };
+
+  useEffect(() => {
+    const fetchRequestApi = async () => {
+      const response = await fetchRequest();
+
+      if (response) {
+        const {
+          expertise,
+          qualifications,
+          additionalInfo,
+          isApproved,
+          isRejected,
+          rejectedReason,
+          createdAt,
+        } = response.data;
+        setRequestObj({
+          expertise: expertise,
+          qualifications: qualifications,
+          additionalInfo: additionalInfo,
+          isApproved: isApproved,
+          isRejected: isRejected,
+          rejectedReason: rejectedReason,
+          createdAt: createdAt,
+        });
+
+        setShowRequest(true);
+      }
+    };
+
+    fetchRequestApi();
+  }, []); // Removed incorrect dependencies like `dispatch` or `isInstructor`
+
+  return !showRequest ? (
+    <div className="flex h-screen">
+      {/* Left Side - Form */}
+      <div className="w-1/2 flex items-center justify-center bg-gray-100 p-8">
+        <div className="w-full max-w-md">
+          <h1 className="text-3xl font-bold mb-4 text-gray-800 text-center">
+            Instructor Request
+          </h1>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <RequestFormSection
+              label="Expertise"
+              value={newExpertise}
+              onValueChange={setNewExpertise}
+              onAddField={() => {
+                addField(newExpertise, setExpertise, expertise);
+                setNewExpertise('');
+              }}
+            />
+            <RequestFormSection
+              label="Qualifications"
+              value={newQualification}
+              onValueChange={setNewQualification}
+              onAddField={() => {
+                addField(newQualification, setQualifications, qualifications);
+                setNewQualification('');
+              }}
+            />
+            <RequestFormSection
+              label="Additional Info"
+              value={newAdditionalInfo}
+              onValueChange={setNewAdditionalInfo}
+              onAddField={() => {
+                addField(newAdditionalInfo, setAdditionalInfo, additionalInfo);
+                setNewAdditionalInfo('');
+              }}
+            />
+            <button
+              type="submit"
+              className="w-full px-4 py-3 bg-green-600 text-white rounded hover:bg-green-700"
+            >
+              Submit Instructor Request
+            </button>
+          </form>
         </div>
+      </div>
 
-        {/* Qualifications Section */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-2">
-            Qualifications
-          </label>
-          {formData.qualifications.map((item, index) => (
-            <div key={index} className="flex items-center gap-3 mb-2">
-              <input
-                type="text"
-                value={item}
-                onChange={(e) =>
-                  handleInputChange(index, 'qualifications', e.target.value)
-                }
-                className="border rounded p-2 w-full"
-                placeholder="Enter a qualification"
-              />
-              <button
-                type="button"
-                onClick={() => removeField('qualifications', index)}
-                className="text-red-500 hover:underline"
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => addField('qualifications')}
-            className="text-blue-500 hover:underline"
-          >
-            Add Qualification
-          </button>
-        </div>
-
-        {/* Additional Information Section */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-2">
-            Additional Info
-          </label>
-          {formData.additionalInfo.map((item, index) => (
-            <div key={index} className="flex items-center gap-3 mb-2">
-              <input
-                type="text"
-                value={item}
-                onChange={(e) =>
-                  handleInputChange(index, 'additionalInfo', e.target.value)
-                }
-                className="border rounded p-2 w-full"
-                placeholder="Enter any additional information"
-              />
-              <button
-                type="button"
-                onClick={() => removeField('additionalInfo', index)}
-                className="text-red-500 hover:underline"
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => addField('additionalInfo')}
-            className="text-blue-500 hover:underline"
-          >
-            Add Info
-          </button>
-        </div>
-
-        {/* Submit Button */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
-        >
-          {loading ? 'Submitting...' : 'Submit Request'}
-        </button>
-      </form>
-
-      {/* Success or Error Messages */}
-      {successMessage && (
-        <p className="mt-4 text-green-500">{successMessage}</p>
-      )}
-      {errorMessage && <p className="mt-4 text-red-500">{errorMessage}</p>}
+      {/* Right Side - Data Display */}
+      <div className="w-1/2 bg-white p-8 overflow-y-auto">
+        <RequestFieldList
+          title="Expertise"
+          items={expertise}
+          onRemoveItem={(index) => removeField(index, setExpertise, expertise)}
+        />
+        <RequestFieldList
+          title="Qualifications"
+          items={qualifications}
+          onRemoveItem={(index) =>
+            removeField(index, setQualifications, qualifications)
+          }
+        />
+        <RequestFieldList
+          title="Additional Info"
+          items={additionalInfo}
+          onRemoveItem={(index) =>
+            removeField(index, setAdditionalInfo, additionalInfo)
+          }
+        />
+      </div>
     </div>
+  ) : (
+    <RequestDetails {...requestObj} />
   );
 };
 

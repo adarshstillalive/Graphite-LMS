@@ -6,6 +6,7 @@ export interface ISocialAccount {
 }
 
 export interface IUser extends Document {
+  _id: mongoose.Schema.Types.ObjectId;
   firstName?: string;
   lastName?: string;
   email: string;

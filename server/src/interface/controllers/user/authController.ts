@@ -87,7 +87,6 @@ const login = async (req: Request, res: Response) => {
   try {
     await loginUser.execute(email, password);
     const user = await userRepository.findByEmail(email);
-    console.log(user);
 
     const { accessToken, refreshToken } = await generateAndAddToken.execute(
       email,
