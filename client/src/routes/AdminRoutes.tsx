@@ -1,20 +1,23 @@
-// src/routes/AdminRoutes.tsx
 import { Navigate } from 'react-router-dom';
 import AdminLayout from '../layouts/AdminLayout';
 import Login from '../pages/admin/Login';
 import Home from '../pages/admin/Home';
 import Instructor from '../pages/admin/Instructor';
+import AdminProtectedRoute from '../components/admin/AdminProtectedRoute';
 
 const AdminRoutes = {
   path: '/admin',
   children: [
     {
       path: 'login',
-      element: <Login />,
+      element: <Login />, // No AdminLayout wrapper
     },
     {
-      path: '',
-      element: <AdminLayout />,
+      element: (
+        <AdminProtectedRoute>
+          <AdminLayout />
+        </AdminProtectedRoute>
+      ),
       children: [
         {
           path: '',

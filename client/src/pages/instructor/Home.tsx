@@ -13,12 +13,15 @@ const Home = () => {
       const {
         data: { isInstructor: isInstructorFromDb },
       } = await fetchUser();
+      console.log(isInstructorFromDb);
+
       if (isInstructorFromDb && !isInstructor) {
         dispatch(setIsInstructor(true));
       }
     };
     fetchUserApi();
   }, [dispatch, isInstructor]);
+  console.log(isInstructor);
 
   return isInstructor ? (
     <div className="h-screen">
