@@ -12,6 +12,8 @@ import { createResponse } from '../../../utils/createResponse.js';
 import LoginUser from '../../../application/useCases/user/loginUser.js';
 import GoogleAuth from '../../../application/useCases/social/googleAuth.js';
 import CreateUserInDb from '../../../application/useCases/user/createUserInDb.js';
+import ForgotPasswordGenerateOtp from '../../../application/useCases/user/forgotPasswordGenerateOtp.ts.js';
+import VerifyOtpAndUpdatePassword from '../../../application/useCases/user/verifyOtpAndUpdatePassword.js';
 
 const otpRepository = new PostgresOtpRepository();
 const userAuthRepository = new PostgresUserRepository();
@@ -33,6 +35,17 @@ const googleAuth = new GoogleAuth(
   userAuthRepository,
   createUserInDb,
 );
+const forgotPasswordGenerateOtp = new ForgotPasswordGenerateOtp(
+  otpRepository,
+  emailService,
+  userAuthRepository,
+);
+const verifyOtpAndUpdatePassword = new VerifyOtpAndUpdatePassword(
+  otpRepository,
+  userAuthRepository,
+  userRepository,
+);
+
 const requestOtp = async (req: Request, res: Response) => {
   const { email } = req.body;
 
@@ -134,9 +147,38 @@ const googleSignIn = async (req: Request, res: Response) => {
   }
 };
 
+const forgotPasswordRequestOtp = async (req: Request, res: Response) => {
+  const { email } = req.body;
+
+  try {
+    await forgotPasswordGenerateOtp.execute(email);
+    res.status(200).json(createResponse(true, 'OTP sent to email'));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(400).json(createResponse(false, error?.message));
+  }
+};
+
+const updatePassword = async (req: Request, res: Response) => {
+  console.log(req.body);
+
+  const { email, otp, password } = req.body;
+
+  try {
+    await verifyOtpAndUpdatePassword.execute(email, otp, password);
+
+    res.status(200).json(createResponse(true, 'Password updated successfully'));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(400).json(createResponse(false, error?.message));
+  }
+};
+
 export default {
   requestOtp,
   verifyAndSignup,
   login,
   googleSignIn,
+  forgotPasswordRequestOtp,
+  updatePassword,
 };

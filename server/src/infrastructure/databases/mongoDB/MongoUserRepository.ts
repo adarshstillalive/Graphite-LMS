@@ -69,6 +69,24 @@ class MongoUserRepository implements UserRepository {
       throw new Error(error);
     }
   }
+
+  async updatePassword(email: string, newPassword: string): Promise<void> {
+    try {
+      const updateData = await UserModel.updateOne(
+        { email: email },
+        { $set: { password: newPassword } },
+      );
+      if (updateData.modifiedCount <= 0) {
+        throw new Error('Database error');
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Error in updating user Password', error);
+
+      throw new Error(error);
+    }
+  }
 }
 
 export default MongoUserRepository;

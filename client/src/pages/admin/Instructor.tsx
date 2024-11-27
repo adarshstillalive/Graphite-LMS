@@ -53,7 +53,7 @@ const Instructor = () => {
     }
   };
 
-  const handleReject = (_id: string) => {};
+  const handleReject = () => {};
 
   useEffect(() => {
     const fetchRequest = async () => {
@@ -183,12 +183,17 @@ const Instructor = () => {
                     <h4 className="text-sm font-semibold text-gray-700 mb-2">
                       Additional Info
                     </h4>
-                    <div className="text-sm text-gray-600">
-                      <p>
-                        Request Date:{' '}
-                        {new Date(request.createdAt).toLocaleDateString()}
-                      </p>
-                    </div>
+                    <ul className="list-disc list-inside text-sm text-gray-600">
+                      {request.additionalInfo?.map((info) => (
+                        <li key={info}>{info}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    <p>
+                      Request Date:{' '}
+                      {new Date(request.createdAt).toLocaleDateString()}
+                    </p>
                   </div>
 
                   <div className="flex gap-3 mt-6">
@@ -202,7 +207,7 @@ const Instructor = () => {
                       <span>Approve</span>
                     </button>
                     <button
-                      onClick={() => handleReject(request._id)}
+                      onClick={() => handleReject()}
                       className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-white border-2 hover:bg-gray-200 text-black  transition-colors"
                     >
                       <FaTimes size={16} />

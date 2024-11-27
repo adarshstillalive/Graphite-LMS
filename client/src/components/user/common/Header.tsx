@@ -1,7 +1,9 @@
-import { FaSearch, FaShoppingCart, FaUserCircle } from 'react-icons/fa';
 import ToggleButton from './ToggleButton';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
+import { FaUserLarge } from 'react-icons/fa6';
+import { IoCartSharp } from 'react-icons/io5';
+import { FiSearch } from 'react-icons/fi';
 
 const Header = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);
@@ -23,13 +25,13 @@ const Header = () => {
               placeholder="Search for courses"
               className="w-full h-12 px-4 pr-10 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black"
             />
-            <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500" />
+            <FiSearch className="absolute text-xl right-3 top-1/2 transform -translate-y-1/2 cursor-pointer hover:text-black text-gray-500" />
           </div>
         </div>
       </div>
 
       {/* Right Section: User/Instructor Toggle + Cart + Profile */}
-      <div className="w-1/2 flex items-center justify-end space-x-4">
+      <div className="w-1/2 flex items-center justify-end space-x-4 px-4">
         {/* Toggle Buttons */}
         {currentUser && (
           <div className="flex items-center space-x-2">
@@ -44,7 +46,7 @@ const Header = () => {
           className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200"
           aria-label="Cart Button"
         >
-          <FaShoppingCart className="text-xl text-gray-700" />
+          <IoCartSharp className="text-xl text-gray-700" />
         </button>
 
         {/* Profile Button */}
@@ -52,7 +54,7 @@ const Header = () => {
           className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200"
           aria-label="Profile Button"
         >
-          <FaUserCircle className="text-xl text-gray-700" />
+          <FaUserLarge className="text-xl text-gray-700" />
         </button>
       </div>
     </header>

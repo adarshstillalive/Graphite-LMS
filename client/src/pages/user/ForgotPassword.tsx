@@ -1,34 +1,32 @@
 import { useState } from 'react';
 import OtpModal from '../../components/user/auth/OtpModal';
-import SignUpForm from '../../components/user/auth/SignupForm';
-import { createUser, sendOtp } from '../../services/user/loginService';
-import { useDispatch } from 'react-redux';
-import { setCurrentUser, setToken } from '../../redux/slices/user/userSlice';
+import {
+  forgotPassword,
+  forgotPasswordSendOtp,
+} from '../../services/user/loginService';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import HeaderAuth from '../../components/common/HeaderAuth';
+import ForgotPasswordForm from '@/components/user/auth/ForgotPasswordForm';
 
-export interface SignupData {
-  firstName: string;
-  lastName: string;
+export interface ForgotPasswordData {
   email: string;
   password: string;
 }
 
-const Signup = () => {
+const ForgotPassword = () => {
   const [otpModalStatus, setOtpModalStatus] = useState(false);
-  const [credentials, setCredentials] = useState<SignupData>();
+  const [credentials, setCredentials] = useState<ForgotPasswordData>();
   const [error, setError] = useState<string | null>(null);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const signup = async (data: SignupData) => {
+  const changePassword = async (data: ForgotPasswordData) => {
     setError(null);
-    const { firstName, lastName, email, password } = data;
-    setCredentials({ firstName, lastName, email, password });
+    const { email, password } = data;
+    setCredentials({ email, password });
 
     try {
-      await sendOtp(email);
+      await forgotPasswordSendOtp(email);
       setOtpModalStatus(true);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -44,18 +42,17 @@ const Signup = () => {
 
   const verifyOtp = async (otp: string) => {
     if (!credentials) {
-      setError('Missing signup data. Please try signing up again.');
+      setError('Missing credentials data. Please again.');
       setOtpModalStatus(false);
       return;
     }
 
     try {
-      const res = await createUser({ ...credentials, otp });
-      const { user, accessToken } = res.data;
-      dispatch(setToken(accessToken));
-      dispatch(setCurrentUser(user));
-      setOtpModalStatus(false);
-      navigate('/');
+      const res = await forgotPassword({ ...credentials, otp });
+      if (!res.success) {
+        throw new Error('failed');
+      }
+      navigate('/auth/login');
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const { message } = error.response.data;
@@ -75,7 +72,7 @@ const Signup = () => {
     }
 
     try {
-      await sendOtp(credentials.email);
+      await forgotPasswordSendOtp(credentials.email);
       console.log('OTP resent successfully!');
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -98,17 +95,11 @@ const Signup = () => {
   return (
     <>
       <HeaderAuth />
-      <div className="min-h-full flex flex-col md:flex-row pt-16">
+      <div className="min-h-full flex justify-center align-middle pt-16">
         <div className="w-full md:w-1/2 flex items-center justify-center">
-          <SignUpForm onSignup={signup} />
+          <ForgotPasswordForm onSubmit={changePassword} />
         </div>
-        <div className="hidden md:flex w-full md:w-1/2 items-center justify-center p-4 md:p-8 lg:p-16">
-          <img
-            alt="Signup ad"
-            src="/display/auth_signup.png"
-            className="md:max-h-96-full max-w-full object-contain"
-          />
-        </div>
+
         {otpModalStatus && (
           <OtpModal
             onVerify={verifyOtp}
@@ -126,4 +117,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default ForgotPassword;

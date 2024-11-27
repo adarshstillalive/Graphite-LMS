@@ -33,7 +33,7 @@ const SocialAuth = () => {
             onError={handleGoogleError}
             useOneTap={false}
             theme="outline"
-            shape="circle"
+            shape="square"
             type="icon"
             // disabled={isLoading}
           />

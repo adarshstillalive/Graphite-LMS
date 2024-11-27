@@ -125,9 +125,12 @@ const LoginForm: React.FC<{ onLogin: (data: FormData) => void }> = ({
             )}
           </div>
           <p className="mt-2">
-            <a href="#" className="text-blue-500 text-sm hover:underline">
+            <Link
+              to="/auth/forgotPassword"
+              className="text-blue-500 text-sm hover:underline"
+            >
               Forgot password?
-            </a>
+            </Link>
           </p>
         </div>
 

@@ -9,6 +9,7 @@ interface UserRepository {
     socialAccount: ISocialAccount,
     isSocialAuthenticated: boolean,
   ): Promise<User | null>;
+  updatePassword(email: string, newPassword: string): Promise<void>;
 }
 
 export default UserRepository;

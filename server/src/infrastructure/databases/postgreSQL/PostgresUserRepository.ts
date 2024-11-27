@@ -42,6 +42,24 @@ class PostgresUserRepository implements UserAuthRepository {
       throw new Error('Failed to find user');
     }
   }
+
+  async updatePassword(email: string, newPassword: string): Promise<void> {
+    try {
+      const updatedUser = await prisma.user.update({
+        where: { email },
+        data: { password: newPassword },
+      });
+
+      if (!updatedUser) {
+        throw new Error('Database error');
+      }
+
+      console.log('Password updated successfully');
+    } catch (error) {
+      console.error('Error updating password:', error);
+      throw new Error('Failed to update password');
+    }
+  }
 }
 
 export default PostgresUserRepository;

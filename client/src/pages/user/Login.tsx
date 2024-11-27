@@ -7,7 +7,7 @@ import { setCurrentUser, setToken } from '../../redux/slices/user/userSlice';
 import axios from 'axios';
 import HeaderAuth from '../../components/common/HeaderAuth';
 
-interface LoginData {
+export interface LoginData {
   email: string;
   password: string;
 }
