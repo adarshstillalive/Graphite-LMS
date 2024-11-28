@@ -9,26 +9,14 @@ import appRoutes from './routes/appRoutes';
 
 const persistor = persistStore(store);
 
-const appRoute = createBrowserRouter(appRoutes, {
-  future: {
-    v7_relativeSplatPath: true,
-    v7_fetcherPersist: true,
-    v7_normalizeFormMethod: true,
-    v7_partialHydration: true,
-    v7_skipActionErrorRevalidation: true,
-  },
-});
+const appRoute = createBrowserRouter(appRoutes);
 
 function App() {
   return (
     <PersistGate persistor={persistor}>
       <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
         <Provider store={store}>
-          <RouterProvider
-            future={{ v7_startTransition: true }}
-            router={appRoute}
-          />
-          ;
+          <RouterProvider router={appRoute} />;
         </Provider>
       </GoogleOAuthProvider>
     </PersistGate>

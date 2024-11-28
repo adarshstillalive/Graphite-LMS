@@ -4,6 +4,17 @@ import { RootState } from '../../../redux/store';
 import { FaUserLarge } from 'react-icons/fa6';
 import { IoCartSharp } from 'react-icons/io5';
 import { FiSearch } from 'react-icons/fi';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { LogOut } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const Header = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);
@@ -42,20 +53,33 @@ const Header = () => {
         )}
 
         {/* Cart Button */}
-        <button
-          className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200"
-          aria-label="Cart Button"
-        >
-          <IoCartSharp className="text-xl text-gray-700" />
-        </button>
+        <Button className="rounded-full " variant="default">
+          <IoCartSharp className="text-3xl text-white" />
+        </Button>
 
         {/* Profile Button */}
-        <button
-          className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200"
-          aria-label="Profile Button"
-        >
-          <FaUserLarge className="text-xl text-gray-700" />
-        </button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button className="rounded-full " variant="default">
+              <FaUserLarge className="text-xl text-white" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56">
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem>Profile</DropdownMenuItem>
+              <DropdownMenuItem>Billing</DropdownMenuItem>
+              <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuItem>Keyboard shortcuts</DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <LogOut />
+              <span>Log out</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );

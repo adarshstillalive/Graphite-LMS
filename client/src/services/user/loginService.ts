@@ -21,7 +21,6 @@ export const sendOtp = async (email: string): Promise<ApiResponse> => {
     '/api/auth/requestOtp',
     { email }
   );
-  console.log('otpresponse:', response.data);
   return response.data;
 };
 
@@ -32,7 +31,6 @@ export const forgotPasswordSendOtp = async (
     '/api/auth/forgotPassword/requestOtp',
     { email }
   );
-  console.log('otpresponse:', response.data);
   return response.data;
 };
 

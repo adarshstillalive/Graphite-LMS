@@ -30,7 +30,6 @@ class MongoAdminRepository implements AdminRepository {
         { _id: id },
         { $set: { isApproved: true, updatedAt: Date.now() } },
       );
-      console.log(updated);
 
       if (updated.modifiedCount <= 0) {
         throw new Error('Database error: approval failed');
@@ -39,7 +38,6 @@ class MongoAdminRepository implements AdminRepository {
         { _id: userId },
         { $set: { isInstructor: true } },
       );
-      console.log(updateUsertoInstructor);
 
       if (updateUsertoInstructor.modifiedCount <= 0) {
         throw new Error('Database error: user approval failed');

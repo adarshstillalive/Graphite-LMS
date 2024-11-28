@@ -3,7 +3,11 @@ import OtpModal from '../../components/user/auth/OtpModal';
 import SignUpForm from '../../components/user/auth/SignupForm';
 import { createUser, sendOtp } from '../../services/user/loginService';
 import { useDispatch } from 'react-redux';
-import { setCurrentUser, setToken } from '../../redux/slices/user/userSlice';
+import {
+  setCurrentUser,
+  setIsLoading,
+  setToken,
+} from '../../redux/slices/user/userSlice';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import HeaderAuth from '../../components/common/HeaderAuth';
@@ -90,6 +94,7 @@ const Signup = () => {
   };
 
   const cancelOtp = () => {
+    dispatch(setIsLoading(false));
     setOtpModalStatus(false);
     setCredentials(undefined);
     setError(null);

@@ -2,6 +2,10 @@ import { Link } from 'react-router-dom';
 import SocialAuth from './SocialAuth';
 import { useState } from 'react';
 import { checkEmail, checkPassword } from '../../../utils/authUtils/validator';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import { setIsLoading } from '@/redux/slices/user/userSlice';
+import { Loader2 } from 'lucide-react';
 
 interface FormData {
   email: string;
@@ -11,6 +15,8 @@ interface FormData {
 const LoginForm: React.FC<{ onLogin: (data: FormData) => void }> = ({
   onLogin,
 }) => {
+  const { isLoading } = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
   const [credentials, setCredentials] = useState({
     email: '',
     password: '',
@@ -21,10 +27,11 @@ const LoginForm: React.FC<{ onLogin: (data: FormData) => void }> = ({
     passwordError: '',
   });
 
-  const [disableSignup, setDisableSignup] = useState(true);
+  const [disableLogin, setDisableLogin] = useState(true);
 
   const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
+    dispatch(setIsLoading(true));
     onLogin(credentials);
     setCredentials({
       email: '',
@@ -52,7 +59,7 @@ const LoginForm: React.FC<{ onLogin: (data: FormData) => void }> = ({
 
     const allFieldsFilled = Object.values(updatedCredentials).every(Boolean);
     const noErrors = Object.values(updatedError).every((err) => !err);
-    setDisableSignup(!(allFieldsFilled && noErrors));
+    setDisableLogin(!(allFieldsFilled && noErrors));
   };
   return (
     <div className="w-full max-w-md mx-auto px-4 py-8 items-center flex flex-col justify-center">
@@ -134,22 +141,17 @@ const LoginForm: React.FC<{ onLogin: (data: FormData) => void }> = ({
           </p>
         </div>
 
-        {disableSignup ? (
-          <button
-            type="submit"
-            disabled
-            className="w-full bg-gray-500 font-bold text-white py-3"
-          >
-            Login
-          </button>
-        ) : (
-          <button
-            type="submit"
-            className="w-full bg-black font-bold text-white py-3 cursor-pointer hover:bg-gray-900 transition duration-100"
-          >
-            Login
-          </button>
-        )}
+        <button
+          type="submit"
+          disabled={disableLogin}
+          className={`w-full font-bold text-white py-3 flex items-center justify-center ${
+            disableLogin
+              ? 'bg-gray-500 cursor-not-allowed'
+              : 'bg-black cursor-pointer hover:bg-gray-900 transition duration-100'
+          }`}
+        >
+          {isLoading ? <Loader2 className="animate-spin w-6 h-6" /> : 'Login'}
+        </button>
       </form>
 
       <SocialAuth />

@@ -160,8 +160,6 @@ const forgotPasswordRequestOtp = async (req: Request, res: Response) => {
 };
 
 const updatePassword = async (req: Request, res: Response) => {
-  console.log(req.body);
-
   const { email, otp, password } = req.body;
 
   try {

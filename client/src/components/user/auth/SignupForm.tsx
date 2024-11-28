@@ -8,6 +8,10 @@ import {
   checkLastName,
   checkPassword,
 } from '../../../utils/authUtils/validator';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import { setIsLoading } from '@/redux/slices/user/userSlice';
+import { Loader2 } from 'lucide-react';
 
 interface FormData {
   firstName: string;
@@ -19,6 +23,8 @@ interface FormData {
 const SignUpForm: React.FC<{ onSignup: (data: FormData) => void }> = ({
   onSignup,
 }) => {
+  const { isLoading } = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
   const [disableSignup, setDisableSignup] = useState(true);
   const [credentials, setCredentials] = useState({
     firstName: '',
@@ -38,6 +44,7 @@ const SignUpForm: React.FC<{ onSignup: (data: FormData) => void }> = ({
 
   const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
+    dispatch(setIsLoading(true));
     onSignup(credentials);
     setCredentials({
       firstName: '',
@@ -254,23 +261,18 @@ const SignUpForm: React.FC<{ onSignup: (data: FormData) => void }> = ({
             </div>
           </div>
         </div>
-
-        {disableSignup ? (
-          <button
-            type="submit"
-            disabled
-            className="w-full bg-gray-500 font-bold text-white py-3"
-          >
-            Sign Up
-          </button>
-        ) : (
-          <button
-            type="submit"
-            className="w-full bg-black font-bold text-white py-3 cursor-pointer hover:bg-gray-900 transition duration-100"
-          >
-            Sign Up
-          </button>
-        )}
+        <div></div>
+        <button
+          type="submit"
+          disabled={disableSignup}
+          className={`w-full font-bold text-white py-3 flex items-center justify-center ${
+            disableSignup
+              ? 'bg-gray-500 cursor-not-allowed'
+              : 'bg-black cursor-pointer hover:bg-gray-900 transition duration-100'
+          }`}
+        >
+          {isLoading ? <Loader2 className="animate-spin w-6 h-6" /> : 'Sign Up'}
+        </button>
       </form>
 
       <SocialAuth />
