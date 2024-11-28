@@ -1,25 +1,14 @@
-import { UserAuthLayout } from '../layouts/UserLayout';
-import Login from '../pages/user/Login';
-import Signup from '../pages/user/Signup';
-import ForgotPassword from '@/pages/user/ForgotPassword';
+import Profile from '@/pages/user/Profile';
+import Home from '@/pages/user/Home';
 
-const UserRoutes = {
-  path: '/auth',
-  element: <UserAuthLayout />,
-  children: [
-    {
-      path: '/auth/login',
-      element: <Login />,
-    },
-    {
-      path: '/auth/signup',
-      element: <Signup />,
-    },
-    {
-      path: '/auth/forgotPassword',
-      element: <ForgotPassword />,
-    },
-  ],
-};
-
-export default UserRoutes;
+const userRoutes = [
+  {
+    path: '',
+    element: <Home />,
+  },
+  {
+    path: 'profile',
+    element: <Profile />,
+  },
+];
+export default userRoutes;

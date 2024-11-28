@@ -1,5 +1,12 @@
-import { useState } from 'react';
-import { MdDashboard, MdPeople, MdSettings, MdMenu } from 'react-icons/md';
+import React, { useState } from 'react';
+import {
+  MdDashboard,
+  MdPeople,
+  MdSettings,
+  MdMenu,
+  MdLogout,
+  MdPerson,
+} from 'react-icons/md';
 import {
   FaChalkboardTeacher,
   FaBook,
@@ -7,10 +14,13 @@ import {
   FaMoneyBillWave,
 } from 'react-icons/fa';
 import { Link, useLocation } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setLogout } from '@/redux/slices/admin/adminSlice';
 
 const Sidebar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+  const dispatch = useDispatch();
 
   const navItems = [
     { icon: MdDashboard, label: 'Dashboard', to: '/admin/dashboard' },
@@ -25,6 +35,10 @@ const Sidebar = () => {
     { icon: FaMoneyBillWave, label: 'Revenue', to: '/admin/revenue' },
     { icon: MdSettings, label: 'Settings', to: '/admin/settings' },
   ];
+
+  const handleLogout = () => {
+    dispatch(setLogout());
+  };
 
   return (
     <>
@@ -47,7 +61,7 @@ const Sidebar = () => {
       <aside
         className={`fixed left-0 top-0 h-full bg-gray-800 text-white shadow-xl
           transition-transform duration-300 ease-in-out z-50
-          w-64 lg:translate-x-0 
+          w-64 lg:translate-x-0
           ${mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
       >
         <div className="h-16 flex items-center justify-center border-b border-gray-600 px-6">
@@ -76,6 +90,23 @@ const Sidebar = () => {
             );
           })}
         </nav>
+
+        <div className="absolute bottom-0 left-0 right-0 border-t border-gray-600 p-4 flex justify-between items-center">
+          <Link
+            to="/admin/profile"
+            className="text-gray-300 hover:text-white hover:bg-gray-700 p-2 rounded-lg transition-all duration-200"
+            aria-label="Admin Profile"
+          >
+            <MdPerson size={24} />
+          </Link>
+          <button
+            onClick={handleLogout}
+            className="text-gray-300 hover:text-white hover:bg-gray-700 p-2 rounded-lg transition-all duration-200"
+            aria-label="Logout"
+          >
+            <MdLogout size={24} />
+          </button>
+        </div>
       </aside>
 
       <div className="lg:hidden h-16" />

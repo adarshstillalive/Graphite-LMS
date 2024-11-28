@@ -100,14 +100,14 @@ const SignUpForm: React.FC<{ onSignup: (data: FormData) => void }> = ({
 
       <form className="w-full max-w-sm" onSubmit={handleSubmit}>
         <div className="mb-4 flex gap-4">
-          <div className="flex-1 relative tooltip">
+          <div className="flex-1 relative ">
             <label
               htmlFor="firstName"
               className="block text-gray-700 text-sm font-medium mb-2"
             >
               First Name
             </label>
-            <div className="relative">
+            <div className="relative tooltip">
               <input
                 type="text"
                 id="firstName"
@@ -131,14 +131,14 @@ const SignUpForm: React.FC<{ onSignup: (data: FormData) => void }> = ({
             </div>
           </div>
 
-          <div className="flex-1 relative tooltip">
+          <div className="flex-1 relative ">
             <label
               htmlFor="lastName"
               className="block text-gray-700 text-sm font-medium mb-2"
             >
               Last Name
             </label>
-            <div className="relative">
+            <div className="relative tooltip">
               <input
                 type="text"
                 id="lastName"
@@ -163,14 +163,14 @@ const SignUpForm: React.FC<{ onSignup: (data: FormData) => void }> = ({
           </div>
         </div>
 
-        <div className="mb-4 relative tooltip">
+        <div className="mb-4 relative ">
           <label
             htmlFor="email"
             className="block text-gray-700 text-sm font-medium mb-2"
           >
             Email
           </label>
-          <div className="relative">
+          <div className="relative tooltip">
             <input
               type="email"
               id="email"
@@ -195,14 +195,14 @@ const SignUpForm: React.FC<{ onSignup: (data: FormData) => void }> = ({
         </div>
 
         <div className="mb-6 flex gap-4">
-          <div className="flex-1 relative tooltip">
+          <div className="flex-1 relative ">
             <label
               htmlFor="password"
               className="block text-gray-700 text-sm font-medium mb-2"
             >
               Password
             </label>
-            <div className="relative">
+            <div className="relative tooltip">
               <input
                 type="password"
                 id="password"
@@ -226,14 +226,14 @@ const SignUpForm: React.FC<{ onSignup: (data: FormData) => void }> = ({
             </div>
           </div>
 
-          <div className="flex-1 relative tooltip">
+          <div className="flex-1 relative">
             <label
               htmlFor="confirmPassword"
               className="block text-gray-700 text-sm font-medium mb-2"
             >
               Confirm Password
             </label>
-            <div className="relative">
+            <div className="relative tooltip">
               <input
                 type="password"
                 id="confirmPassword"
@@ -264,9 +264,9 @@ const SignUpForm: React.FC<{ onSignup: (data: FormData) => void }> = ({
         <div></div>
         <button
           type="submit"
-          disabled={disableSignup}
+          disabled={disableSignup || isLoading}
           className={`w-full font-bold text-white py-3 flex items-center justify-center ${
-            disableSignup
+            disableSignup || isLoading
               ? 'bg-gray-500 cursor-not-allowed'
               : 'bg-black cursor-pointer hover:bg-gray-900 transition duration-100'
           }`}

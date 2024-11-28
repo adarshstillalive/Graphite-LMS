@@ -32,4 +32,4 @@ export default {
       { extensions: ['.jsx', '.tsx'] }, // Allow JSX in .tsx files
     ],
   },
-};
+}

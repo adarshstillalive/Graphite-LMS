@@ -58,18 +58,22 @@ const LoginForm: React.FC<{ onLogin: (data: FormData) => void }> = ({
         Login
       </h1>
       <p className="text-gray-600 mb-8 text-center text-sm md:text-base">
-        Welcome Admin! Please enter your credentials to access your account.
+        Welcome{' '}
+        <span className="text-lg md:text-lg font-bold mb-4 text-gray-800">
+          Admin
+        </span>{' '}
+        Please enter your credentials to access your account.
       </p>
 
       <form onSubmit={(e) => handleSubmit(e)} className="w-full max-w-sm">
-        <div className="mb-4 relative tooltip">
+        <div className="mb-4 relative ">
           <label
             htmlFor="email"
             className="block text-gray-700 text-sm font-medium mb-2"
           >
             Email
           </label>
-          <div className="relative">
+          <div className="relative tooltip">
             <input
               type="email"
               id="email"
@@ -93,14 +97,14 @@ const LoginForm: React.FC<{ onLogin: (data: FormData) => void }> = ({
           </div>
         </div>
 
-        <div className="mb-6 relative tooltip">
+        <div className="mb-6 relative ">
           <label
             htmlFor="password"
             className="block text-gray-700 text-sm font-medium mb-2"
           >
             Password
           </label>
-          <div className="relative">
+          <div className="relative tooltip">
             <input
               type="password"
               id="password"

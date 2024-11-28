@@ -1,24 +1,46 @@
-import Footer from '../components/user/common/Footer';
-import Header from '../components/user/common/Header';
-import Home from '../pages/user/Home';
-import AdminRoutes from './AdminRoutes';
-import InstructorRoutes from './InstructorRoutes';
-import UserRoutes from './UserRoutes';
+import { UserAuthLayout, UserLayout } from '@/layouts/UserLayout';
+import { InstructorLayout } from '@/layouts/InstructorLayout';
+import userAuthRoutes from './userAuthRoutes';
+import adminRoutes from './adminRoutes';
+import instructorRoutes from './instructorRoutes';
+import commonUserRoutes from './commonUserRoutes';
+import userRoutes from './userRoutes';
+import UserProtectedRoute from './protectedRoutes/UserProtectedRoute';
+import InstructorProtectedRoute from './protectedRoutes/InstructorProtectedRoute';
 
 const appRoutes = [
   {
     path: '/',
-    element: (
-      <>
-        <Header />
-        <Home />
-        <Footer />
-      </>
-    ),
+    element: <UserLayout />,
+    children: commonUserRoutes,
   },
-  UserRoutes,
-  AdminRoutes,
-  InstructorRoutes,
+  {
+    path: '/auth',
+    element: <UserAuthLayout />,
+    children: userAuthRoutes,
+  },
+  {
+    path: '/user',
+    element: (
+      <UserProtectedRoute>
+        <UserLayout />
+      </UserProtectedRoute>
+    ),
+    children: userRoutes,
+  },
+  {
+    path: '/instructor',
+    element: (
+      <InstructorProtectedRoute>
+        <InstructorLayout />
+      </InstructorProtectedRoute>
+    ),
+    children: instructorRoutes,
+  },
+  {
+    path: '/admin',
+    children: adminRoutes,
+  },
 ];
 
 export default appRoutes;

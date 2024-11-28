@@ -37,6 +37,11 @@ const userSlice = createSlice({
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
+    setLogout: (state) => {
+      state.currentUser = null;
+      state.token = null;
+      localStorage.removeItem('userToken');
+    },
   },
 });
 
@@ -46,6 +51,7 @@ export const {
   setToken,
   setIsLoading,
   setError,
+  setLogout,
 } = userSlice.actions;
 
 export default userSlice.reducer;

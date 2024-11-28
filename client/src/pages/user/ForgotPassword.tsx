@@ -8,6 +8,10 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import HeaderAuth from '../../components/common/HeaderAuth';
 import ForgotPasswordForm from '@/components/user/auth/ForgotPasswordForm';
+import { useDispatch } from 'react-redux';
+import { setIsLoading } from '@/redux/slices/user/userSlice';
+import { useToast } from '@/hooks/use-toast';
+import { Toaster } from '@/components/ui/toaster';
 
 export interface ForgotPasswordData {
   email: string;
@@ -17,11 +21,10 @@ export interface ForgotPasswordData {
 const ForgotPassword = () => {
   const [otpModalStatus, setOtpModalStatus] = useState(false);
   const [credentials, setCredentials] = useState<ForgotPasswordData>();
-  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const changePassword = async (data: ForgotPasswordData) => {
-    setError(null);
     const { email, password } = data;
     setCredentials({ email, password });
 
@@ -31,18 +34,29 @@ const ForgotPassword = () => {
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const { message } = error.response.data;
-        setError(message);
+        toast({
+          variant: 'destructive',
+          description: message,
+        });
         console.error(message);
       } else {
         console.error('An unexpected error occurred:', error);
-        setError('An unexpected error occurred.');
+        toast({
+          variant: 'destructive',
+          description: 'An unexpected error occurred',
+        });
       }
+    } finally {
+      dispatch(setIsLoading(false));
     }
   };
 
   const verifyOtp = async (otp: string) => {
     if (!credentials) {
-      setError('Missing credentials data. Please again.');
+      toast({
+        variant: 'destructive',
+        description: 'Missing credentials. Please try again.',
+      });
       setOtpModalStatus(false);
       return;
     }
@@ -56,18 +70,29 @@ const ForgotPassword = () => {
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const { message } = error.response.data;
-        setError(message);
+        toast({
+          variant: 'destructive',
+          description: message,
+        });
         console.error(message);
       } else {
         console.error('An unexpected error occurred:', error);
-        setError('An unexpected error occurred.');
+        toast({
+          variant: 'destructive',
+          description: 'An unexpected error occurred',
+        });
       }
+    } finally {
+      dispatch(setIsLoading(false));
     }
   };
 
   const resendOtp = async () => {
     if (!credentials?.email) {
-      setError('Missing email for resending OTP. Please try signing up again.');
+      toast({
+        variant: 'destructive',
+        description: 'Missing email for resending OTP. Please try again.',
+      });
       return;
     }
 
@@ -77,24 +102,31 @@ const ForgotPassword = () => {
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const { message } = error.response.data;
-        setError(message);
+        toast({
+          variant: 'destructive',
+          description: message,
+        });
         console.error(message);
       } else {
         console.error('An unexpected error occurred:', error);
-        setError('An unexpected error occurred.');
+        toast({
+          variant: 'destructive',
+          description: 'An unexpected error occurred',
+        });
       }
     }
   };
 
   const cancelOtp = () => {
     setOtpModalStatus(false);
+    dispatch(setIsLoading(false));
     setCredentials(undefined);
-    setError(null);
   };
 
   return (
     <>
       <HeaderAuth />
+      <Toaster />
       <div className="min-h-full flex justify-center align-middle pt-16">
         <div className="w-full md:w-1/2 flex items-center justify-center">
           <ForgotPasswordForm onSubmit={changePassword} />
@@ -106,11 +138,6 @@ const ForgotPassword = () => {
             onResendOtp={resendOtp}
             onCancel={cancelOtp}
           />
-        )}
-        {error && (
-          <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded-md shadow-md">
-            {error}
-          </div>
         )}
       </div>
     </>

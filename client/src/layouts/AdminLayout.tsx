@@ -1,7 +1,9 @@
 import { Outlet } from 'react-router-dom';
 import Sidebar from '../components/admin/Sidebar';
+import HeaderAuth from '@/components/common/HeaderAuth';
+import Footer from '@/components/user/common/Footer';
 
-const AdminLayout = () => {
+export const AdminLayout = () => {
   return (
     <>
       <Sidebar />
@@ -10,4 +12,12 @@ const AdminLayout = () => {
   );
 };
 
-export default AdminLayout;
+export const AdminAuthLayout = () => {
+  return (
+    <>
+      <HeaderAuth />
+      <Outlet />
+      <Footer />
+    </>
+  );
+};

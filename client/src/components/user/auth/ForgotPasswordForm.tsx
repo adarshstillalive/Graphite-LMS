@@ -6,6 +6,10 @@ import {
   checkEmail,
   checkPassword,
 } from '../../../utils/authUtils/validator';
+import { Loader2 } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import { setIsLoading } from '@/redux/slices/user/userSlice';
 
 interface FormData {
   email: string;
@@ -16,6 +20,8 @@ const ForgotPasswordForm: React.FC<{ onSubmit: (data: FormData) => void }> = ({
   onSubmit,
 }) => {
   const [disableSubmit, setDisableSubmit] = useState(true);
+  const dispatch = useDispatch();
+  const { isLoading } = useSelector((state: RootState) => state.user);
   const [credentials, setCredentials] = useState({
     email: '',
     password: '',
@@ -30,6 +36,7 @@ const ForgotPasswordForm: React.FC<{ onSubmit: (data: FormData) => void }> = ({
 
   const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
+    dispatch(setIsLoading(true));
     onSubmit(credentials);
     setCredentials({
       email: '',
@@ -175,22 +182,17 @@ const ForgotPasswordForm: React.FC<{ onSubmit: (data: FormData) => void }> = ({
           </div>
         </div>
 
-        {disableSubmit ? (
-          <button
-            type="submit"
-            disabled
-            className="w-full bg-gray-500 font-bold text-white py-3"
-          >
-            Submit
-          </button>
-        ) : (
-          <button
-            type="submit"
-            className="w-full bg-black font-bold text-white py-3 cursor-pointer hover:bg-gray-900 transition duration-100"
-          >
-            Submit
-          </button>
-        )}
+        <button
+          type="submit"
+          disabled={disableSubmit || isLoading}
+          className={`w-full font-bold text-white py-3 flex items-center justify-center ${
+            disableSubmit || isLoading
+              ? 'bg-gray-500 cursor-not-allowed'
+              : 'bg-black cursor-pointer hover:bg-gray-900 transition duration-100'
+          }`}
+        >
+          {isLoading ? <Loader2 className="animate-spin w-6 h-6" /> : 'Sign Up'}
+        </button>
       </form>
 
       <SocialAuth />

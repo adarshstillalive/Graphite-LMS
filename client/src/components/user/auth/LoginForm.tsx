@@ -71,14 +71,14 @@ const LoginForm: React.FC<{ onLogin: (data: FormData) => void }> = ({
       </p>
 
       <form onSubmit={(e) => handleSubmit(e)} className="w-full max-w-sm">
-        <div className="mb-4 relative tooltip">
+        <div className="mb-4 relative">
           <label
             htmlFor="email"
             className="block text-gray-700 text-sm font-medium mb-2"
           >
             Email
           </label>
-          <div className="relative">
+          <div className="relative tooltip">
             <input
               type="email"
               id="email"
@@ -102,14 +102,14 @@ const LoginForm: React.FC<{ onLogin: (data: FormData) => void }> = ({
           </div>
         </div>
 
-        <div className="mb-6 relative tooltip">
+        <div className="mb-6 relative ">
           <label
             htmlFor="password"
             className="block text-gray-700 text-sm font-medium mb-2"
           >
             Password
           </label>
-          <div className="relative">
+          <div className="relative tooltip">
             <input
               type="password"
               id="password"
@@ -143,9 +143,9 @@ const LoginForm: React.FC<{ onLogin: (data: FormData) => void }> = ({
 
         <button
           type="submit"
-          disabled={disableLogin}
+          disabled={disableLogin || isLoading}
           className={`w-full font-bold text-white py-3 flex items-center justify-center ${
-            disableLogin
+            disableLogin || isLoading
               ? 'bg-gray-500 cursor-not-allowed'
               : 'bg-black cursor-pointer hover:bg-gray-900 transition duration-100'
           }`}

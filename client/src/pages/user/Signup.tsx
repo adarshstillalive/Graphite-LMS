@@ -11,6 +11,8 @@ import {
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import HeaderAuth from '../../components/common/HeaderAuth';
+import { useToast } from '@/hooks/use-toast';
+import { Toaster } from '@/components/ui/toaster';
 
 export interface SignupData {
   firstName: string;
@@ -22,12 +24,11 @@ export interface SignupData {
 const Signup = () => {
   const [otpModalStatus, setOtpModalStatus] = useState(false);
   const [credentials, setCredentials] = useState<SignupData>();
-  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const signup = async (data: SignupData) => {
-    setError(null);
     const { firstName, lastName, email, password } = data;
     setCredentials({ firstName, lastName, email, password });
 
@@ -37,18 +38,29 @@ const Signup = () => {
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const { message } = error.response.data;
-        setError(message);
+        toast({
+          variant: 'destructive',
+          description: message,
+        });
         console.error(message);
       } else {
         console.error('An unexpected error occurred:', error);
-        setError('An unexpected error occurred.');
+        toast({
+          variant: 'destructive',
+          description: 'An unexpected error occurred',
+        });
       }
+    } finally {
+      dispatch(setIsLoading(false));
     }
   };
 
   const verifyOtp = async (otp: string) => {
     if (!credentials) {
-      setError('Missing signup data. Please try signing up again.');
+      toast({
+        variant: 'destructive',
+        description: 'Missing signup data. Please try signing up again.',
+      });
       setOtpModalStatus(false);
       return;
     }
@@ -63,18 +75,30 @@ const Signup = () => {
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const { message } = error.response.data;
-        setError(message);
+        toast({
+          variant: 'destructive',
+          description: message,
+        });
         console.error(message);
       } else {
         console.error('An unexpected error occurred:', error);
-        setError('An unexpected error occurred.');
+        toast({
+          variant: 'destructive',
+          description: 'An unexpected error occurred',
+        });
       }
+    } finally {
+      dispatch(setIsLoading(false));
     }
   };
 
   const resendOtp = async () => {
     if (!credentials?.email) {
-      setError('Missing email for resending OTP. Please try signing up again.');
+      toast({
+        variant: 'destructive',
+        description:
+          'Missing email for resending OTP. Please try signing up again.',
+      });
       return;
     }
 
@@ -84,11 +108,17 @@ const Signup = () => {
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const { message } = error.response.data;
-        setError(message);
+        toast({
+          variant: 'destructive',
+          description: message || 'Sending otp failed, Try again',
+        });
         console.error(message);
       } else {
         console.error('An unexpected error occurred:', error);
-        setError('An unexpected error occurred.');
+        toast({
+          variant: 'destructive',
+          description: 'An unexpected error occurred',
+        });
       }
     }
   };
@@ -97,12 +127,12 @@ const Signup = () => {
     dispatch(setIsLoading(false));
     setOtpModalStatus(false);
     setCredentials(undefined);
-    setError(null);
   };
 
   return (
     <>
       <HeaderAuth />
+      <Toaster />
       <div className="min-h-full flex flex-col md:flex-row pt-16">
         <div className="w-full md:w-1/2 flex items-center justify-center">
           <SignUpForm onSignup={signup} />
@@ -120,11 +150,6 @@ const Signup = () => {
             onResendOtp={resendOtp}
             onCancel={cancelOtp}
           />
-        )}
-        {error && (
-          <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded-md shadow-md">
-            {error}
-          </div>
         )}
       </div>
     </>

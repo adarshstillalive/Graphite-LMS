@@ -16,7 +16,7 @@ function App() {
     <PersistGate persistor={persistor}>
       <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
         <Provider store={store}>
-          <RouterProvider router={appRoute} />;
+          <RouterProvider router={appRoute} />
         </Provider>
       </GoogleOAuthProvider>
     </PersistGate>

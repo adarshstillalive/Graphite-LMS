@@ -32,10 +32,15 @@ const adminSlice = createSlice({
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
+    setLogout: (state) => {
+      state.currentAdmin = null;
+      state.token = null;
+      localStorage.removeItem('adminToken');
+    },
   },
 });
 
-export const { setCurrentAdmin, setToken, setIsLoading, setError } =
+export const { setCurrentAdmin, setToken, setIsLoading, setError, setLogout } =
   adminSlice.actions;
 
 export default adminSlice.reducer;

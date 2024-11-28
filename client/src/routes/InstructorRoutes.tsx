@@ -1,20 +1,19 @@
-import { InstructorLayout } from '../layouts/InstructorLayout';
+import Profile from '@/pages/instructor/Profile';
 import Home from '../pages/instructor/Home';
+import Request from '@/pages/instructor/Request';
 
-const InstructorRoutes = {
-  path: '/instructor',
-  children: [
-    {
-      path: '',
-      element: <InstructorLayout />,
-      children: [
-        {
-          path: '',
-          element: <Home />,
-        },
-      ],
-    },
-  ],
-};
-
-export default InstructorRoutes;
+const instructorRoutes = [
+  {
+    path: '',
+    element: <Home />,
+  },
+  {
+    path: 'request',
+    element: <Request />,
+  },
+  {
+    path: 'profile',
+    element: <Profile />,
+  },
+];
+export default instructorRoutes;

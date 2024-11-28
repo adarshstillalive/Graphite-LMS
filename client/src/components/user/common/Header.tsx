@@ -1,5 +1,5 @@
 import ToggleButton from './ToggleButton';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { FaUserLarge } from 'react-icons/fa6';
 import { IoCartSharp } from 'react-icons/io5';
@@ -15,9 +15,18 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { setLogout } from '@/redux/slices/user/userSlice';
+import { Link } from 'react-router-dom';
+import useRoleBasedNavigate from '@/hooks/useRoleBasedNavigate';
 
 const Header = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);
+  const navigate = useRoleBasedNavigate();
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(setLogout());
+  };
   return (
     <header className="h-16 w-screen bg-white border-b border-gray-400 fixed top-0 z-50 flex px-4">
       <div className="w-1/2 flex items-center">
@@ -41,45 +50,65 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Right Section: User/Instructor Toggle + Cart + Profile */}
       <div className="w-1/2 flex items-center justify-end space-x-4 px-4">
         {/* Toggle Buttons */}
-        {currentUser && (
+        {currentUser ? (
           <div className="flex items-center space-x-2">
             <h2 className="text-sm font-medium text-gray-600">User</h2>
             <ToggleButton />
             <h2 className="text-sm font-medium text-gray-600">Instructor</h2>
           </div>
+        ) : (
+          <div className="flex items-center space-x-2">
+            <h2 className="text-sm font-medium text-gray-600">Guest</h2>
+          </div>
         )}
 
         {/* Cart Button */}
-        <Button className="rounded-full " variant="default">
-          <IoCartSharp className="text-3xl text-white" />
-        </Button>
+        {currentUser && (
+          <Button
+            className="rounded-full bg-gray-200 hover:bg-gray-300 p-5"
+            variant="default"
+          >
+            <IoCartSharp className="text-gray-800" />
+          </Button>
+        )}
 
         {/* Profile Button */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="rounded-full " variant="default">
-              <FaUserLarge className="text-xl text-white" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Billing</DropdownMenuItem>
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Keyboard shortcuts</DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut />
-              <span>Log out</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+
+        {currentUser ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                className="rounded-full bg-gray-200 hover:bg-gray-300 p-5"
+                variant="default"
+              >
+                <FaUserLarge className="text-xl text-gray-800" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem onClick={() => navigate('/profile')}>
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem>Billing</DropdownMenuItem>
+                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuItem>Keyboard shortcuts</DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleLogout}>
+                <LogOut />
+                <span>Log out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <Button className="rounded-none" variant="default">
+            <Link to={'/auth/login'}>Login</Link>
+          </Button>
+        )}
       </div>
     </header>
   );
