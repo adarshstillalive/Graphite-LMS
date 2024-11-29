@@ -38,7 +38,6 @@ const userDetails = async (req: Request, res: Response) => {
     }
     const { email } = await verifyAccessToken(accessToken);
     const user = await userRepository.findByEmail(email);
-    console.log(user);
 
     res
       .status(200)

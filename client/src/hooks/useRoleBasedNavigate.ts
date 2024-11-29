@@ -7,13 +7,10 @@ const useRoleBasedNavigate = () => {
   const navigate = useNavigate();
   const { role } = useSelector((state: RootState) => state.app);
 
-  const roleBasedNavigate = useCallback(
-    (path: string) => {
-      const basePath = role === 'instructor' ? '/instructor' : '';
-      navigate(`${basePath}${path}`);
-    },
-    [navigate, role]
-  );
+  const roleBasedNavigate = useCallback(() => {
+    const basePath = role === 'instructor' ? '/instructor' : '/';
+    navigate(basePath);
+  }, [navigate, role]);
 
   return roleBasedNavigate;
 };

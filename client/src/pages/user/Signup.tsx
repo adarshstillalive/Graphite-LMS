@@ -13,6 +13,7 @@ import axios from 'axios';
 import HeaderAuth from '../../components/common/HeaderAuth';
 import { useToast } from '@/hooks/use-toast';
 import { Toaster } from '@/components/ui/toaster';
+import { setRole } from '@/redux/slices/user/appSlice';
 
 export interface SignupData {
   firstName: string;
@@ -70,6 +71,7 @@ const Signup = () => {
       const { user, accessToken } = res.data;
       dispatch(setToken(accessToken));
       dispatch(setCurrentUser(user));
+      dispatch(setRole('user'));
       setOtpModalStatus(false);
       navigate('/');
     } catch (error) {

@@ -1,32 +1,17 @@
 import ToggleButton from './ToggleButton';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import { FaUserLarge } from 'react-icons/fa6';
 import { IoCartSharp } from 'react-icons/io5';
 import { FiSearch } from 'react-icons/fi';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { setLogout } from '@/redux/slices/user/userSlice';
 import { Link } from 'react-router-dom';
-import useRoleBasedNavigate from '@/hooks/useRoleBasedNavigate';
+import UserProfileDropdown from './UserProfileDropdown';
+import InstructorProfileDropdown from '@/components/instructor/InstructorProfileDropdown';
 
 const Header = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);
-  const navigate = useRoleBasedNavigate();
-  const dispatch = useDispatch();
+  const { role } = useSelector((state: RootState) => state.app);
 
-  const handleLogout = () => {
-    dispatch(setLogout());
-  };
   return (
     <header className="h-16 w-screen bg-white border-b border-gray-400 fixed top-0 z-50 flex px-4">
       <div className="w-1/2 flex items-center">
@@ -77,33 +62,11 @@ const Header = () => {
         {/* Profile Button */}
 
         {currentUser ? (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                className="rounded-full bg-gray-200 hover:bg-gray-300 p-5"
-                variant="default"
-              >
-                <FaUserLarge className="text-xl text-gray-800" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuItem onClick={() => navigate('/profile')}>
-                  Profile
-                </DropdownMenuItem>
-                <DropdownMenuItem>Billing</DropdownMenuItem>
-                <DropdownMenuItem>Settings</DropdownMenuItem>
-                <DropdownMenuItem>Keyboard shortcuts</DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleLogout}>
-                <LogOut />
-                <span>Log out</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          role === 'user' ? (
+            <UserProfileDropdown />
+          ) : (
+            <InstructorProfileDropdown />
+          )
         ) : (
           <Button className="rounded-none" variant="default">
             <Link to={'/auth/login'}>Login</Link>

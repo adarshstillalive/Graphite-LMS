@@ -1,19 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 interface AppState {
-  role: 'user' | 'instructor';
+  role: 'user' | 'instructor' | 'guest';
 }
 
 const initialState: AppState = {
-  role: 'user',
+  role: 'guest',
 };
 
 const appSlice = createSlice({
   name: 'app',
   initialState,
   reducers: {
-    setRole: (state) => {
-      state.role = state.role === 'user' ? 'instructor' : 'user';
+    setRole: (state, action) => {
+      state.role = action.payload;
     },
   },
 });

@@ -1,23 +1,26 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { setRole } from '../../../redux/slices/user/appSlice';
 import { RootState } from '../../../redux/store';
-import { useLocation } from 'react-router-dom';
-import pathAlteration from '../../../utils/commonUtils/pathAlteration';
-import useRoleBasedNavigate from '../../../hooks/useRoleBasedNavigate';
-import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const ToggleButton = () => {
   const { role } = useSelector((state: RootState) => state.app);
-
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const roleBasedNavigation = useRoleBasedNavigate();
-  const location = useLocation();
-  useEffect(() => {
-    const reRenderPath = pathAlteration(location.pathname);
-    roleBasedNavigation(reRenderPath);
-  }, [role, location.pathname, roleBasedNavigation]);
+  // const location = useLocation();
+
+  // useEffect(() => {
+
+  // }, [role, navigate]);
   const handleToggle = () => {
-    dispatch(setRole());
+    dispatch(setRole(role === 'user' ? 'instructor' : 'user'));
+    if (role === 'user') {
+      navigate('/');
+    } else if (role === 'instructor') {
+      navigate('/instructor');
+    } else {
+      navigate('/global');
+    }
   };
 
   return (

@@ -1,19 +1,36 @@
 import Profile from '@/pages/instructor/Profile';
-import Home from '../pages/instructor/Home';
 import Request from '@/pages/instructor/Request';
+import PreInstructorProtectedRoute from './protectedRoutes/PreInstructorProtectedRoute';
+import { InstructorLayout } from '@/layouts/InstructorLayout';
+import InstructorProtectedRoute from './protectedRoutes/InstructorProtectedRoute';
+import Home from '@/pages/instructor/Home';
 
 const instructorRoutes = [
   {
-    path: '',
-    element: <Home />,
-  },
-  {
     path: 'request',
-    element: <Request />,
+    element: (
+      <PreInstructorProtectedRoute>
+        <InstructorLayout />
+      </PreInstructorProtectedRoute>
+    ),
+    children: [
+      {
+        path: '',
+        element: <Request />,
+      },
+    ],
   },
   {
-    path: 'profile',
-    element: <Profile />,
+    path: '',
+    element: (
+      <InstructorProtectedRoute>
+        <InstructorLayout />
+      </InstructorProtectedRoute>
+    ),
+    children: [
+      { path: '', element: <Home /> },
+      { path: 'profile', element: <Profile /> },
+    ],
   },
 ];
 export default instructorRoutes;

@@ -11,6 +11,7 @@ import axios from 'axios';
 import HeaderAuth from '../../components/common/HeaderAuth';
 import { useToast } from '@/hooks/use-toast';
 import { Toaster } from '@/components/ui/toaster';
+import { setRole } from '@/redux/slices/user/appSlice';
 
 export interface LoginData {
   email: string;
@@ -29,6 +30,7 @@ const Login = () => {
       const { user, accessToken } = res.data;
       dispatch(setToken(accessToken));
       dispatch(setCurrentUser(user));
+      dispatch(setRole('user'));
       navigate('/');
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {

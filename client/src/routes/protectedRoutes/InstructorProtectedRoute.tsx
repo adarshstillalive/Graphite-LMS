@@ -10,11 +10,20 @@ interface InstructorProtectedRouteProps {
 const InstructorProtectedRoute: React.FC<InstructorProtectedRouteProps> = ({
   children,
 }) => {
-  const { token, isInstructor } = useSelector((state: RootState) => state.user);
+  const { token } = useSelector((state: RootState) => state.user);
+  const { isInstructor } = useSelector((state: RootState) => state.user);
   const { role } = useSelector((state: RootState) => state.app);
 
-  if (!token || role !== 'instructor' || !isInstructor) {
+  if (!token) {
+    return <Navigate to="/auth/login" replace />;
+  }
+
+  if (role !== 'instructor') {
     return <Navigate to="/" replace />;
+  }
+
+  if (!isInstructor) {
+    return <Navigate to="/instructor/request" replace />;
   }
 
   return <>{children}</>;
