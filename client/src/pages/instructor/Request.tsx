@@ -6,9 +6,9 @@ import {
 
 import RequestDetails, {
   RequestDetailsProps,
-} from '../../components/instructor/RequestDetails';
-import RequestFormSection from '../../components/instructor/RequestForm';
-import RequestFieldList from '../../components/instructor/RequestFieldList';
+} from '@/components/instructor/request/RequestDetails';
+import RequestFormSection from '@/components/instructor/request/RequestForm';
+import RequestFieldList from '@/components/instructor/request/RequestFieldList';
 
 const Request: React.FC = () => {
   const [expertise, setExpertise] = useState<string[]>([]);

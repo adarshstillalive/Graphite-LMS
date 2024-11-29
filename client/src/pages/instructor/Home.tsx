@@ -24,8 +24,8 @@ const Home = () => {
   console.log(isInstructor);
 
   return isInstructor ? (
-    <div className="h-screen">
-      <h1 className="text-3xl h-screen text-red-500 pt-16">HOME</h1>
+    <div className="">
+      <h1 className="text-3xl h-screen text-red-500">HOME</h1>
     </div>
   ) : (
     <Request />

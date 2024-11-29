@@ -30,7 +30,7 @@ const RequestDetails: React.FC<RequestDetailsProps> = ({
   );
 
   return (
-    <div className="h-screen pt-24">
+    <div className="h-screen ">
       <div className="max-w-xl mx-auto p-4 bg-gray-100 rounded shadow-md">
         <h1 className="text-xl font-bold mb-3 text-gray-800">
           Request Details

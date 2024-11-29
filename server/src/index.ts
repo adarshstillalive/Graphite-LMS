@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import userRoute from './interface/routes/userRoutes.js';
 import adminRoute from './interface/routes/adminRoute.js';
 import instructorRoute from './interface/routes/instructorRoute.js';
+import prisma from './infrastructure/orm/prismaClient.js';
 dotenv.config();
 
 mongoose
@@ -32,6 +33,24 @@ app.use('/', userRoute);
 app.use('/admin', adminRoute);
 app.use('/instructor', instructorRoute);
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server running at ${process.env.SERVER_URL}${PORT}`);
 });
+
+const shutDown = async () => {
+  console.log('Shutting down the server...');
+  try {
+    await prisma.$disconnect();
+    console.log('Prisma disconnected');
+    server.close(() => {
+      console.log('Server closed');
+      process.exit(0);
+    });
+  } catch (error) {
+    console.log('Error during shutdown', error);
+    process.exit(1);
+  }
+};
+
+process.on('SIGINT', shutDown);
+process.on('SIGTERM', shutDown);
