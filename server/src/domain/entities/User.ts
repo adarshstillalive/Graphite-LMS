@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import { ISocialAccount } from '../../infrastructure/databases/mongoDB/models/UserModel.js';
 
 class User {
@@ -14,7 +13,8 @@ class User {
     public isBlocked?: boolean,
     public createdAt?: Date,
     public updatedAt?: Date,
-    public _id?: mongoose.Schema.Types.ObjectId,
+    public _id?: string,
+    public instructorId?: string,
   ) {}
 }
 

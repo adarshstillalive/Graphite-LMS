@@ -4,7 +4,12 @@ import { FaXTwitter } from 'react-icons/fa6';
 import { googleAuth } from '../../../services/user/loginService';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { setCurrentUser, setToken } from '../../../redux/slices/user/userSlice';
+import {
+  setCurrentUser,
+  setIsInstructor,
+  setToken,
+} from '../../../redux/slices/user/userSlice';
+import { setRole } from '@/redux/slices/user/appSlice';
 
 const SocialAuth = () => {
   const dispatch = useDispatch();
@@ -16,6 +21,8 @@ const SocialAuth = () => {
     const { user, accessToken } = res.data;
     dispatch(setToken(accessToken));
     dispatch(setCurrentUser(user));
+    dispatch(setIsInstructor(user.isInstructor));
+    dispatch(setRole('user'));
     navigate('/');
     console.log('Google sign-in success:', res);
   };

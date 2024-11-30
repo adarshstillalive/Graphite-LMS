@@ -25,9 +25,7 @@ class SendRequest {
         throw new Error('Database error');
       }
 
-      const userId = mongoose.Types.ObjectId.createFromHexString(
-        typeof user._id === 'string' ? user._id : user._id.toString(),
-      );
+      const userId = mongoose.Types.ObjectId.createFromHexString(user._id);
 
       const request = new InstructorRequest(
         userId,

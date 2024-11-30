@@ -1,3 +1,5 @@
+import { setCurrentUser, setIsInstructor } from '@/redux/slices/user/userSlice';
+import store from '@/redux/store';
 import axios from 'axios';
 
 const instructorAxiosInstance = axios.create({
@@ -12,5 +14,21 @@ instructorAxiosInstance.interceptors.request.use((config) => {
   }
   return config;
 });
+
+instructorAxiosInstance.interceptors.response.use(
+  (res) => {
+    if (res.data && res.data.data && res.data.data.user) {
+      const { user } = res.data.data;
+      console.log('axios interceptors', user);
+
+      store.dispatch(setCurrentUser(user));
+      store.dispatch(setIsInstructor(user.isInstructor));
+    }
+    return res;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 export default instructorAxiosInstance;

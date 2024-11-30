@@ -12,6 +12,7 @@ import {
 import userReducer from './slices/user/userSlice';
 import appReducer from './slices/user/appSlice';
 import adminReducer from './slices/admin/adminSlice';
+import instructorReducer from './slices/instructor/instructorSlice';
 
 const persistConfig = {
   key: 'root',
@@ -23,9 +24,10 @@ const rootReducer = combineReducers({
   user: userReducer,
   app: appReducer,
   admin: adminReducer,
+  instructor: instructorReducer,
 });
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedReducer = persistReducer<RootState>(persistConfig, rootReducer);
 
 export type RootState = ReturnType<typeof rootReducer>;
 

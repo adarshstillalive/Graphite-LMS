@@ -1,3 +1,4 @@
+import { ApiResponse } from '@/interfaces/Response';
 import instructorAxiosInstance from '../../axios/instructorAxiosInstance';
 
 interface RequestData {
@@ -8,7 +9,10 @@ interface RequestData {
 
 export const sendRequest = async (data: RequestData) => {
   try {
-    const response = await instructorAxiosInstance.post('/api/request', data);
+    const response = await instructorAxiosInstance.post<ApiResponse>(
+      '/api/request',
+      data
+    );
     console.log('req data', response.data);
     return response.data;
   } catch (error) {
@@ -16,18 +20,22 @@ export const sendRequest = async (data: RequestData) => {
   }
 };
 
-export const fetchUser = async () => {
+export const fetchInstructor = async (userId: string) => {
   try {
-    const response = await instructorAxiosInstance.get('/api/user');
+    const response = await instructorAxiosInstance.get<ApiResponse>(
+      `/api/profile/${userId}`
+    );
     return response.data;
   } catch (error) {
     console.log(error);
   }
 };
 
-export const fetchRequest = async () => {
+export const fetchRequest = async (userId: string) => {
   try {
-    const response = await instructorAxiosInstance.get('/api/request');
+    const response = await instructorAxiosInstance.get<ApiResponse>(
+      `/api/request/${userId}`
+    );
     return response.data;
   } catch (error) {
     console.log(error);

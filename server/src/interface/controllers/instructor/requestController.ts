@@ -30,18 +30,20 @@ const createRequest = async (req: Request, res: Response) => {
   }
 };
 
-const userDetails = async (req: Request, res: Response) => {
+const instructorDetails = async (req: Request, res: Response) => {
   try {
     const accessToken = req.headers.authorization;
     if (!accessToken) {
       throw new Error('Empty access token');
     }
-    const { email } = await verifyAccessToken(accessToken);
-    const user = await userRepository.findByEmail(email);
+    // const { email } = await verifyAccessToken(accessToken);
+    const { userId } = req.params;
+
+    const instructor = await instructorRepository.fetchInstructor(userId);
 
     res
       .status(200)
-      .json(createResponse(true, 'User data fetching successful', user));
+      .json(createResponse(true, 'User data fetching successful', instructor));
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     res.status(400).json(createResponse(false, error?.message));
@@ -54,16 +56,9 @@ const getRequest = async (req: Request, res: Response) => {
     if (!accessToken) {
       throw new Error('Empty access token');
     }
-    const { email } = await verifyAccessToken(accessToken);
-    const user = await userRepository.findByEmail(email);
-    if (!user) {
-      throw new Error('Database error');
-    }
-    if (!user._id) {
-      throw new Error('Database error');
-    }
-    const requestData = await instructorRepository.fetchRequest(user._id);
-
+    await verifyAccessToken(accessToken);
+    const { userId } = req.params;
+    const requestData = await instructorRepository.fetchRequest(userId);
     res
       .status(200)
       .json(createResponse(true, 'Request fetching successful', requestData));
@@ -75,6 +70,6 @@ const getRequest = async (req: Request, res: Response) => {
 
 export default {
   createRequest,
-  userDetails,
+  instructorDetails,
   getRequest,
 };

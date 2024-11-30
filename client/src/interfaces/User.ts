@@ -7,6 +7,7 @@ export interface ISocialAccount {
 export interface IUser {
   firstName?: string;
   lastName?: string;
+  instructorId: string;
   email?: string;
   password?: string;
   isBlocked?: boolean;
@@ -16,5 +17,5 @@ export interface IUser {
   updatedAt?: Date;
   socialAccounts?: ISocialAccount[];
   isSocialAuthenticated?: boolean;
-  _id?: string;
+  _id: string;
 }

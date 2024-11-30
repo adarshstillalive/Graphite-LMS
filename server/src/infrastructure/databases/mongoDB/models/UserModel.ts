@@ -6,9 +6,10 @@ export interface ISocialAccount {
 }
 
 export interface IUser extends Document {
-  _id: mongoose.Schema.Types.ObjectId;
+  _id: string;
   firstName?: string;
   lastName?: string;
+  instructorId?: string;
   email: string;
   password?: string;
   isBlocked?: boolean;
@@ -20,57 +21,58 @@ export interface IUser extends Document {
   isSocialAuthenticated?: boolean;
 }
 
-const userSchema: Schema<IUser> = new Schema({
-  firstName: {
-    type: String,
-  },
-  lastName: {
-    type: String,
-  },
-  email: {
-    type: String,
-    required: true,
-  },
-  password: {
-    type: String,
-  },
-  isBlocked: {
-    type: Boolean,
-    default: false,
-  },
-  isInstructor: {
-    type: Boolean,
-    default: false,
-  },
-  isAdmin: {
-    type: Boolean,
-    default: false,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
-  socialAccounts: [
-    {
-      provider: {
-        type: String,
-        enum: ['Facebook', 'Google', 'X'],
-      },
-      createdAt: {
-        type: Date,
-        default: Date.now,
-      },
+const userSchema: Schema<IUser> = new Schema(
+  {
+    firstName: {
+      type: String,
     },
-  ],
-  isSocialAuthenticated: {
-    type: Boolean,
-    default: false,
+    lastName: {
+      type: String,
+    },
+    instructorId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Instructor',
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+    },
+    isBlocked: {
+      type: Boolean,
+      default: false,
+    },
+    isInstructor: {
+      type: Boolean,
+      default: false,
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
+    socialAccounts: [
+      {
+        provider: {
+          type: String,
+          enum: ['Facebook', 'Google', 'X'],
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
+    isSocialAuthenticated: {
+      type: Boolean,
+      default: false,
+    },
   },
-});
+  {
+    timestamps: true,
+  },
+);
 
 const UserModel = mongoose.model<IUser>('User', userSchema);
 

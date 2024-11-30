@@ -7,6 +7,8 @@ import userRoute from './interface/routes/userRoutes.js';
 import adminRoute from './interface/routes/adminRoute.js';
 import instructorRoute from './interface/routes/instructorRoute.js';
 import prisma from './infrastructure/orm/prismaClient.js';
+import fileUpload from 'express-fileupload';
+import userResponseMiddleware from './infrastructure/middleware/userResponseMiddleware.js';
 dotenv.config();
 
 mongoose
@@ -26,12 +28,17 @@ app.use(
   }),
 );
 
+app.use(fileUpload({ useTempFiles: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use('/', userRoute);
 app.use('/admin', adminRoute);
 app.use('/instructor', instructorRoute);
+app.use(userResponseMiddleware);
+// app.use((err: Error, req: Request, res: Response) => {
+//   res.status(500).json(createResponse(false, 'Internal server error', {}, err));
+// });
 
 const server = app.listen(PORT, () => {
   console.log(`Server running at ${process.env.SERVER_URL}${PORT}`);

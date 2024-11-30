@@ -5,8 +5,8 @@ class ApproveRequest {
 
   async execute(id: string, userId: string) {
     try {
-      const request = await this.adminRepository.approveRequest(id, userId);
-
+      await this.adminRepository.approveRequest(id, userId);
+      const request = await this.adminRepository.fetchInstructorRequests();
       return request;
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

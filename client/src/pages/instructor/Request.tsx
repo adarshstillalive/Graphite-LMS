@@ -9,8 +9,11 @@ import RequestDetails, {
 } from '@/components/instructor/request/RequestDetails';
 import RequestFormSection from '@/components/instructor/request/RequestForm';
 import RequestFieldList from '@/components/instructor/request/RequestFieldList';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 const Request: React.FC = () => {
+  const { currentUser } = useSelector((state: RootState) => state.user);
   const [expertise, setExpertise] = useState<string[]>([]);
   const [qualifications, setQualifications] = useState<string[]>([]);
   const [additionalInfo, setAdditionalInfo] = useState<string[]>([]);
@@ -53,7 +56,9 @@ const Request: React.FC = () => {
     try {
       const data = { expertise, qualifications, additionalInfo };
       const response = await sendRequest(data);
-
+      if (!response) {
+        throw new Error('');
+      }
       if (response.success) {
         alert('Instructor request submitted successfully!');
         setExpertise([]);
@@ -69,8 +74,11 @@ const Request: React.FC = () => {
   };
 
   useEffect(() => {
+    if (!currentUser?._id) {
+      return;
+    }
     const fetchRequestApi = async () => {
-      const response = await fetchRequest();
+      const response = await fetchRequest(currentUser?._id);
 
       if (response) {
         const {
@@ -97,7 +105,7 @@ const Request: React.FC = () => {
     };
 
     fetchRequestApi();
-  }, []); // Removed incorrect dependencies like `dispatch` or `isInstructor`
+  }, []);
 
   return !showRequest ? (
     <div className="flex h-screen">

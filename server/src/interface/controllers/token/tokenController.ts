@@ -6,7 +6,7 @@ import { createResponse } from '../../../utils/createResponse.js';
 const refreshTokenRepository = new PostgresRefreshTokenRepository();
 const refreshAccessToken = new RefreshAccessToken(refreshTokenRepository);
 
-const refreshToken = async (req: Request, res: Response) => {
+const refreshTokenApi = async (req: Request, res: Response) => {
   try {
     const { refreshToken } = req.cookies;
     const { email } = req.body;
@@ -24,10 +24,14 @@ const refreshToken = async (req: Request, res: Response) => {
       .json(createResponse(true, 'Access token created successfully', data));
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    res.status(400).json(createResponse(false, error?.message));
+    res
+      .status(400)
+      .json(
+        createResponse(false, 'Refresh access token error', {}, error?.message),
+      );
   }
 };
 
 export default {
-  refreshToken,
+  refreshTokenApi,
 };

@@ -10,11 +10,12 @@ class GenerateAndAddTokens {
 
   async execute(email: string, role: string) {
     try {
-      const accessToken = generateAccessToken({ email, role });
-      const refreshToken = generateRefreshToken({ email, role });
+      const accessToken = String(generateAccessToken({ email, role }));
+      const refreshToken = String(generateRefreshToken({ email, role }));
       const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
       const tokenObj = new RefreshToken(email, refreshToken, expiresAt);
       await this.refreshTokenRepository.save(tokenObj);
+
       return { accessToken, refreshToken };
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

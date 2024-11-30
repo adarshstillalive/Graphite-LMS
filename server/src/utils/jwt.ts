@@ -23,19 +23,27 @@ export const generateRefreshToken = (payload: Payload) => {
 export const verifyRefreshToken = async (
   refreshToken: string,
 ): Promise<Payload> => {
-  const decoded = jwt.verify(
+  const decoded = (await jwt.verify(
     refreshToken,
     `${process.env.JWT_REFRESH_SECRET}`,
-  ) as Payload;
+  )) as Payload;
+  if (!decoded) {
+    throw new Error('Unauthorized refresh token');
+  }
   return decoded;
 };
 
 export const verifyAccessToken = async (
   accessToken: string,
 ): Promise<Payload> => {
-  const decoded = jwt.verify(
+  const decoded = (await jwt.verify(
     accessToken,
     `${process.env.JWT_SECRET}`,
-  ) as Payload;
+  )) as Payload;
+  if (!decoded) {
+    throw new Error('Unauthorized access token');
+  }
+  console.log(decoded);
+
   return decoded;
 };

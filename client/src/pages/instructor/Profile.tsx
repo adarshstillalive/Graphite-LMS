@@ -1,9 +1,29 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Toaster } from '@/components/ui/toaster';
+import { useToast } from '@/hooks/use-toast';
+import React from 'react';
 import { FaPen } from 'react-icons/fa';
 
 const Profile = () => {
+  const { toast } = useToast();
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const validImageTypes = ['image/jpeg', 'image/png', 'image/jpeg'];
+    const file = e.target.files?.[0];
+    console.log(file);
+    if (!file || !validImageTypes.includes(file.type)) {
+      toast({
+        variant: 'destructive',
+        description: 'Please select a valid image file (JPEG, PNG or JPG).',
+      });
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+  };
   return (
     <div className="container w-full mx-auto p-6">
+      <Toaster />
       {/* First Horizontal Div */}
       <div className="flex flex-col md:flex-row justify-between">
         {/* Left Vertical Div */}
@@ -56,9 +76,27 @@ const Profile = () => {
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
 
-                <button className="absolute right-0 bottom-0 bg-gray-800 text-gray-200 w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 z-10">
-                  <FaPen className="text-sm" />
+                {/* File Input Trigger */}
+                <button
+                  type="button"
+                  className="absolute right-0 bottom-0 bg-gray-800 text-gray-200 w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 z-10"
+                >
+                  <label
+                    htmlFor="file-input"
+                    className="cursor-pointer flex items-center justify-center w-full h-full"
+                  >
+                    <FaPen className="text-sm" />
+                  </label>
                 </button>
+
+                {/* Hidden File Input */}
+                <input
+                  id="file-input"
+                  type="file"
+                  accept="image/png, image/jpeg, image/jpg"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
               </div>
             </div>
           </div>

@@ -5,6 +5,7 @@ import { createUser, sendOtp } from '../../services/user/loginService';
 import { useDispatch } from 'react-redux';
 import {
   setCurrentUser,
+  setIsInstructor,
   setIsLoading,
   setToken,
 } from '../../redux/slices/user/userSlice';
@@ -34,8 +35,10 @@ const Signup = () => {
     setCredentials({ firstName, lastName, email, password });
 
     try {
-      await sendOtp(email);
-      setOtpModalStatus(true);
+      const otpStatus = await sendOtp(email);
+      if (otpStatus.success) {
+        setOtpModalStatus(true);
+      }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         const { message } = error.response.data;
@@ -71,6 +74,7 @@ const Signup = () => {
       const { user, accessToken } = res.data;
       dispatch(setToken(accessToken));
       dispatch(setCurrentUser(user));
+      dispatch(setIsInstructor(user.isInstructor));
       dispatch(setRole('user'));
       setOtpModalStatus(false);
       navigate('/');

@@ -13,49 +13,46 @@ interface IInstructorRequest extends Document {
   updatedAt: Date;
 }
 
-const instructorRequestSchema: Schema<IInstructorRequest> = new Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    ref: 'User',
+const instructorRequestSchema: Schema<IInstructorRequest> = new Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'User',
+    },
+    expertise: {
+      type: [String],
+      default: [],
+    },
+    qualifications: {
+      type: [String],
+      default: [],
+    },
+    additionalInfo: {
+      type: [String],
+      default: [],
+    },
+    isApproved: {
+      type: Boolean,
+      default: false,
+    },
+    isRejected: {
+      type: Boolean,
+      default: false,
+    },
+    rejectedReason: {
+      type: String,
+      default: null,
+    },
+    rejectedAdmin: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
   },
-  expertise: {
-    type: [String],
-    default: [],
+  {
+    timestamps: true,
   },
-  qualifications: {
-    type: [String],
-    default: [],
-  },
-  additionalInfo: {
-    type: [String],
-    default: [],
-  },
-  isApproved: {
-    type: Boolean,
-    default: false,
-  },
-  isRejected: {
-    type: Boolean,
-    default: false,
-  },
-  rejectedReason: {
-    type: String,
-    default: null,
-  },
-  rejectedAdmin: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now(),
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now(),
-  },
-});
+);
 
 const InstructorRequestModel = mongoose.model<IInstructorRequest>(
   'InstructorRequest',
