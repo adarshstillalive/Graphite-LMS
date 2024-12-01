@@ -1,4 +1,4 @@
-import userAxiosInstance from '@/axios/userAxiosInstance';
+import baseAxiosInstance from '@/axios/baseAxiosInstance';
 import { setLogout } from '@/redux/slices/user/userSlice';
 import store from '@/redux/store';
 
@@ -8,7 +8,8 @@ const refreshAccessToken = async () => {
     if (!currentUser) {
       return;
     }
-    const response = await userAxiosInstance.post('/api/auth/refreshToken', {
+
+    const response = await baseAxiosInstance.post('/api/auth/refreshToken', {
       email: currentUser.email,
     });
 

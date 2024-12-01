@@ -4,7 +4,7 @@ import refreshAccessToken from '@/services/user/refreshAccessToken';
 import isTokenExpired from '@/utils/authUtils/isTokenExpired';
 import { useEffect } from 'react';
 
-const useInitialTokenRefresh = () => {
+export const useInitialTokenRefresh = () => {
   useEffect(() => {
     const checkTokenOnLoad = async () => {
       let accessToken = store.getState().user.token;
@@ -18,5 +18,3 @@ const useInitialTokenRefresh = () => {
     checkTokenOnLoad();
   }, []);
 };
-
-export default useInitialTokenRefresh;

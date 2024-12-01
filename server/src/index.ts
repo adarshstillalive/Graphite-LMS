@@ -32,10 +32,11 @@ app.use(fileUpload({ useTempFiles: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+app.use(userResponseMiddleware);
 app.use('/', userRoute);
 app.use('/admin', adminRoute);
 app.use('/instructor', instructorRoute);
-app.use(userResponseMiddleware);
+
 // app.use((err: Error, req: Request, res: Response) => {
 //   res.status(500).json(createResponse(false, 'Internal server error', {}, err));
 // });

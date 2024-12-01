@@ -1,140 +1,155 @@
+import { User, Mail, Pencil, Plus } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Toaster } from '@/components/ui/toaster';
-import { useToast } from '@/hooks/use-toast';
-import React from 'react';
-import { FaPen } from 'react-icons/fa';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+
+// interface SocialLink {
+//   id: string;
+//   platform: string;
+//   url: string;
+// }
+
+// interface InstructorData {
+//   name: string;
+//   email: string;
+//   phone: string;
+//   location: string;
+//   bio: string;
+//   avatarUrl: string;
+//   socialLinks: SocialLink[];
+// }
+
+// // Mock data for the instructor
+// const instructorData: InstructorData = {
+//   name: 'Jane Doe',
+//   email: 'jane.doe@example.com',
+//   phone: '+1 (555) 123-4567',
+//   location: 'New York, NY',
+//   bio: 'Experienced instructor with a passion for teaching web development and computer science.',
+//   avatarUrl: 'https://example.com/jane-doe-avatar.jpg',
+//   socialLinks: [
+//     { id: '1', platform: 'GitHub', url: 'https://github.com/janedoe' },
+//     { id: '2', platform: 'LinkedIn', url: 'https://linkedin.com/in/janedoe' },
+//   ],
+// };
 
 const Profile = () => {
-  const { toast } = useToast();
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const validImageTypes = ['image/jpeg', 'image/png', 'image/jpeg'];
-    const file = e.target.files?.[0];
-    console.log(file);
-    if (!file || !validImageTypes.includes(file.type)) {
-      toast({
-        variant: 'destructive',
-        description: 'Please select a valid image file (JPEG, PNG or JPG).',
-      });
-      return;
-    }
+  // const { currentInstructor } = useSelector(
+  //   (state: RootState) => state.instructor
+  // );
+  const { currentUser } = useSelector((state: RootState) => state.user);
 
-    const formData = new FormData();
-    formData.append('file', file);
-  };
   return (
-    <div className="container w-full mx-auto p-6">
-      <Toaster />
-      {/* First Horizontal Div */}
-      <div className="flex flex-col md:flex-row justify-between">
-        {/* Left Vertical Div */}
-        <div className="flex-1 bg-white shadow p-6 rounded-md">
-          <h2 className="text-xl font-semibold mb-4">Personal Information</h2>
-          <form className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Full Name
-              </label>
-              <input
-                type="text"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring focus:ring-gray-400"
-                placeholder="Enter full name"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Email
-              </label>
-              <input
-                type="email"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring focus:ring-gray-400"
-                placeholder="Enter email address"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Contact Number
-              </label>
-              <input
-                type="tel"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring focus:ring-gray-400"
-                placeholder="Enter contact number"
-              />
-            </div>
-          </form>
-        </div>
-
-        {/* Right Vertical Div */}
-        <div className="w-full md:w-1/3 bg-white shadow p-6 rounded-md">
-          <div className="mb-6">
-            <div className="flex flex-col items-center">
-              <div className="relative">
-                <Avatar className="w-32 h-32">
-                  <AvatarImage
-                    src="https://github.com/shadcn.png"
-                    alt="@shadcn"
+    <div className="p-6 flex-1 overflow-auto">
+      <h1 className="text-3xl font-bold mb-6">Instructor Profile</h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card className="md:col-span-2 rounded-sm">
+          <CardHeader>
+            <CardTitle>Personal Information</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center space-x-4">
+                <User className="w-5 h-5 text-gray-500" />
+                <div>
+                  <Label htmlFor="name">Name</Label>
+                  <Input
+                    className="rounded-none"
+                    id="name"
+                    value={currentUser?.firstName + ' ' + currentUser?.lastName}
+                    readOnly
                   />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-
-                {/* File Input Trigger */}
-                <button
-                  type="button"
-                  className="absolute right-0 bottom-0 bg-gray-800 text-gray-200 w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 z-10"
-                >
-                  <label
-                    htmlFor="file-input"
-                    className="cursor-pointer flex items-center justify-center w-full h-full"
-                  >
-                    <FaPen className="text-sm" />
-                  </label>
-                </button>
-
-                {/* Hidden File Input */}
-                <input
-                  id="file-input"
-                  type="file"
-                  accept="image/png, image/jpeg, image/jpg"
-                  className="hidden"
-                  onChange={handleFileChange}
+                </div>
+              </div>
+              <div className="flex items-center space-x-4">
+                <Mail className="w-5 h-5 text-gray-500" />
+                <div>
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    className="rounded-none"
+                    id="email"
+                    value={currentUser?.email}
+                    readOnly
+                  />
+                </div>
+              </div>
+              {/* <div className="flex items-center space-x-4">
+                <MapPin className="w-5 h-5 text-gray-500" />
+                <div>
+                  <Label htmlFor="location">Location</Label>
+                  <Input
+                    id="location"
+                    value={instructorData.location}
+                    readOnly
+                  />
+                </div>
+              </div> */}
+              <div>
+                <Label htmlFor="bio">Bio</Label>
+                <textarea
+                  id="bio"
+                  className="w-full min-h-[100px] px-3 py-2 text-sm border rounded-sm"
+                  value={''}
+                  readOnly
                 />
               </div>
             </div>
-          </div>
+          </CardContent>
+        </Card>
 
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Social Links</h2>
-            <form className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  LinkedIn
-                </label>
-                <input
-                  type="url"
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring focus:ring-gray-400"
-                  placeholder="Enter LinkedIn URL"
-                />
+        <div className="space-y-6">
+          <Card className="rounded-sm">
+            <CardContent className="pt-6">
+              <div className="relative w-48 h-48 mx-auto">
+                <Avatar className="w-full h-full">
+                  <AvatarImage src={''} alt={' '} />
+                  <AvatarFallback>
+                    {currentUser?.firstName + ' ' + currentUser?.lastName}
+                  </AvatarFallback>
+                </Avatar>
+                <Button
+                  size="icon"
+                  className="absolute bottom-2 right-2 rounded-full"
+                >
+                  <Pencil className="h-4 w-4" />
+                </Button>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Twitter
-                </label>
-                <input
-                  type="url"
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring focus:ring-gray-400"
-                  placeholder="Enter Twitter URL"
-                />
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-sm">
+            <CardHeader>
+              <CardTitle>Social Links</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4 overflow-hidden">
+                {/* {instructorData.socialLinks.map((link) => (
+                  <div
+                    key={link.id}
+                    className="flex items-center justify-between"
+                  >
+                    <span>{link.platform}</span>
+                    <a
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 hover:underline"
+                    >
+                      {link.url}
+                    </a>
+                  </div>
+                ))} */}
+                <Button variant="outline" className="w-full">
+                  <Plus className="mr-2 h-4 w-4" /> Add Social Link
+                </Button>
               </div>
-            </form>
-          </div>
+            </CardContent>
+          </Card>
         </div>
-      </div>
-
-      {/* Second Horizontal Div */}
-      <div className="mt-6 bg-white shadow p-6 rounded-md">
-        <h2 className="text-xl font-semibold">Future Section</h2>
-        <p className="text-sm text-gray-500">
-          This section is reserved for future use.
-        </p>
       </div>
     </div>
   );

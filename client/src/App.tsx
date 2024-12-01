@@ -6,7 +6,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
 import appRoutes from './routes/appRoutes';
-import useInitialTokenRefresh from './hooks/useInitialTokenRefresh';
+import { useInitialTokenRefresh } from './hooks/useInitialTokenRefresh';
 
 const persistor = persistStore(store);
 

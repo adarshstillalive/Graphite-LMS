@@ -20,6 +20,7 @@ const authorization = async (
 
     const user = await tokenService.verifyToken(authHeader);
     req.user = user;
+
     next();
   } catch (error) {
     res

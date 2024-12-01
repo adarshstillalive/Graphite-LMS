@@ -7,13 +7,19 @@ const userResponseMiddleware = (
 ) => {
   const originalJson = res.json;
 
-  res.json = function (body) {
-    const enrichedBody = {
-      ...body,
-      data: { ...body.data, user: req.user || null },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  res.json = function (body: any) {
+    const response = {
+      success: body?.success ?? true,
+      message: body?.message || '',
+      data: body?.data || {},
+      user: req.user || null,
+      error: body?.error || null,
     };
-    return originalJson.call(this, enrichedBody);
+
+    return originalJson.call(this, response);
   };
+
   next();
 };
 

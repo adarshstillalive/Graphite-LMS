@@ -1,15 +1,10 @@
 import express from 'express';
 import authController from '../controllers/user/authController.js';
 import tokenController from '../controllers/token/tokenController.js';
-import userAuthMiddleware from '../../infrastructure/middleware/userAuthMiddleware.js';
 
 const userRoute = express.Router();
 
-userRoute.post(
-  '/api/auth/refreshToken',
-  userAuthMiddleware.authorization,
-  tokenController.refreshTokenApi,
-);
+userRoute.post('/api/auth/refreshToken', tokenController.refreshTokenApi);
 
 userRoute.post('/api/auth/requestOtp', authController.requestOtp);
 userRoute.post('/api/auth/signup', authController.verifyAndSignup);

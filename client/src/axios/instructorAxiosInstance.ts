@@ -1,5 +1,11 @@
-import { setCurrentUser, setIsInstructor } from '@/redux/slices/user/userSlice';
+import {
+  setCurrentUser,
+  setIsInstructor,
+  setToken,
+} from '@/redux/slices/user/userSlice';
 import store from '@/redux/store';
+import refreshAccessToken from '@/services/user/refreshAccessToken';
+import isTokenExpired from '@/utils/authUtils/isTokenExpired';
 import axios from 'axios';
 
 const instructorAxiosInstance = axios.create({
@@ -7,18 +13,48 @@ const instructorAxiosInstance = axios.create({
   withCredentials: true,
 });
 
-instructorAxiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem('userToken');
+// Token refresh state
+let isRefreshing = false;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let refreshSubscribers: any[] = [];
+
+const addSubscriber = (callback: (value: unknown) => void) => {
+  refreshSubscribers.push(callback);
+};
+
+const onRefreshed = (newToken: string) => {
+  refreshSubscribers.forEach((callback) => callback(newToken));
+  refreshSubscribers = [];
+};
+
+instructorAxiosInstance.interceptors.request.use(async (config) => {
+  let token = store.getState().user.token;
+
+  if (token && isTokenExpired(token)) {
+    if (!isRefreshing) {
+      isRefreshing = true;
+      token = await refreshAccessToken();
+      if (token) {
+        store.dispatch(setToken(token));
+        onRefreshed(token);
+      }
+      isRefreshing = false;
+    }
+
+    await new Promise((resolve) => addSubscriber(resolve));
+  }
+
   if (token) {
     config.headers.Authorization = token;
   }
+
   return config;
 });
 
 instructorAxiosInstance.interceptors.response.use(
   (res) => {
-    if (res.data && res.data.data && res.data.data.user) {
-      const { user } = res.data.data;
+    if (res.data && res.data.user) {
+      const { user } = res.data;
 
       store.dispatch(setCurrentUser(user));
       store.dispatch(setIsInstructor(user.isInstructor));
