@@ -9,12 +9,12 @@ instructorRoute.post(
   requestController.createRequest,
 );
 instructorRoute.get(
-  '/api/profile/:userId',
+  '/api/profile',
   userAuthMiddleware.authorization,
   requestController.instructorDetails,
 );
 instructorRoute.get(
-  '/api/request/:userId',
+  '/api/request',
   userAuthMiddleware.authorization,
   requestController.getRequest,
 );

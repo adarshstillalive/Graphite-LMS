@@ -19,7 +19,6 @@ instructorAxiosInstance.interceptors.response.use(
   (res) => {
     if (res.data && res.data.data && res.data.data.user) {
       const { user } = res.data.data;
-      console.log('axios interceptors', user);
 
       store.dispatch(setCurrentUser(user));
       store.dispatch(setIsInstructor(user.isInstructor));

@@ -20,10 +20,6 @@ userRoute.post(
 );
 userRoute.patch('/api/auth/forgotPassword', authController.updatePassword);
 
-userRoute.post(
-  '/auth/google',
-  userAuthMiddleware.authorization,
-  authController.googleSignIn,
-);
+userRoute.post('/auth/google', authController.googleSignIn);
 
 export default userRoute;

@@ -1,5 +1,4 @@
 import Profile from '@/pages/instructor/Profile';
-import Request from '@/pages/instructor/Request';
 import PreInstructorProtectedRoute from './protectedRoutes/PreInstructorProtectedRoute';
 import {
   InstructorLayout,
@@ -7,6 +6,7 @@ import {
 } from '@/layouts/InstructorLayout';
 import InstructorProtectedRoute from './protectedRoutes/InstructorProtectedRoute';
 import Home from '@/pages/instructor/Home';
+import Request from '@/pages/instructor/Request';
 
 const instructorRoutes = [
   {

@@ -6,14 +6,14 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
 import appRoutes from './routes/appRoutes';
-import useTokenRefresher from './hooks/useTokenRefresher';
+import useInitialTokenRefresh from './hooks/useInitialTokenRefresh';
 
 const persistor = persistStore(store);
 
 const appRoute = createBrowserRouter(appRoutes);
 
 function App() {
-  useTokenRefresher();
+  useInitialTokenRefresh();
   return (
     <PersistGate persistor={persistor}>
       <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>

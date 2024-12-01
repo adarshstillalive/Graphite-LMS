@@ -8,9 +8,7 @@ class TokenService {
   async verifyToken(token: string): Promise<User> {
     try {
       const { email } = await verifyAccessToken(token);
-
       const user = await this.userRepository.findByEmail(email);
-
       if (!user) {
         throw new Error("User doesn't exist, Contact admin");
       }

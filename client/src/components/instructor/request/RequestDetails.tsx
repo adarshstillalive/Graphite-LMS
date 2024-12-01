@@ -19,16 +19,6 @@ const RequestDetails: React.FC<RequestDetailsProps> = ({
   rejectedReason,
   createdAt,
 }) => {
-  console.log(
-    expertise,
-    qualifications,
-    additionalInfo,
-    isApproved,
-    isRejected,
-    rejectedReason,
-    createdAt
-  );
-
   return (
     <div className="h-screen ">
       <div className="max-w-xl mx-auto p-4 bg-gray-100 rounded shadow-md">

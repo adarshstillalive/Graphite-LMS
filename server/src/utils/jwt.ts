@@ -40,10 +40,10 @@ export const verifyAccessToken = async (
     accessToken,
     `${process.env.JWT_SECRET}`,
   )) as Payload;
+
   if (!decoded) {
     throw new Error('Unauthorized access token');
   }
-  console.log(decoded);
 
   return decoded;
 };

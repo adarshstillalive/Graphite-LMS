@@ -13,29 +13,26 @@ export const sendRequest = async (data: RequestData) => {
       '/api/request',
       data
     );
-    console.log('req data', response.data);
     return response.data;
   } catch (error) {
     console.log(error);
   }
 };
 
-export const fetchInstructor = async (userId: string) => {
+export const fetchInstructor = async () => {
   try {
-    const response = await instructorAxiosInstance.get<ApiResponse>(
-      `/api/profile/${userId}`
-    );
+    const response =
+      await instructorAxiosInstance.get<ApiResponse>(`/api/profile`);
     return response.data;
   } catch (error) {
     console.log(error);
   }
 };
 
-export const fetchRequest = async (userId: string) => {
+export const fetchRequest = async () => {
   try {
-    const response = await instructorAxiosInstance.get<ApiResponse>(
-      `/api/request/${userId}`
-    );
+    const response =
+      await instructorAxiosInstance.get<ApiResponse>(`/api/request`);
     return response.data;
   } catch (error) {
     console.log(error);

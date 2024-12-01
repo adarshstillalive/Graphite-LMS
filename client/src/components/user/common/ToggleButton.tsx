@@ -13,19 +13,11 @@ const ToggleButton = () => {
 
   // }, [role, navigate]);
   const handleToggle = () => {
-    console.log(role);
-
     dispatch(setRole(role === 'user' ? 'instructor' : 'user'));
     if (role === 'user') {
-      console.log('user');
-
       navigate('/instructor');
     } else if (role === 'instructor') {
-      console.log('inst');
-
       navigate('/');
-    } else {
-      navigate('/global');
     }
   };
 

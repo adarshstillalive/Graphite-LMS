@@ -9,11 +9,8 @@ import RequestDetails, {
 } from '@/components/instructor/request/RequestDetails';
 import RequestFormSection from '@/components/instructor/request/RequestForm';
 import RequestFieldList from '@/components/instructor/request/RequestFieldList';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
 
 const Request: React.FC = () => {
-  const { currentUser } = useSelector((state: RootState) => state.user);
   const [expertise, setExpertise] = useState<string[]>([]);
   const [qualifications, setQualifications] = useState<string[]>([]);
   const [additionalInfo, setAdditionalInfo] = useState<string[]>([]);
@@ -74,11 +71,8 @@ const Request: React.FC = () => {
   };
 
   useEffect(() => {
-    if (!currentUser?._id) {
-      return;
-    }
     const fetchRequestApi = async () => {
-      const response = await fetchRequest(currentUser?._id);
+      const response = await fetchRequest();
 
       if (response) {
         const {
@@ -107,7 +101,7 @@ const Request: React.FC = () => {
     fetchRequestApi();
   }, []);
 
-  return !showRequest ? (
+  return showRequest ? (
     <div className="flex h-screen">
       {/* Left Side - Form */}
       <div className="w-1/2 flex items-center justify-center bg-gray-100 p-8">

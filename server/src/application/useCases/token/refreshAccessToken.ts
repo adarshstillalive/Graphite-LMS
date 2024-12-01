@@ -9,7 +9,6 @@ class RefreshAccessToken {
       email,
       refreshToken,
     );
-    console.log(checkRefreshTokenInDb, 'checking in sql');
 
     if (!checkRefreshTokenInDb) {
       throw new Error('Invalid refresh token');

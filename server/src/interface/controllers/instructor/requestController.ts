@@ -32,13 +32,10 @@ const createRequest = async (req: Request, res: Response) => {
 
 const instructorDetails = async (req: Request, res: Response) => {
   try {
-    const accessToken = req.headers.authorization;
-    if (!accessToken) {
-      throw new Error('Empty access token');
+    const userId = req.user?._id;
+    if (!userId) {
+      throw new Error('DB error: User fetching failed');
     }
-    // const { email } = await verifyAccessToken(accessToken);
-    const { userId } = req.params;
-
     const instructor = await instructorRepository.fetchInstructor(userId);
 
     res
@@ -52,12 +49,10 @@ const instructorDetails = async (req: Request, res: Response) => {
 
 const getRequest = async (req: Request, res: Response) => {
   try {
-    const accessToken = req.headers.authorization;
-    if (!accessToken) {
-      throw new Error('Empty access token');
+    const userId = req.user?._id;
+    if (!userId) {
+      throw new Error('DB error: User fetching failed');
     }
-    await verifyAccessToken(accessToken);
-    const { userId } = req.params;
     const requestData = await instructorRepository.fetchRequest(userId);
     res
       .status(200)
