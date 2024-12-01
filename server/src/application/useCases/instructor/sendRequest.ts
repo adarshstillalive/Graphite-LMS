@@ -13,19 +13,10 @@ class SendRequest {
     expertise: string[],
     qualifications: string[],
     additionalInfo: string[],
-    email: string,
+    id: string,
   ) {
     try {
-      const user = await this.userRepository.findByEmail(email);
-      if (!user) {
-        throw new Error('Database error');
-      }
-
-      if (!user._id) {
-        throw new Error('Database error');
-      }
-
-      const userId = mongoose.Types.ObjectId.createFromHexString(user._id);
+      const userId = new mongoose.Types.ObjectId(id);
 
       const request = new InstructorRequest(
         userId,

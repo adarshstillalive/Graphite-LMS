@@ -2,7 +2,7 @@ import instructorAxiosInstance from '@/axios/instructorAxiosInstance';
 
 export const changeProfilePicture = async (formData: FormData) => {
   const response = await instructorAxiosInstance.post(
-    '/profile/updateProfilePicture',
+    '/api/profile/updateProfilePicture',
     formData,
     {
       headers: {

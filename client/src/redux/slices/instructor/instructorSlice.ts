@@ -18,7 +18,10 @@ const instructorSlice = createSlice({
   initialState,
   reducers: {
     setCurrentInstructor: (state, action: PayloadAction<IInstructor>) => {
-      state.currentInstructor = action.payload;
+      state.currentInstructor = {
+        ...state.currentInstructor,
+        ...action.payload,
+      };
     },
     setIsLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
