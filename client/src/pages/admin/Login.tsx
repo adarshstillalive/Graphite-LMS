@@ -10,7 +10,6 @@ import {
 import { loginUser } from '../../services/admin/loginService';
 import HeaderAuth from '../../components/common/HeaderAuth';
 import { useToast } from '@/hooks/use-toast';
-import { Toaster } from '@/components/ui/toaster';
 
 interface LoginData {
   email: string;
@@ -53,7 +52,6 @@ const Login = () => {
   return (
     <>
       <HeaderAuth />
-      <Toaster />
       <div className="flex-col min-h-screen  flex justify-center md:flex-row pt-16">
         <div className="w-full md:w-1/2 flex items-center justify-center">
           <LoginForm onLogin={login} />

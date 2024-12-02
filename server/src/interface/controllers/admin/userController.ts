@@ -1,24 +1,19 @@
 import { Request, Response } from 'express';
+import UserModel from '../../../infrastructure/databases/mongoDB/models/UserModel.js';
 import MongoGenericRepository from '../../../infrastructure/databases/mongoDB/MongoGenericRepository.js';
-import getModelByType from '../../../utils/getModelByType.js';
 import { createResponse } from '../../../utils/createResponse.js';
 
-const paginationApi = async (req: Request, res: Response) => {
+const paginatedUsersList = async (req: Request, res: Response) => {
   try {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
-    console.log(req.query.type);
-
-    const model = getModelByType(String(req.query.type));
     const filter = req.query.filter
       ? JSON.parse(req.query.filter as string)
       : {};
-    if (!model) {
-      throw new Error('invalid request');
-    }
+    const model = UserModel;
     const userRepository = new MongoGenericRepository(model);
 
-    const result = await userRepository.getPaginated(page, limit, filter);
+    const result = await userRepository.getPaginatedUser(page, limit, filter);
 
     res
       .status(200)
@@ -32,5 +27,5 @@ const paginationApi = async (req: Request, res: Response) => {
 };
 
 export default {
-  paginationApi,
+  paginatedUsersList,
 };

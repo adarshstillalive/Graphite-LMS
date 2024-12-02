@@ -1,7 +1,13 @@
 import PaginatedResult from '../entities/PaginatedResult.js';
 
 interface BaseRepository<T> {
-  getPaginated(
+  getPaginatedUser(
+    page: number,
+    limit: number,
+    filter?: object,
+  ): Promise<PaginatedResult<T>>;
+
+  getPaginatedInstructor(
     page: number,
     limit: number,
     filter?: object,

@@ -8,13 +8,34 @@ class MongoGenericRepository<T> {
     this.model = model;
   }
 
-  async getPaginated(
+  async getPaginatedUser(
     page: number,
     limit: number,
     filter: object = {},
   ): Promise<PaginatedResult<T>> {
     const skip = (page - 1) * limit;
     const data = await this.model.find(filter).skip(skip).limit(limit);
+
+    const total = await this.model.countDocuments(filter);
+    return {
+      data,
+      total,
+      page,
+      limit,
+    };
+  }
+
+  async getPaginatedInstructor(
+    page: number,
+    limit: number,
+    filter: object = {},
+  ): Promise<PaginatedResult<T>> {
+    const skip = (page - 1) * limit;
+    const data = await this.model
+      .find(filter)
+      .skip(skip)
+      .limit(limit)
+      .populate('userId');
 
     const total = await this.model.countDocuments(filter);
     return {

@@ -14,7 +14,6 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { sendRequest } from '@/services/instructor/commonService';
 import { useToast } from '@/hooks/use-toast';
-import { Toaster } from '@/components/ui/toaster';
 
 interface FormEntry {
   id: number;
@@ -103,7 +102,6 @@ const RequestForm = () => {
 
   return (
     <div className="flex flex-col lg:flex-row gap-6 p-6">
-      <Toaster />
       <Card className="flex-1">
         <CardHeader>
           <CardTitle>Instructor Request Form</CardTitle>

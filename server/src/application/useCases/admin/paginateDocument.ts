@@ -8,7 +8,7 @@ class PaginateDocument<T> {
     limit: number,
     filter: object = {},
   ): Promise<PaginatedResult<T>> {
-    return await this.baseRepository.getPaginated(page, limit, filter);
+    return await this.baseRepository.getPaginatedUser(page, limit, filter);
   }
 }
 

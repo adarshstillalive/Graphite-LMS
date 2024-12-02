@@ -8,7 +8,7 @@ const refreshAccessToken = new RefreshAccessToken(refreshTokenRepository);
 
 const refreshTokenApi = async (req: Request, res: Response) => {
   try {
-    const { refreshToken } = req.cookies.refreshToken;
+    const refreshToken = req.cookies.adminRefreshToken;
     const { email } = req.body;
 
     if (!refreshToken) {

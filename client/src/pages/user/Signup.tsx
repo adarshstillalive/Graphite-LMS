@@ -13,7 +13,6 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import HeaderAuth from '../../components/common/HeaderAuth';
 import { useToast } from '@/hooks/use-toast';
-import { Toaster } from '@/components/ui/toaster';
 import { setRole } from '@/redux/slices/user/appSlice';
 
 export interface SignupData {
@@ -138,7 +137,6 @@ const Signup = () => {
   return (
     <>
       <HeaderAuth />
-      <Toaster />
       <div className="min-h-full flex flex-col md:flex-row pt-16">
         <div className="w-full md:w-1/2 flex items-center justify-center">
           <SignUpForm onSignup={signup} />

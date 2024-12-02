@@ -3,7 +3,6 @@ import { ApiResponse } from '../../interfaces/Response';
 
 export const fetchRequests = async (): Promise<ApiResponse> => {
   const response = await adminAxiosInstance.get('/api/instructor/requests');
-  console.log(response.data);
 
   return response.data;
 };
@@ -15,5 +14,10 @@ export const approveRequest = async (
   const response = await adminAxiosInstance.patch(
     `/api/instructor/request/${id}/${userId}`
   );
+  return response.data;
+};
+
+export const getInstructors = async () => {
+  const response = await adminAxiosInstance.get('/api/instructors');
   return response.data;
 };

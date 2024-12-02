@@ -7,7 +7,6 @@ import { Label } from '@/components/ui/label';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { useToast } from '@/hooks/use-toast';
-import { Toaster } from '@/components/ui/toaster';
 import { changeProfilePicture } from '@/services/instructor/profileService';
 import { setCurrentInstructor } from '@/redux/slices/instructor/instructorSlice';
 // import { useState } from 'react';
@@ -91,7 +90,6 @@ const Profile = () => {
 
   return (
     <div className="p-6 flex-1 overflow-auto">
-      <Toaster />
       <h1 className="text-3xl font-bold mb-6">Instructor Profile</h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="md:col-span-2 rounded-sm">

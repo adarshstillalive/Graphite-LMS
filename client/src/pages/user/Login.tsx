@@ -11,7 +11,6 @@ import {
 import axios from 'axios';
 import HeaderAuth from '../../components/common/HeaderAuth';
 import { useToast } from '@/hooks/use-toast';
-import { Toaster } from '@/components/ui/toaster';
 import { setRole } from '@/redux/slices/user/appSlice';
 
 export interface LoginData {
@@ -58,7 +57,6 @@ const Login = () => {
   return (
     <>
       <HeaderAuth />
-      <Toaster />
       <div className="min-h-full flex flex-col md:flex-row pt-16">
         <div className="hidden md:flex w-full md:w-1/2 items-center justify-center p-4 md:p-8 lg:p-16">
           <img

@@ -11,7 +11,6 @@ import ForgotPasswordForm from '@/components/user/auth/ForgotPasswordForm';
 import { useDispatch } from 'react-redux';
 import { setIsLoading } from '@/redux/slices/user/userSlice';
 import { useToast } from '@/hooks/use-toast';
-import { Toaster } from '@/components/ui/toaster';
 
 export interface ForgotPasswordData {
   email: string;
@@ -126,7 +125,6 @@ const ForgotPassword = () => {
   return (
     <>
       <HeaderAuth />
-      <Toaster />
       <div className="min-h-full flex justify-center align-middle pt-16">
         <div className="w-full md:w-1/2 flex items-center justify-center">
           <ForgotPasswordForm onSubmit={changePassword} />

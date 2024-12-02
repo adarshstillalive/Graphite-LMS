@@ -1,10 +1,10 @@
 import { Navigate } from 'react-router-dom';
 import Home from '../pages/admin/Home';
-import Instructor from '../pages/admin/Instructor';
 import AdminProtectedRoute from './protectedRoutes/AdminProtectedRoute';
 import { AdminAuthLayout, AdminLayout } from '@/layouts/AdminLayout';
 import adminAuthRoute from './adminAuthRoute';
 import Users from '@/pages/admin/Users';
+import Instructor from '@/pages/admin/instructor/Instructor';
 
 const adminRoutes = [
   {

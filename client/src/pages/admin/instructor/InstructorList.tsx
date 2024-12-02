@@ -1,4 +1,4 @@
-import TableComponent from '@/components/admin/users/TableComponent';
+import TableComponent from '@/components/admin/instructor/TableComponent';
 import DataPagination from '@/components/common/DataPagination';
 import { Button } from '@/components/ui/button';
 import {
@@ -10,34 +10,35 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
-import { IUser } from '@/interfaces/User';
-import { getUsers } from '@/services/admin/userService';
+import { IInstructorPopulated } from '@/interfaces/Instructor';
+import { getInstructors } from '@/services/admin/instructorService';
 import { useEffect, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import { FaFilter } from 'react-icons/fa6';
 
-const Users = () => {
+const InstructorList = () => {
   const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [users, setUsers] = useState<IUser[]>([]);
-  // const [searchTerm, setSearchTerm] = useState('');
+  const [instructors, setInstructors] = useState<IInstructorPopulated[]>([]);
+
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchInstructors = async () => {
       try {
-        const response = await getUsers();
+        const response = await getInstructors();
+
         const result = response.data;
-        setUsers(result.data);
+        setInstructors(result.data);
         setTotalPages(Math.ceil(result.total / 10));
       } catch (error) {
         console.log(error);
         toast({
           variant: 'destructive',
-          description: 'Error in fetching user data',
+          description: 'Error in fetching instructor data',
         });
       }
     };
-    fetchUsers();
+    fetchInstructors();
   }, [currentPage]);
 
   const handlePageChange = (page: number) => {
@@ -46,8 +47,8 @@ const Users = () => {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">Users</h1>
-        <p className="text-gray-600">Manage users</p>
+        <h1 className="text-2xl font-bold text-gray-800 mb-2">Instructors</h1>
+        <p className="text-gray-600">Manage Instructors</p>
       </div>
 
       {/* Filters and Search */}
@@ -82,7 +83,7 @@ const Users = () => {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <TableComponent userData={users} />
+      <TableComponent instructorData={instructors} />
       <DataPagination
         currentPage={currentPage}
         totalPages={totalPages}
@@ -92,4 +93,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default InstructorList;

@@ -3,8 +3,8 @@ import { FaCheck, FaTimes, FaSearch, FaFilter } from 'react-icons/fa';
 import {
   approveRequest,
   fetchRequests,
-} from '../../services/admin/instructorService';
-import { IUser } from '../../interfaces/User';
+} from '../../../services/admin/instructorService';
+import { IUser } from '../../../interfaces/User';
 
 export interface InstructorRequest {
   _id: string;
@@ -18,7 +18,7 @@ export interface InstructorRequest {
   createdAt: string;
 }
 
-const Instructor = () => {
+const InstructorRequests = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterExpertise, setFilterExpertise] = useState('all');
   const [requests, setRequests] = useState<InstructorRequest[]>([]);
@@ -90,7 +90,7 @@ const Instructor = () => {
           <input
             type="text"
             placeholder="Search by name or email"
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-sm focus:border-black"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -220,4 +220,4 @@ const Instructor = () => {
   );
 };
 
-export default Instructor;
+export default InstructorRequests;

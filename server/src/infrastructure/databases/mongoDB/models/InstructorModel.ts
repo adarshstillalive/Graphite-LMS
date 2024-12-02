@@ -6,6 +6,7 @@ const instructorSchema: Schema<IInstructor> = new Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
+      ref: 'User',
     },
     profilePicture: {
       type: String,
