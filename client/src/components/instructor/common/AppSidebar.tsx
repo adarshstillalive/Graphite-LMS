@@ -10,7 +10,7 @@ import {
   SidebarMenuItem,
   SidebarSeparator,
 } from '@/components/ui/sidebar';
-import { Calendar, Home, Inbox, Search, Settings, User } from 'lucide-react';
+import { Home, Inbox, Library, Search, Settings, User } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
@@ -21,6 +21,11 @@ const items = [
     icon: Home,
   },
   {
+    title: 'Courses',
+    url: '/instructor/courses',
+    icon: Library,
+  },
+  {
     title: 'Profile',
     url: '/instructor/profile',
     icon: User,
@@ -29,11 +34,6 @@ const items = [
     title: 'Inbox',
     url: '#',
     icon: Inbox,
-  },
-  {
-    title: 'Calendar',
-    url: '#',
-    icon: Calendar,
   },
   {
     title: 'Search',

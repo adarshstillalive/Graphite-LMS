@@ -56,7 +56,6 @@ const Profile = () => {
     // setIsLoading(true);
     const validImageTypes = ['image/jpeg', 'image/png', 'image/jpeg'];
     const file = e.target.files?.[0];
-    console.log(file);
     if (!file || !validImageTypes.includes(file.type)) {
       toast({
         variant: 'destructive',

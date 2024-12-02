@@ -11,7 +11,7 @@ class UpdateProfilePicture {
     if (!file.mimetype.startsWith('image/')) {
       throw new Error('Invalid file type. Only images are allowed.');
     }
-    const folderPath = `profile_pictures/instructor_${instructorId}`;
+    const folderPath = `instructor/profile_pictures`;
     const result = await this.instructorUploadService.uploadfile(
       file,
       instructorId,

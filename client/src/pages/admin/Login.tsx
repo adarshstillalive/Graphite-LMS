@@ -2,7 +2,11 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import LoginForm from '../../components/admin/LoginForm';
-import { setCurrentAdmin, setToken } from '../../redux/slices/admin/adminSlice';
+import {
+  setCurrentAdmin,
+  setIsLoading,
+  setToken,
+} from '../../redux/slices/admin/adminSlice';
 import { loginUser } from '../../services/admin/loginService';
 import HeaderAuth from '../../components/common/HeaderAuth';
 import { useToast } from '@/hooks/use-toast';
@@ -41,6 +45,8 @@ const Login = () => {
           description: 'An unexpected error occurred',
         });
       }
+    } finally {
+      dispatch(setIsLoading(false));
     }
   };
 
