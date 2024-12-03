@@ -14,6 +14,18 @@ adminRoute.post('/api/auth/requestOtp', authController.requestOtp);
 adminRoute.post('/api/auth/login', authController.login);
 
 // instructor
+
+adminRoute.get(
+  '/api/instructors',
+  userAuthMiddleware.authorization,
+  instructorController.paginatedInstructorsList,
+);
+
+adminRoute.patch(
+  '/api/instructors/:id',
+  userAuthMiddleware.authorization,
+  instructorController.instructorAction,
+);
 adminRoute.get(
   '/api/instructor/requests',
   userAuthMiddleware.authorization,
@@ -24,12 +36,6 @@ adminRoute.patch(
   '/api/instructor/request/:id/:userId',
   userAuthMiddleware.authorization,
   instructorController.approveInstructorRequest,
-);
-
-adminRoute.get(
-  '/api/instructors',
-  userAuthMiddleware.authorization,
-  instructorController.paginatedInstructorsList,
 );
 
 // User
@@ -45,10 +51,17 @@ adminRoute.get(
   userAuthMiddleware.authorization,
   courseController.paginatedCategoryList,
 );
+
 adminRoute.post(
   '/api/courses/category',
   userAuthMiddleware.authorization,
   courseController.addCategory,
+);
+
+adminRoute.put(
+  '/api/courses/category/:id',
+  userAuthMiddleware.authorization,
+  courseController.editCategory,
 );
 
 export default adminRoute;

@@ -57,7 +57,7 @@ const TableComponent: React.FC<TableComponentProps> = ({ userData }) => {
                     // onClick={() => navigator.clipboard.writeText(payment.id)}
                     className="text-red-500 hover:text-red-500"
                   >
-                    Block
+                    {userData.isBlocked ? 'Unblock' : 'Block'}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>View user</DropdownMenuItem>

@@ -23,9 +23,13 @@ import React from 'react';
 
 interface TableComponentProps {
   categoryData: ICategory[];
+  onEdit: (category: ICategory) => void;
 }
 
-const CategoryTable: React.FC<TableComponentProps> = ({ categoryData }) => {
+const CategoryTable: React.FC<TableComponentProps> = ({
+  categoryData,
+  onEdit,
+}) => {
   return (
     <Table>
       <TableCaption>Categories</TableCaption>
@@ -77,7 +81,9 @@ const CategoryTable: React.FC<TableComponentProps> = ({ categoryData }) => {
                     Block
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>Edit category</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onEdit(categoryData)}>
+                    Edit category
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </TableCell>

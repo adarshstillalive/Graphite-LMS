@@ -1,11 +1,11 @@
-import InstructorRequest from '../../../domain/entities/InstructorRequest.js';
-import InstructorRequestModel from './models/InstructorRequest.js';
-import AdminRepository from '../../../domain/repositories/AdminRepository.js';
-import UserModel from './models/UserModel.js';
-import InstructorModel from './models/InstructorModel.js';
+import InstructorRequest from '../../../../domain/entities/InstructorRequest.js';
+import InstructorRequestModel from '../models/InstructorRequest.js';
+import AdminInstructorRepository from '../../../../domain/repositories/admin/AdminInstructorRepository.js';
+import UserModel from '../models/UserModel.js';
+import InstructorModel from '../models/InstructorModel.js';
 import mongoose from 'mongoose';
 
-class MongoAdminRepository implements AdminRepository {
+class MongoAdminInstructorRepository implements AdminInstructorRepository {
   async fetchInstructorRequests(): Promise<InstructorRequest[]> {
     try {
       const requestData =
@@ -84,6 +84,28 @@ class MongoAdminRepository implements AdminRepository {
       throw new Error(error.message || 'Approval process failed.');
     }
   }
+
+  async instructorAction(id: string): Promise<void> {
+    try {
+      const instructorData = await InstructorModel.findById(id);
+      if (!instructorData) {
+        throw new Error('Database Error');
+      }
+      const updateInstructor = await InstructorModel.updateOne(
+        { _id: id },
+        { $set: { isBlocked: !instructorData.isBlocked } },
+      );
+
+      if (updateInstructor.modifiedCount <= 0) {
+        throw new Error('Updation failed');
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error('Action failed:', error);
+      throw new Error(error.message || 'Instructor action failed');
+    }
+  }
 }
 
-export default MongoAdminRepository;
+export default MongoAdminInstructorRepository;

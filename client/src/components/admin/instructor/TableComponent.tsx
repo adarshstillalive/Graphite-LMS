@@ -17,7 +17,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { useToast } from '@/hooks/use-toast';
 import { IInstructorPopulated } from '@/interfaces/Instructor';
+import { handleBlock } from '@/services/admin/instructorService';
 import { MoreHorizontal } from 'lucide-react';
 import React from 'react';
 
@@ -26,6 +28,25 @@ interface TableComponentProps {
 }
 
 const TableComponent: React.FC<TableComponentProps> = ({ instructorData }) => {
+  const { toast } = useToast();
+  const blockHandler = async (instructorId: string) => {
+    try {
+      const response = await handleBlock(instructorId);
+      if (response.success) {
+        toast({
+          variant: 'default',
+          description: 'Action success',
+        });
+      }
+    } catch (error) {
+      console.log(error);
+
+      toast({
+        variant: 'destructive',
+        description: 'Action failed',
+      });
+    }
+  };
   return (
     <Table>
       <TableCaption>Instructors</TableCaption>
@@ -60,10 +81,12 @@ const TableComponent: React.FC<TableComponentProps> = ({ instructorData }) => {
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuItem
-                    // onClick={() => navigator.clipboard.writeText(payment.id)}
+                    onClick={() =>
+                      instructorData._id && blockHandler(instructorData._id)
+                    }
                     className="text-red-500 hover:text-red-500"
                   >
-                    Block
+                    {instructorData.isBlocked ? 'Unblock' : 'Block'}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>View Instructor</DropdownMenuItem>

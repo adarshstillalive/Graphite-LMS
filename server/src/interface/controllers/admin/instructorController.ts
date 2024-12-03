@@ -1,18 +1,18 @@
 import { Request, Response } from 'express';
 import { createResponse } from '../../../utils/createResponse.js';
-import GetRequests from '../../../application/useCases/admin/getRequests.js';
-import MongoAdminRepository from '../../../infrastructure/databases/mongoDB/MongoAdminRepository.js';
-import ApproveRequest from '../../../application/useCases/admin/approveRequest.js';
+import MongoAdminInstructorRepository from '../../../infrastructure/databases/mongoDB/admin/MongoAdminInstructorRepository.js';
 import InstructorModel from '../../../infrastructure/databases/mongoDB/models/InstructorModel.js';
 import MongoGenericRepository from '../../../infrastructure/databases/mongoDB/MongoGenericRepository.js';
+import InstructorAccessManagement from '../../../application/useCases/admin/instructor/instructorAccessManagement.js';
 
-const adminRepository = new MongoAdminRepository();
-const getRequests = new GetRequests(adminRepository);
-const approveRequest = new ApproveRequest(adminRepository);
+const adminRepository = new MongoAdminInstructorRepository();
+const instructorAccessManagement = new InstructorAccessManagement(
+  adminRepository,
+);
 
 const getInstructorRequests = async (req: Request, res: Response) => {
   try {
-    const requests = await getRequests.execute();
+    const requests = await instructorAccessManagement.getRequests();
     if (!requests) {
       res
         .status(200)
@@ -31,7 +31,10 @@ const getInstructorRequests = async (req: Request, res: Response) => {
 const approveInstructorRequest = async (req: Request, res: Response) => {
   try {
     const { id, userId } = req.params;
-    const requests = await approveRequest.execute(id, userId);
+    const requests = await instructorAccessManagement.approveRequest(
+      id,
+      userId,
+    );
     res
       .status(200)
       .json(createResponse(true, 'Updated successfully', requests));
@@ -69,8 +72,21 @@ const paginatedInstructorsList = async (req: Request, res: Response) => {
   }
 };
 
+const instructorAction = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    await instructorAccessManagement.handleAccess(id);
+    res.status(200).json(createResponse(true, 'Action successful'));
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(createResponse(false, 'Error making action', error));
+  }
+};
+
 export default {
   getInstructorRequests,
   approveInstructorRequest,
   paginatedInstructorsList,
+  instructorAction,
 };

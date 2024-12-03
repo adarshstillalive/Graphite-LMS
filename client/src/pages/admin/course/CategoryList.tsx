@@ -11,7 +11,11 @@ import { useToast } from '@/hooks/use-toast';
 import { fetchCategories, ICategory } from '@/services/admin/courseService';
 import { useEffect, useState } from 'react';
 
-const CategoryList = () => {
+interface CategoryListProps {
+  enableEditTab: (category: ICategory) => void;
+}
+
+const CategoryList: React.FC<CategoryListProps> = ({ enableEditTab }) => {
   const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -43,7 +47,7 @@ const CategoryList = () => {
         <CardTitle>Categories</CardTitle>
       </CardHeader>
       <CardContent className="space-y-2">
-        <CategoryTable categoryData={categories} />
+        <CategoryTable categoryData={categories} onEdit={enableEditTab} />
       </CardContent>
       <CardFooter>
         <DataPagination

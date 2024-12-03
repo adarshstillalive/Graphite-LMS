@@ -48,4 +48,17 @@ const paginatedCategoryList = async (req: Request, res: Response) => {
   }
 };
 
-export default { addCategory, paginatedCategoryList };
+const editCategory = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { categoryData } = req.body;
+
+    await category.update(id, categoryData);
+    res.status(200).json(createResponse(true, 'Category updated'));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(400).json(createResponse(false, error?.message));
+  }
+};
+
+export default { addCategory, paginatedCategoryList, editCategory };

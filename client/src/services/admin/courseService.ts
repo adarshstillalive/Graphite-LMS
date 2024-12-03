@@ -31,3 +31,13 @@ export const fetchCategories = async (
   const response = await adminAxiosInstance.get(`/api/courses/category${page}`);
   return response.data;
 };
+
+export const updateCategory = async (
+  categoryData: CategoryFormValues,
+  id: string
+): Promise<ApiResponse> => {
+  const response = await adminAxiosInstance.put(`/api/courses/category/${id}`, {
+    categoryData,
+  });
+  return response.data;
+};

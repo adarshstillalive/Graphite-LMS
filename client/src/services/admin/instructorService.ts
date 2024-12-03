@@ -17,7 +17,16 @@ export const approveRequest = async (
   return response.data;
 };
 
-export const getInstructors = async () => {
+export const getInstructors = async (): Promise<ApiResponse> => {
   const response = await adminAxiosInstance.get('/api/instructors');
+  return response.data;
+};
+
+export const handleBlock = async (
+  instructorId: string
+): Promise<ApiResponse> => {
+  const response = await adminAxiosInstance.patch(
+    `/api/instructors/${instructorId}`
+  );
   return response.data;
 };
