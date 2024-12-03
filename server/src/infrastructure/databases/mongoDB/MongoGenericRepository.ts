@@ -45,6 +45,23 @@ class MongoGenericRepository<T> {
       limit,
     };
   }
+
+  async getPaginatedCategory(
+    page: number,
+    limit: number,
+    filter: object = {},
+  ): Promise<PaginatedResult<T>> {
+    const skip = (page - 1) * limit;
+    const data = await this.model.find(filter).skip(skip).limit(limit);
+
+    const total = await this.model.countDocuments(filter);
+    return {
+      data,
+      total,
+      page,
+      limit,
+    };
+  }
 }
 
 export default MongoGenericRepository;

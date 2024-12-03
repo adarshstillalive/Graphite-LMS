@@ -12,6 +12,12 @@ interface BaseRepository<T> {
     limit: number,
     filter?: object,
   ): Promise<PaginatedResult<T>>;
+
+  getPaginatedCategory(
+    page: number,
+    limit: number,
+    filter?: object,
+  ): Promise<PaginatedResult<T>>;
 }
 
 export default BaseRepository;

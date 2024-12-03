@@ -3,13 +3,19 @@ import Home from '../pages/admin/Home';
 import AdminProtectedRoute from './protectedRoutes/AdminProtectedRoute';
 import { AdminAuthLayout, AdminLayout } from '@/layouts/AdminLayout';
 import adminAuthRoute from './adminAuthRoute';
+import AdminAuthProtectedRoute from './protectedRoutes/AdminAuthProtectedRoute';
+import Course from '@/pages/admin/course/Course';
 import Users from '@/pages/admin/Users';
 import Instructor from '@/pages/admin/instructor/Instructor';
 
 const adminRoutes = [
   {
     path: 'login',
-    element: <AdminAuthLayout />,
+    element: (
+      <AdminAuthProtectedRoute>
+        <AdminAuthLayout />
+      </AdminAuthProtectedRoute>
+    ),
     children: adminAuthRoute,
   },
   {
@@ -38,7 +44,7 @@ const adminRoutes = [
       },
       {
         path: 'courses',
-        element: <Home />,
+        element: <Course />,
       },
       {
         path: 'communication',

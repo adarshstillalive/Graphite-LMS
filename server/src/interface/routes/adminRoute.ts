@@ -4,6 +4,7 @@ import instructorController from '../controllers/admin/instructorController.js';
 import userAuthMiddleware from '../../infrastructure/middleware/userAuthMiddleware.js';
 import tokenControllerAdmin from '../controllers/token/tokenControllerAdmin.js';
 import userController from '../controllers/admin/userController.js';
+import courseController from '../controllers/admin/courseController.js';
 
 const adminRoute = express.Router();
 
@@ -26,15 +27,28 @@ adminRoute.patch(
 );
 
 adminRoute.get(
+  '/api/instructors',
+  userAuthMiddleware.authorization,
+  instructorController.paginatedInstructorsList,
+);
+
+// User
+adminRoute.get(
   '/api/users',
   userAuthMiddleware.authorization,
   userController.paginatedUsersList,
 );
 
+// Course
 adminRoute.get(
-  '/api/instructors',
+  '/api/courses/category',
   userAuthMiddleware.authorization,
-  instructorController.paginatedInstructorsList,
+  courseController.paginatedCategoryList,
+);
+adminRoute.post(
+  '/api/courses/category',
+  userAuthMiddleware.authorization,
+  courseController.addCategory,
 );
 
 export default adminRoute;

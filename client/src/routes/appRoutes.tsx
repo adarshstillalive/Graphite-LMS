@@ -4,6 +4,7 @@ import adminRoutes from './adminRoutes';
 import instructorRoutes from './instructorRoutes';
 import commonUserRoutes from './commonUserRoutes';
 import userRoutes from './userRoutes';
+import UserAuthProtectedRoute from './protectedRoutes/UserAuthProtectedRoute';
 
 const appRoutes = [
   {
@@ -12,7 +13,11 @@ const appRoutes = [
   },
   {
     path: '/auth',
-    element: <UserAuthLayout />,
+    element: (
+      <UserAuthProtectedRoute>
+        <UserAuthLayout />
+      </UserAuthProtectedRoute>
+    ),
     children: userAuthRoutes,
   },
   {
