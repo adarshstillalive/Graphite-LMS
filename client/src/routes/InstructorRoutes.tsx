@@ -5,8 +5,11 @@ import {
   InstructorRequestLayout,
 } from '@/layouts/InstructorLayout';
 import InstructorProtectedRoute from './protectedRoutes/InstructorProtectedRoute';
-import Home from '@/pages/instructor/Home';
+
 import Request from '@/pages/instructor/Request';
+import Home from '@/pages/instructor/home/Home';
+import Courses from '@/pages/instructor/courses/Courses';
+import CreateCourse from '@/pages/instructor/courses/CreateCourse';
 
 const instructorRoutes = [
   {
@@ -33,6 +36,8 @@ const instructorRoutes = [
     children: [
       { path: '', element: <Home /> },
       { path: 'profile', element: <Profile /> },
+      { path: 'courses', element: <Courses /> },
+      { path: 'createCourse', element: <CreateCourse /> },
     ],
   },
 ];

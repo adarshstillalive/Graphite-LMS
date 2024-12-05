@@ -29,13 +29,17 @@ const instructorSlice = createSlice({
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
-    setLogout: (state) => {
+    setLogoutInstructor: (state) => {
       state.currentInstructor = null;
     },
   },
 });
 
-export const { setCurrentInstructor, setIsLoading, setError, setLogout } =
-  instructorSlice.actions;
+export const {
+  setCurrentInstructor,
+  setIsLoading,
+  setError,
+  setLogoutInstructor,
+} = instructorSlice.actions;
 
 export default instructorSlice.reducer;

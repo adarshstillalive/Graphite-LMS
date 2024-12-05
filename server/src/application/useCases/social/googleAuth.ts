@@ -2,13 +2,13 @@ import UserAuthRepository from '../../../domain/repositories/UserAuthRepository.
 import UserRepository from '../../../domain/repositories/UserRepository.js';
 import { ISocialAccount } from '../../../infrastructure/databases/mongoDB/models/UserModel.js';
 import { signin } from '../../../utils/googleSignin.js';
-import CreateUserInDb from '../user/createUserInDb.js';
+import UserAuthUseCases from '../user/userAuthUseCases.js';
 
 class GoogleAuth {
   constructor(
     private userRepository: UserRepository,
     private userAuthRepository: UserAuthRepository,
-    private createUserInDb: CreateUserInDb,
+    private userAuthUseCases: UserAuthUseCases,
   ) {}
 
   async execute(credential: string) {
@@ -19,7 +19,7 @@ class GoogleAuth {
       if (!userAuth) {
         const firstName = name?.split(' ')[0] || '';
         const lastName = name?.split(' ')[1] || '';
-        const user = await this.createUserInDb.execute(
+        const user = await this.userAuthUseCases.createUserInDbGoogle(
           email,
           firstName,
           lastName,

@@ -13,12 +13,14 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Button } from '@/components/ui/button';
 import { setLogout } from '@/redux/slices/user/userSlice';
+import { setLogoutInstructor } from '@/redux/slices/instructor/instructorSlice';
 
 const UserProfileDropdown = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleLogout = () => {
+    dispatch(setLogoutInstructor());
     dispatch(setLogout());
   };
   return (

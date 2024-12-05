@@ -1,6 +1,4 @@
 import { Request, Response } from 'express';
-import GenerateOtp from '../../../application/useCases/user/generateOtp.js';
-import VerifyOtpAndCreateUser from '../../../application/useCases/user/verifyOtpAndCreateUser.js';
 import PostgresOtpRepository from '../../../infrastructure/databases/postgreSQL/PostgresOtpRepository.js';
 import PostgresUserRepository from '../../../infrastructure/databases/postgreSQL/PostgresUserRepository.js';
 import EmailService from '../../../infrastructure/email/EmailService.js';
@@ -9,11 +7,8 @@ import MongoUserRepository from '../../../infrastructure/databases/mongoDB/Mongo
 import GenerateAndAddTokens from '../../../application/useCases/token/generateAndAddTokens.js';
 import PostgresRefreshTokenRepository from '../../../infrastructure/databases/postgreSQL/PostgresRefreshTokenRepository.js';
 import { createResponse } from '../../../utils/createResponse.js';
-import LoginUser from '../../../application/useCases/user/loginUser.js';
 import GoogleAuth from '../../../application/useCases/social/googleAuth.js';
-import CreateUserInDb from '../../../application/useCases/user/createUserInDb.js';
-import ForgotPasswordGenerateOtp from '../../../application/useCases/user/forgotPasswordGenerateOtp.ts.js';
-import VerifyOtpAndUpdatePassword from '../../../application/useCases/user/verifyOtpAndUpdatePassword.js';
+import UserAuthUseCases from '../../../application/useCases/user/userAuthUseCases.js';
 
 const otpRepository = new PostgresOtpRepository();
 const userAuthRepository = new PostgresUserRepository();
@@ -21,36 +16,25 @@ const userRepository = new MongoUserRepository();
 const refreshTokenRepository = new PostgresRefreshTokenRepository();
 const emailService = new EmailService();
 
-const generateOtp = new GenerateOtp(otpRepository, emailService);
-const verifyOtpAndCreateUser = new VerifyOtpAndCreateUser(
+const userAuthUseCases = new UserAuthUseCases(
   otpRepository,
   userAuthRepository,
   userRepository,
+  emailService,
 );
-const loginUser = new LoginUser(userAuthRepository);
+
 const generateAndAddToken = new GenerateAndAddTokens(refreshTokenRepository);
-const createUserInDb = new CreateUserInDb(userAuthRepository, userRepository);
 const googleAuth = new GoogleAuth(
   userRepository,
   userAuthRepository,
-  createUserInDb,
-);
-const forgotPasswordGenerateOtp = new ForgotPasswordGenerateOtp(
-  otpRepository,
-  emailService,
-  userAuthRepository,
-);
-const verifyOtpAndUpdatePassword = new VerifyOtpAndUpdatePassword(
-  otpRepository,
-  userAuthRepository,
-  userRepository,
+  userAuthUseCases,
 );
 
 const requestOtp = async (req: Request, res: Response) => {
   const { email } = req.body;
 
   try {
-    await generateOtp.execute(email);
+    await userAuthUseCases.generateOtp(email);
     res.status(200).json(createResponse(true, 'OTP sent to email'));
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
@@ -62,7 +46,7 @@ const verifyAndSignup = async (req: Request, res: Response) => {
   const { email, otp, firstName, lastName, password } = req.body.data;
 
   try {
-    await verifyOtpAndCreateUser.execute(
+    await userAuthUseCases.verifyOtpAndCreateUser(
       email,
       otp,
       firstName,
@@ -98,7 +82,7 @@ const verifyAndSignup = async (req: Request, res: Response) => {
 const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
-    await loginUser.execute(email, password);
+    await userAuthUseCases.loginUser(email, password);
     const user = await userRepository.findByEmail(email);
 
     const { accessToken, refreshToken } = await generateAndAddToken.execute(
@@ -151,7 +135,7 @@ const forgotPasswordRequestOtp = async (req: Request, res: Response) => {
   const { email } = req.body;
 
   try {
-    await forgotPasswordGenerateOtp.execute(email);
+    await userAuthUseCases.forgotPasswordGenerateOtp(email);
     res.status(200).json(createResponse(true, 'OTP sent to email'));
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
@@ -163,7 +147,7 @@ const updatePassword = async (req: Request, res: Response) => {
   const { email, otp, password } = req.body;
 
   try {
-    await verifyOtpAndUpdatePassword.execute(email, otp, password);
+    await userAuthUseCases.verifyOtpAndupdatePassword(email, otp, password);
 
     res.status(200).json(createResponse(true, 'Password updated successfully'));
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

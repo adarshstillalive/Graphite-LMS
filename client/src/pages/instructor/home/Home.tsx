@@ -1,7 +1,7 @@
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { fetchInstructor } from '../../services/instructor/commonService';
 import { setCurrentInstructor } from '@/redux/slices/instructor/instructorSlice';
+import { fetchInstructor } from '@/services/instructor/commonService';
 
 const Home = () => {
   // const {currentInstructor} = useSelector((state:RootState)=>state.instructor)
