@@ -1,65 +1,52 @@
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
+  Form,
   FormControl,
   FormDescription,
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
-const Marketing = () => {
+const Marketing = ({ form }) => {
+  const { register } = form;
+
   return (
-    <div className="space-y-4">
-      <FormField
-        name="salesPitch"
-        render={() => (
-          <FormItem>
-            <FormLabel>Sales Pitch</FormLabel>
-            <FormControl>
-              <Textarea
-                placeholder="Enter your course sales pitch"
-                className="min-h-[200px]"
-              />
-            </FormControl>
-            <FormDescription>
-              Write a compelling sales pitch for your course. This will be
-              displayed on the course sales page.
-            </FormDescription>
-          </FormItem>
-        )}
-      />
-      <FormField
-        name="image"
-        render={() => (
-          <FormItem>
-            <FormLabel>Course Image</FormLabel>
-            <FormControl>
-              <Input type="file" accept="image/*" />
-            </FormControl>
-            <FormDescription>
-              Upload a visually appealing image to represent your course.
-              Recommended size: 1280x720 pixels.
-            </FormDescription>
-          </FormItem>
-        )}
-      />
-      <FormField
-        name="keywords"
-        render={() => (
-          <FormItem>
-            <FormLabel>Keywords</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter keywords separated by commas" />
-            </FormControl>
-            <FormDescription>
-              Enter keywords that describe your course. These will help with
-              search engine optimization.
-            </FormDescription>
-          </FormItem>
-        )}
-      />
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>Marketing</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="courseImage">Course Image</Label>
+          <Input id="courseImage" type="file" {...register('courseImage')} />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="promoVideo">Promotional Video</Label>
+          <Input id="promoVideo" type="file" {...register('promoVideo')} />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="welcomeMessage">Welcome Message</Label>
+          <Textarea
+            id="welcomeMessage"
+            {...register('welcomeMessage')}
+            placeholder="Enter welcome message for students"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="congratsMessage">Congratulations Message</Label>
+          <Textarea
+            id="congratsMessage"
+            {...register('congratsMessage')}
+            placeholder="Enter congratulations message for course completion"
+          />
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

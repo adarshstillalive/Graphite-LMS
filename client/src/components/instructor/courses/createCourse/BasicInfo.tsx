@@ -1,9 +1,12 @@
+import { useEffect, useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   FormControl,
   FormDescription,
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
@@ -13,147 +16,230 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useToast } from '@/hooks/use-toast';
-import { ICategory } from '@/services/admin/courseService';
-import { fetchCategoriesFromApi } from '@/services/instructor/courseService';
-import { useEffect, useState } from 'react';
+import { CourseFormValues } from '@/pages/instructor/courses/CreateCourse';
+import { ICategory, ISubCategory } from '@/services/admin/courseService';
+import { UseFormReturn } from 'react-hook-form';
+import {
+  gridStyle,
+  inputStyle,
+  languages,
+  levels,
+} from '@/interfaces/zodCourseFormSchema';
 
-const BasicInfo = () => {
-  const { toast } = useToast();
-  const [categories, setCategories] = useState<ICategory[]>([]);
+interface BasicInfoProps {
+  form: UseFormReturn<CourseFormValues>;
+  categories: ICategory[];
+}
+
+const BasicInfo = ({ form, categories }: BasicInfoProps) => {
+  const [subCategories, setSubCategories] = useState<ISubCategory[]>([]);
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await fetchCategoriesFromApi();
+    const currentCategory = form.getValues('category');
+    if (currentCategory) {
+      const foundCategory = categories.find(
+        (cat) => cat.name === currentCategory
+      );
+      if (foundCategory) {
+        setSubCategories(foundCategory.subCategory || []);
 
-        setCategories(response.data);
-      } catch (error) {
-        toast({
-          variant: 'destructive',
-          description: 'Error in categories management',
-        });
+        const currentSubcategory = form.getValues('subcategory');
+        if (currentSubcategory) {
+          const isValidSubcategory = foundCategory.subCategory?.some(
+            (subCat) => subCat.name === currentSubcategory
+          );
 
-        console.log(error);
+          if (!isValidSubcategory) {
+            form.setValue('subcategory', '');
+          }
+        }
       }
-    };
-    fetchCategories();
-  }, []);
+    }
+  }, [categories, form]);
+
+  const handleCategoryChange = (categoryName: string) => {
+    const selectedCategory = categories.find(
+      (cat) => cat.name === categoryName
+    );
+
+    if (selectedCategory) {
+      setSubCategories(selectedCategory.subCategory || []);
+
+      form.setValue('subcategory', '');
+    }
+  };
 
   return (
-    <div className="space-y-4">
-      <FormField
-        name="title"
-        render={() => (
-          <FormItem>
-            <FormLabel>Course Title</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter course title" />
-            </FormControl>
-            <FormDescription>
-              A clear and concise title that accurately reflects the course
-              content.
-            </FormDescription>
-          </FormItem>
-        )}
-      />
-      <FormField
-        name="subtitle"
-        render={() => (
-          <FormItem>
-            <FormLabel>Course Subtitle</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter course subtitle" />
-            </FormControl>
-            <FormDescription>
-              A brief description to provide additional context.
-            </FormDescription>
-          </FormItem>
-        )}
-      />
-      <FormField
-        name="category"
-        render={() => (
-          <FormItem>
-            <FormLabel>Category</FormLabel>
-            <Select>
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a category" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectItem value="technology">Technology</SelectItem>
-                <SelectItem value="business">Business</SelectItem>
-                <SelectItem value="arts">Arts</SelectItem>
-              </SelectContent>
-            </Select>
-          </FormItem>
-        )}
-      />
-      <FormField
-        name="subcategory"
-        render={() => (
-          <FormItem>
-            <FormLabel>Subcategory</FormLabel>
-            <Select>
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a subcategory" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectItem value="web-development">Web Development</SelectItem>
-                <SelectItem value="digital-marketing">
-                  Digital Marketing
-                </SelectItem>
-                <SelectItem value="painting">Painting</SelectItem>
-              </SelectContent>
-            </Select>
-          </FormItem>
-        )}
-      />
-      <FormField
-        name="language"
-        render={() => (
-          <FormItem>
-            <FormLabel>Language</FormLabel>
-            <Select>
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a language" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectItem value="english">English</SelectItem>
-                <SelectItem value="spanish">Spanish</SelectItem>
-                <SelectItem value="french">French</SelectItem>
-              </SelectContent>
-            </Select>
-          </FormItem>
-        )}
-      />
-      <FormField
-        name="level"
-        render={() => (
-          <FormItem>
-            <FormLabel>Level</FormLabel>
-            <Select>
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a level" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectItem value="beginner">Beginner</SelectItem>
-                <SelectItem value="intermediate">Intermediate</SelectItem>
-                <SelectItem value="advanced">Advanced</SelectItem>
-              </SelectContent>
-            </Select>
-          </FormItem>
-        )}
-      />
-    </div>
+    <Card className="w-full mt-4 space-y-4 mx-auto">
+      <CardHeader>
+        <CardTitle>Basic Information</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className={gridStyle}>
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Course Title</FormLabel>
+                <FormControl>
+                  <Input
+                    className={inputStyle}
+                    placeholder="Enter course title"
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription>
+                  A clear and concise title that accurately reflects the course
+                  content.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="subtitle"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Course Subtitle</FormLabel>
+                <FormControl>
+                  <Input
+                    className={inputStyle}
+                    placeholder="Enter course subtitle"
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription>
+                  A brief description to provide additional context.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className={gridStyle}>
+          <FormField
+            control={form.control}
+            name="category"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Category</FormLabel>
+                <Select
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    handleCategoryChange(value);
+                  }}
+                  value={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger className={inputStyle}>
+                      <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {categories.map((category) => (
+                      <SelectItem key={category.name} value={category.name}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="subcategory"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Subcategory</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  disabled={subCategories.length === 0}
+                >
+                  <FormControl>
+                    <SelectTrigger className={inputStyle}>
+                      <SelectValue placeholder="Select a subcategory" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {subCategories.map((subCategory) => (
+                      <SelectItem
+                        key={subCategory.name}
+                        value={subCategory.name}
+                      >
+                        {subCategory.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {subCategories.length === 0 && (
+                  <FormDescription>
+                    Select a category first to choose a subcategory
+                  </FormDescription>
+                )}
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className={gridStyle}>
+          <FormField
+            control={form.control}
+            name="language"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Language</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger className={inputStyle}>
+                      <SelectValue placeholder="Select a language" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {languages.map((language) => (
+                      <SelectItem key={language} value={language}>
+                        {language}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="level"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Level</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger className={inputStyle}>
+                      <SelectValue placeholder="Select a level" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {levels.map((level) => (
+                      <SelectItem key={level} value={level}>
+                        {level}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
