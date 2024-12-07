@@ -1,16 +1,48 @@
 import { z } from 'zod';
 
 const MAX_FILE_SIZE = 5000000;
-const ACCEPTED_IMAGE_TYPES = ['imaeg/jpeg', 'image/jpg', 'image/png'];
+const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
+const MAX_VIDEO_FILE_SIZE = 100 * 1024 * 1024; // 100MB
+const ACCEPTED_VIDEO_TYPES = [
+  'video/mp4',
+  'video/mpeg',
+  'video/quicktime',
+  'video/x-msvideo',
+  'video/x-ms-wmv',
+];
 
-const curriculumEpisodeSchema = z.object({
+export const curriculumEpisodeSchema = z.object({
   title: z.string().min(2, 'Title must be at least 2 characters.'),
-  type: z.enum(['video', 'text']),
-  content: z.string().min(10, 'Content must be at least 10 characters.'),
+  type: z.enum(['video', 'text']).default('video'),
+  description: z.string().optional(),
+  content: z.discriminatedUnion('type', [
+    z.object({
+      type: z.literal('text'),
+      content: z
+        .string()
+        .min(50, 'Text content must be at least 50 characters.'),
+    }),
+
+    z.object({
+      type: z.literal('video'),
+      file: z
+        .any()
+        .refine((files) => files?.length === 1, 'A video file is required')
+        .refine(
+          (files) => files?.[0]?.size <= MAX_VIDEO_FILE_SIZE,
+          'Max video file size is 100MB.'
+        )
+        .refine(
+          (files) => ACCEPTED_VIDEO_TYPES.includes(files?.[0]?.type),
+          'Only MP4, MPEG, QuickTime, AVI, and WMV video types are accepted.'
+        ),
+    }),
+  ]),
 });
 
-const chapterSchema = z.object({
+export const chapterSchema = z.object({
   title: z.string().min(2, 'Chapter title must be at least 2 characters.'),
+  description: z.string().optional(),
   episodes: z
     .array(curriculumEpisodeSchema)
     .min(1, 'Please add at least one episode to the chapter.'),

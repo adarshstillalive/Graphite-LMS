@@ -33,6 +33,8 @@ import { inputStyle } from '@/interfaces/zodCourseFormSchema';
 import { CourseFormValues } from '@/pages/instructor/courses/CreateCourse';
 import { Plus, Trash2 } from 'lucide-react';
 import { UseFormReturn } from 'react-hook-form';
+import Dropzone from './DropZone';
+import { Textarea } from '@/components/ui/textarea';
 
 interface CurriculumProps {
   form: UseFormReturn<CourseFormValues>;
@@ -42,25 +44,69 @@ const Curriculum = ({ form }: CurriculumProps) => {
   const chapters = form.watch('chapters') || [];
 
   const addChapter = () => {
-    form.setValue('chapters', [
-      ...chapters,
-      { title: '', episodes: [{ title: '', type: 'video', content: '' }] },
-    ]);
+    try {
+      // Consider using a deep clone or spread operator to ensure immutability
+      const newChapters = [
+        ...chapters,
+        {
+          title: '',
+          description: '',
+          episodes: [
+            {
+              title: '',
+              type: 'video' as const,
+              description: '',
+              content: { type: 'video' as const, file: null },
+            },
+          ],
+        },
+      ];
+
+      form.setValue('chapters', newChapters);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error('Error adding chapter:', error);
+    }
   };
 
   const removeChapter = (chapterIndex: number) => {
     const updatedChapters = chapters.filter(
       (_, index) => index !== chapterIndex
     );
-    form.setValue('chapters', updatedChapters);
+
+    try {
+      form.setValue('chapters', updatedChapters);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error('Error removing chapter:', error);
+    }
   };
 
   const addEpisode = (chapterIndex: number) => {
-    const episodes = form.getValues(`chapters.${chapterIndex}.episodes`);
-    form.setValue(`chapters.${chapterIndex}.episodes`, [
-      ...episodes,
-      { title: '', type: 'video', content: '' },
-    ]);
+    const currentChapters = form.getValues('chapters');
+    const currentChapter = currentChapters[chapterIndex];
+
+    if (!currentChapter) {
+      console.error('Chapter not found');
+      return;
+    }
+
+    const updatedEpisodes = [
+      ...currentChapter.episodes,
+      {
+        title: '',
+        type: 'video' as const,
+        description: '',
+        content: { type: 'video' as const, file: null },
+      },
+    ];
+
+    try {
+      form.setValue(`chapters.${chapterIndex}.episodes`, updatedEpisodes);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error('Error adding episode:', error);
+    }
   };
 
   return (
@@ -83,11 +129,25 @@ const Curriculum = ({ form }: CurriculumProps) => {
                     name={`chapters.${chapterIndex}.title`}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Chapter Title</FormLabel>
+                        <FormLabel>Title</FormLabel>
                         <Input
                           {...field}
                           placeholder="Enter chapter title"
                           className={inputStyle}
+                        />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`chapters.${chapterIndex}.description`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Description (Optional)</FormLabel>
+                        <Textarea
+                          {...field}
+                          placeholder="Enter chapter description"
                         />
                         <FormMessage />
                       </FormItem>
@@ -106,8 +166,24 @@ const Curriculum = ({ form }: CurriculumProps) => {
                             <FormLabel>Episode Title</FormLabel>
                             <Input
                               {...field}
-                              placeholder="Enter item title"
+                              placeholder="Enter episode title"
                               className={inputStyle}
+                            />
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`chapters.${chapterIndex}.episodes.${episodeIndex}.description`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Episode description (Optional)
+                            </FormLabel>
+                            <Textarea
+                              {...field}
+                              placeholder="Enter episode description"
                             />
                             <FormMessage />
                           </FormItem>
@@ -135,6 +211,16 @@ const Curriculum = ({ form }: CurriculumProps) => {
                           </FormItem>
                         )}
                       />
+                      {form.watch(
+                        `chapters.${chapterIndex}.episodes.${episodeIndex}.type`
+                      ) === 'video' ? (
+                        <Dropzone />
+                      ) : (
+                        <Textarea
+                          className="min-h-[200px]"
+                          placeholder="Enter Content here."
+                        />
+                      )}
                       <Button
                         type="button"
                         variant="default"
