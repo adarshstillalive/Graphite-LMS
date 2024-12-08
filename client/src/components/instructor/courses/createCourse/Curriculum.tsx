@@ -35,28 +35,36 @@ import { Plus, Trash2 } from 'lucide-react';
 import { UseFormReturn } from 'react-hook-form';
 import Dropzone from './DropZone';
 import { Textarea } from '@/components/ui/textarea';
+import { useDispatch } from 'react-redux';
+import { nanoid } from '@reduxjs/toolkit';
+import {
+  setDeleteChapter,
+  setDeleteEpisode,
+} from '@/redux/slices/instructor/courseCreationSlice';
 
 interface CurriculumProps {
   form: UseFormReturn<CourseFormValues>;
 }
 
 const Curriculum = ({ form }: CurriculumProps) => {
+  const dispatch = useDispatch();
   const chapters = form.watch('chapters') || [];
 
   const addChapter = () => {
     try {
-      // Consider using a deep clone or spread operator to ensure immutability
       const newChapters = [
         ...chapters,
         {
+          id: nanoid(),
           title: '',
           description: '',
           episodes: [
             {
+              id: nanoid(),
               title: '',
               type: 'video' as const,
               description: '',
-              content: { type: 'video' as const, file: null },
+              content: { type: 'video' as const, video: false },
             },
           ],
         },
@@ -69,22 +77,25 @@ const Curriculum = ({ form }: CurriculumProps) => {
     }
   };
 
-  const removeChapter = (chapterIndex: number) => {
+  const removeChapter = (chapterId: string) => {
     const updatedChapters = chapters.filter(
-      (_, index) => index !== chapterIndex
+      (chapter) => chapter.id !== chapterId
     );
 
     try {
       form.setValue('chapters', updatedChapters);
+      dispatch(setDeleteChapter(chapterId));
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error('Error removing chapter:', error);
     }
   };
 
-  const addEpisode = (chapterIndex: number) => {
+  const addEpisode = (chapterId: string, chapterIndex: number) => {
     const currentChapters = form.getValues('chapters');
-    const currentChapter = currentChapters[chapterIndex];
+    const currentChapter = currentChapters.find(
+      (chapter) => chapter.id === chapterId
+    );
 
     if (!currentChapter) {
       console.error('Chapter not found');
@@ -94,15 +105,17 @@ const Curriculum = ({ form }: CurriculumProps) => {
     const updatedEpisodes = [
       ...currentChapter.episodes,
       {
+        id: nanoid(),
         title: '',
         type: 'video' as const,
         description: '',
-        content: { type: 'video' as const, file: null },
+        content: { type: 'video' as const, video: false },
       },
     ];
 
     try {
       form.setValue(`chapters.${chapterIndex}.episodes`, updatedEpisodes);
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error('Error adding episode:', error);
@@ -116,8 +129,8 @@ const Curriculum = ({ form }: CurriculumProps) => {
       </CardHeader>
       <CardContent className="space-y-6">
         <Accordion type="multiple">
-          {chapters.map((chapter, chapterIndex) => (
-            <AccordionItem key={chapterIndex} value={`section-${chapterIndex}`}>
+          {chapters.map((chapter, chapterIndex: number) => (
+            <AccordionItem key={chapter.id} value={`section-${chapterIndex}`}>
               <AccordionTrigger>
                 Chapter {chapterIndex + 1}:{' '}
                 {chapter.title || 'Untitled Section'}
@@ -153,9 +166,9 @@ const Curriculum = ({ form }: CurriculumProps) => {
                       </FormItem>
                     )}
                   />
-                  {chapter.episodes.map((episode, episodeIndex) => (
+                  {chapter.episodes.map((episode, episodeIndex: number) => (
                     <div
-                      key={episodeIndex}
+                      key={episode.id}
                       className="border p-4 rounded-md space-y-4 bg-gray-50"
                     >
                       <FormField
@@ -214,7 +227,12 @@ const Curriculum = ({ form }: CurriculumProps) => {
                       {form.watch(
                         `chapters.${chapterIndex}.episodes.${episodeIndex}.type`
                       ) === 'video' ? (
-                        <Dropzone />
+                        <Dropzone
+                          chapterIndex={chapterIndex}
+                          episodeIndex={episodeIndex}
+                          chapterId={chapter.id}
+                          episodeId={episode.id}
+                        />
                       ) : (
                         <Textarea
                           className="min-h-[200px]"
@@ -227,12 +245,13 @@ const Curriculum = ({ form }: CurriculumProps) => {
                         size="sm"
                         onClick={() => {
                           const updatedItems = chapter.episodes.filter(
-                            (_, i) => i !== episodeIndex
+                            (e) => e.id !== episode.id
                           );
                           form.setValue(
                             `chapters.${chapterIndex}.episodes`,
                             updatedItems
                           );
+                          dispatch(setDeleteEpisode(episode.id));
                         }}
                       >
                         <Trash2 className="w-4 h-4 mr-2" />
@@ -244,7 +263,7 @@ const Curriculum = ({ form }: CurriculumProps) => {
                     <Button
                       type="button"
                       variant="outline"
-                      onClick={() => addEpisode(chapterIndex)}
+                      onClick={() => addEpisode(chapter.id, chapterIndex)}
                     >
                       <Plus className="w-4 h-4 mr-2" />
                       Add Episode
@@ -267,7 +286,7 @@ const Curriculum = ({ form }: CurriculumProps) => {
                             <Button
                               variant="default"
                               onClick={() => {
-                                removeChapter(chapterIndex);
+                                removeChapter(chapter.id);
                               }}
                             >
                               Delete

@@ -1,6 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
-  Form,
   FormControl,
   FormDescription,
   FormField,
@@ -8,43 +7,57 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { CourseFormValues } from '@/pages/instructor/courses/CreateCourse';
+import { UseFormReturn } from 'react-hook-form';
 
-const Marketing = ({ form }) => {
-  const { register } = form;
+interface CurriculumProps {
+  form: UseFormReturn<CourseFormValues>;
+}
 
+const Marketing = ({ form }: CurriculumProps) => {
   return (
-    <Card>
+    <Card className="mt-4">
       <CardHeader>
         <CardTitle>Marketing</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="courseImage">Course Image</Label>
-          <Input id="courseImage" type="file" {...register('courseImage')} />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="promoVideo">Promotional Video</Label>
-          <Input id="promoVideo" type="file" {...register('promoVideo')} />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="welcomeMessage">Welcome Message</Label>
-          <Textarea
-            id="welcomeMessage"
-            {...register('welcomeMessage')}
-            placeholder="Enter welcome message for students"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="congratsMessage">Congratulations Message</Label>
-          <Textarea
-            id="congratsMessage"
-            {...register('congratsMessage')}
-            placeholder="Enter congratulations message for course completion"
-          />
-        </div>
+        <FormField
+          control={form.control}
+          name="welcomeMessage"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Welcome Message (Optional)</FormLabel>
+              <FormControl>
+                <Textarea placeholder="Enter Welcome Message" {...field} />
+              </FormControl>
+              <FormDescription>
+                Enter welcome message for students which is striking and
+                interesting
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="courseCompletionMessage"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Congratulations Message (Optional)</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Enter congratulating Message"
+                  {...field}
+                />
+              </FormControl>
+              <FormDescription>
+                Enter congratulations message for course completion
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       </CardContent>
     </Card>
   );

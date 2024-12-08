@@ -29,6 +29,12 @@ instructorRoute.post(
 // Course
 
 instructorRoute.get(
+  '/api/course/upload/videoSign',
+  userAuthMiddleware.authorization,
+  courseController.getvideoSign,
+);
+
+instructorRoute.get(
   '/api/categories',
   userAuthMiddleware.authorization,
   courseController.fetchCategories,

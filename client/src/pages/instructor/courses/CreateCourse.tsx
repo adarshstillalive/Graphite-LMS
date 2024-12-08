@@ -18,6 +18,8 @@ import { courseSchema } from '@/interfaces/zodCourseFormSchema';
 import { ICategory } from '@/services/admin/courseService';
 import { fetchCategoriesFromApi } from '@/services/instructor/courseService';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { nanoid } from '@reduxjs/toolkit';
+import { TriangleAlert } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
@@ -29,6 +31,7 @@ const CreateCourse = () => {
   const { toast } = useToast();
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [activeTab, setActiveTab] = useState('basicInfo');
+
   const form = useForm<CourseFormValues>({
     resolver: zodResolver(courseSchema),
     defaultValues: {
@@ -40,13 +43,29 @@ const CreateCourse = () => {
       level: '',
       description: '',
       price: '',
-      salesPitch: '',
-      keywords: '',
+      welcomeMessage: '',
+      courseCompletionMessage: '',
       chapters: [
-        { title: '', episodes: [{ title: '', type: 'video', content: '' }] },
+        {
+          id: nanoid(),
+          title: '',
+          episodes: [
+            {
+              id: nanoid(),
+              title: '',
+              type: 'video',
+              content: { video: false },
+            },
+          ],
+        },
       ],
     },
   });
+
+  const onSubmit = (data: CourseFormValues) => {
+    console.log(data);
+    console.log(form.formState.errors);
+  };
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -79,13 +98,25 @@ const CreateCourse = () => {
         </BreadcrumbList>
       </Breadcrumb>
       <Form {...form}>
-        <form>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="">
             <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="basicInfo">Basic Info</TabsTrigger>
-              <TabsTrigger value="courseDetails">Course Details</TabsTrigger>
-              <TabsTrigger value="curriculum">Curriculum</TabsTrigger>
-              <TabsTrigger value="marketing">Marketing</TabsTrigger>
+              <TabsTrigger value="basicInfo">
+                Basic Info
+                <TriangleAlert className="text-red-500 mx-2" />
+              </TabsTrigger>
+              <TabsTrigger value="courseDetails">
+                Course Details
+                <TriangleAlert className="text-red-500 mx-2" />
+              </TabsTrigger>
+              <TabsTrigger value="curriculum">
+                Curriculum
+                <TriangleAlert className="text-red-500 mx-2" />
+              </TabsTrigger>
+              <TabsTrigger value="marketing">
+                Marketing
+                <TriangleAlert className="text-red-500 mx-2" />
+              </TabsTrigger>
             </TabsList>
             <TabsContent value="basicInfo">
               {categories.length > 0 && (
@@ -126,7 +157,7 @@ const CreateCourse = () => {
               Previous
             </Button>
             <Button
-              type="button"
+              type={activeTab === 'marketing' ? 'submit' : 'button'}
               onClick={() => {
                 const currentIndex = [
                   'basicInfo',

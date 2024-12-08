@@ -1,17 +1,18 @@
 import { z } from 'zod';
 
-const MAX_FILE_SIZE = 5000000;
-const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
-const MAX_VIDEO_FILE_SIZE = 100 * 1024 * 1024; // 100MB
-const ACCEPTED_VIDEO_TYPES = [
-  'video/mp4',
-  'video/mpeg',
-  'video/quicktime',
-  'video/x-msvideo',
-  'video/x-ms-wmv',
-];
+// const MAX_FILE_SIZE = 5000000;
+// const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
+// const MAX_VIDEO_FILE_SIZE = 100 * 1024 * 1024; // 100MB
+// const ACCEPTED_VIDEO_TYPES = [
+//   'video/mp4',
+//   'video/mpeg',
+//   'video/quicktime',
+//   'video/x-msvideo',
+//   'video/x-ms-wmv',
+// ];
 
 export const curriculumEpisodeSchema = z.object({
+  id: z.string(),
   title: z.string().min(2, 'Title must be at least 2 characters.'),
   type: z.enum(['video', 'text']).default('video'),
   description: z.string().optional(),
@@ -25,22 +26,17 @@ export const curriculumEpisodeSchema = z.object({
 
     z.object({
       type: z.literal('video'),
-      file: z
-        .any()
-        .refine((files) => files?.length === 1, 'A video file is required')
-        .refine(
-          (files) => files?.[0]?.size <= MAX_VIDEO_FILE_SIZE,
-          'Max video file size is 100MB.'
-        )
-        .refine(
-          (files) => ACCEPTED_VIDEO_TYPES.includes(files?.[0]?.type),
-          'Only MP4, MPEG, QuickTime, AVI, and WMV video types are accepted.'
-        ),
+      video: z
+        .boolean()
+        .refine((selected) => selected === true, {
+          message: 'Please select a video for this episode',
+        }),
     }),
   ]),
 });
 
 export const chapterSchema = z.object({
+  id: z.string(),
   title: z.string().min(2, 'Chapter title must be at least 2 characters.'),
   description: z.string().optional(),
   episodes: z
@@ -61,21 +57,8 @@ export const courseSchema = z.object({
   price: z.string().refine((val) => !isNaN(Number(val)) && Number(val) >= 0, {
     message: 'Price must be a valid non-negative number.',
   }),
-  salesPitch: z
-    .string()
-    .min(100, 'Sales pitch must be at least 100 characters.'),
-  image: z
-    .any()
-    .refine((files) => files?.length == 1, 'Image is required.')
-    .refine(
-      (files) => files?.[0]?.size <= MAX_FILE_SIZE,
-      `Max file size is 5MB.`
-    )
-    .refine(
-      (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
-      '.jpg, .jpeg, .png and .webp files are accepted.'
-    ),
-  keywords: z.string().min(3, 'Please enter at least one keyword.'),
+  welcomeMessage: z.string().optional(),
+  courseCompletionMessage: z.string().optional(),
   chapters: z.array(chapterSchema).min(1, 'Please add at least one chapter.'),
 });
 

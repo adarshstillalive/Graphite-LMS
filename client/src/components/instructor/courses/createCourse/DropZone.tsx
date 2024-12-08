@@ -1,12 +1,46 @@
-import { useCallback } from 'react';
+import { useToast } from '@/hooks/use-toast';
+import { useVideoUploader } from '@/hooks/useVideoUploader';
+import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 
-const Dropzone = () => {
-  const onDrop = useCallback((acceptedFiles) => {
-    console.log(acceptedFiles);
-  }, []);
+interface DropzoneProps {
+  chapterIndex: number;
+  episodeIndex: number;
+  chapterId: string;
+  episodeId: string;
+}
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+const Dropzone: React.FC<DropzoneProps> = ({
+  chapterIndex,
+  episodeIndex,
+  chapterId,
+  episodeId,
+}) => {
+  const { toast } = useToast();
+  const { enqueueUpload } = useVideoUploader();
+
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      if (acceptedFiles.length > 1) {
+        toast({
+          variant: 'destructive',
+          description: 'Multiple videos not allowed',
+        });
+        return;
+      }
+      if (acceptedFiles.length === 1) {
+        const file = acceptedFiles[0];
+        enqueueUpload(file, chapterIndex, episodeIndex, chapterId, episodeId);
+      }
+    },
+    [enqueueUpload, chapterIndex, episodeIndex, chapterId, episodeId, toast]
+  );
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: { 'video/*': [] },
+    maxFiles: 1,
+  });
 
   return (
     <div
@@ -16,12 +50,12 @@ const Dropzone = () => {
     >
       <input {...getInputProps()} />
       {isDragActive ? (
-        <p className="text-black font-semibold">Drop the files here...</p>
+        <p className="text-black font-semibold">Drop the video here...</p>
       ) : (
         <p className="text-gray-500">
-          Drag & drop files here, or{' '}
+          Drag & drop a video here, or{' '}
           <span className="text-black font-semibold">
-            click to select files
+            click to select a video
           </span>
         </p>
       )}
