@@ -28,6 +28,18 @@ instructorRoute.post(
 
 // Course
 
+instructorRoute.post(
+  '/api/course',
+  userAuthMiddleware.authorization,
+  courseController.createCourse,
+);
+
+instructorRoute.post(
+  '/api/course/videoUrl',
+  userAuthMiddleware.authorization,
+  courseController.uploadVideoUrl,
+);
+
 instructorRoute.get(
   '/api/course/upload/videoSign',
   userAuthMiddleware.authorization,

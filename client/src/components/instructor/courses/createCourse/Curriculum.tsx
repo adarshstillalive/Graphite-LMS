@@ -64,7 +64,7 @@ const Curriculum = ({ form }: CurriculumProps) => {
               title: '',
               type: 'video' as const,
               description: '',
-              content: { type: 'video' as const, video: false },
+              content: { video: false },
             },
           ],
         },
@@ -91,11 +91,9 @@ const Curriculum = ({ form }: CurriculumProps) => {
     }
   };
 
-  const addEpisode = (chapterId: string, chapterIndex: number) => {
+  const addEpisode = (chapterIndex: number) => {
     const currentChapters = form.getValues('chapters');
-    const currentChapter = currentChapters.find(
-      (chapter) => chapter.id === chapterId
-    );
+    const currentChapter = currentChapters[chapterIndex];
 
     if (!currentChapter) {
       console.error('Chapter not found');
@@ -129,6 +127,11 @@ const Curriculum = ({ form }: CurriculumProps) => {
       </CardHeader>
       <CardContent className="space-y-6">
         <Accordion type="multiple">
+          {/* <FormField
+            control={form.control}
+            name="chapters"
+            render={() => (
+              <FormItem> */}
           {chapters.map((chapter, chapterIndex: number) => (
             <AccordionItem key={chapter.id} value={`section-${chapterIndex}`}>
               <AccordionTrigger>
@@ -209,7 +212,21 @@ const Curriculum = ({ form }: CurriculumProps) => {
                           <FormItem>
                             <FormLabel>Episode Type</FormLabel>
                             <Select
-                              onValueChange={field.onChange}
+                              // onValueChange={field.onChange}
+                              onValueChange={(value) => {
+                                field.onChange(
+                                  value == 'video'
+                                    ? ('video' as const)
+                                    : ('text' as const)
+                                );
+                                // Update the nested `content` field based on type
+                                form.setValue(
+                                  `chapters.${chapterIndex}.episodes.${episodeIndex}.content`,
+                                  value == 'text'
+                                    ? { content: '' } // Default for text
+                                    : { video: false } // Default for video
+                                );
+                              }}
                               value={field.value}
                             >
                               <SelectTrigger className={inputStyle}>
@@ -227,16 +244,46 @@ const Curriculum = ({ form }: CurriculumProps) => {
                       {form.watch(
                         `chapters.${chapterIndex}.episodes.${episodeIndex}.type`
                       ) === 'video' ? (
-                        <Dropzone
-                          chapterIndex={chapterIndex}
-                          episodeIndex={episodeIndex}
-                          chapterId={chapter.id}
-                          episodeId={episode.id}
+                        <FormField
+                          control={form.control}
+                          name={`chapters.${chapterIndex}.episodes.${episodeIndex}.content.video`}
+                          render={() => (
+                            <FormItem>
+                              <Dropzone
+                                chapterIndex={chapterIndex}
+                                episodeIndex={episodeIndex}
+                                chapterId={chapter.id}
+                                episodeId={episode.id}
+                                onVideoUploadSuccess={() => {
+                                  form.setValue(
+                                    `chapters.${chapterIndex}.episodes.${episodeIndex}.content.video`,
+                                    true
+                                  );
+                                  form.clearErrors(
+                                    `chapters.${chapterIndex}.episodes.${episodeIndex}.content.video`
+                                  );
+                                }}
+                              />
+
+                              <FormMessage />
+                            </FormItem>
+                          )}
                         />
                       ) : (
-                        <Textarea
-                          className="min-h-[200px]"
-                          placeholder="Enter Content here."
+                        <FormField
+                          control={form.control}
+                          name={`chapters.${chapterIndex}.episodes.${episodeIndex}.content.content`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Text Content</FormLabel>
+                              <Textarea
+                                {...field}
+                                className="min-h-[200px]"
+                                placeholder="Enter content here."
+                              />
+                              <FormMessage />
+                            </FormItem>
+                          )}
                         />
                       )}
                       <Button
@@ -263,7 +310,7 @@ const Curriculum = ({ form }: CurriculumProps) => {
                     <Button
                       type="button"
                       variant="outline"
-                      onClick={() => addEpisode(chapter.id, chapterIndex)}
+                      onClick={() => addEpisode(chapterIndex)}
                     >
                       <Plus className="w-4 h-4 mr-2" />
                       Add Episode
@@ -300,6 +347,10 @@ const Curriculum = ({ form }: CurriculumProps) => {
               </AccordionContent>
             </AccordionItem>
           ))}
+          {/* <FormMessage />
+              </FormItem>
+            )}
+          /> */}
         </Accordion>
         <Button
           className="rounded-none"

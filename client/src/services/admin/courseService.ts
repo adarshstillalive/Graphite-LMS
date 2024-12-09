@@ -3,6 +3,7 @@ import { ApiResponse } from '@/interfaces/Response';
 import { CategoryFormValues } from '@/pages/admin/course/AddCategory';
 
 export interface ISubCategory {
+  _id?: string;
   name: string;
 }
 

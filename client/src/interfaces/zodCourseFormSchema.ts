@@ -16,21 +16,16 @@ export const curriculumEpisodeSchema = z.object({
   title: z.string().min(2, 'Title must be at least 2 characters.'),
   type: z.enum(['video', 'text']).default('video'),
   description: z.string().optional(),
-  content: z.discriminatedUnion('type', [
+  content: z.union([
     z.object({
-      type: z.literal('text'),
       content: z
         .string()
         .min(50, 'Text content must be at least 50 characters.'),
     }),
-
     z.object({
-      type: z.literal('video'),
-      video: z
-        .boolean()
-        .refine((selected) => selected === true, {
-          message: 'Please select a video for this episode',
-        }),
+      video: z.boolean().refine((selected) => selected === true, {
+        message: 'Please select a video for this episode.',
+      }),
     }),
   ]),
 });
@@ -54,9 +49,7 @@ export const courseSchema = z.object({
   description: z
     .string()
     .min(50, 'Description must be at least 50 characters.'),
-  price: z.string().refine((val) => !isNaN(Number(val)) && Number(val) >= 0, {
-    message: 'Price must be a valid non-negative number.',
-  }),
+  price: z.string().min(1, 'Please enter a valid price'),
   welcomeMessage: z.string().optional(),
   courseCompletionMessage: z.string().optional(),
   chapters: z.array(chapterSchema).min(1, 'Please add at least one chapter.'),

@@ -57,10 +57,8 @@ const BasicInfo = ({ form, categories }: BasicInfoProps) => {
     }
   }, [categories, form]);
 
-  const handleCategoryChange = (categoryName: string) => {
-    const selectedCategory = categories.find(
-      (cat) => cat.name === categoryName
-    );
+  const handleCategoryChange = (categoryId: string) => {
+    const selectedCategory = categories.find((cat) => cat._id === categoryId);
 
     if (selectedCategory) {
       setSubCategories(selectedCategory.subCategory || []);
@@ -140,7 +138,10 @@ const BasicInfo = ({ form, categories }: BasicInfoProps) => {
                   </FormControl>
                   <SelectContent>
                     {categories.map((category) => (
-                      <SelectItem key={category.name} value={category.name}>
+                      <SelectItem
+                        key={category.name}
+                        value={category._id ? category._id : ''}
+                      >
                         {category.name}
                       </SelectItem>
                     ))}
@@ -170,7 +171,7 @@ const BasicInfo = ({ form, categories }: BasicInfoProps) => {
                     {subCategories.map((subCategory) => (
                       <SelectItem
                         key={subCategory.name}
-                        value={subCategory.name}
+                        value={subCategory._id ? subCategory._id : ''}
                       >
                         {subCategory.name}
                       </SelectItem>

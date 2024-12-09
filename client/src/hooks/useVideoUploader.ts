@@ -1,29 +1,35 @@
-import { useState, useCallback, useEffect } from 'react';
-import { cloudinarySignedVideoUploadUrl } from '@/services/instructor/courseService';
+import { useCallback, useEffect, useRef } from 'react';
+import {
+  cloudinarySignedVideoUploadUrl,
+  uploadVideoUrlApi,
+} from '@/services/instructor/courseService';
 import { useToast } from './use-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   setAddUpload,
+  setReset,
   setStatusFailed,
   setVideoUrl,
 } from '@/redux/slices/instructor/courseCreationSlice';
 import { RootState } from '@/redux/store';
-
-interface UploadItem {
-  file: File;
-  chapterIndex: number;
-  episodeIndex: number;
-  chapterId: string;
-  episodeId: string;
-  progress: number;
-}
+import {
+  addToUploadQueue,
+  removeFromUploadQueue,
+  setIsUploading,
+  setResetQueue,
+  setUploadFailed,
+  setUploadSuccess,
+  updateUploadProgress,
+} from '@/redux/slices/instructor/uploadQueueSlice';
 
 export const useVideoUploader = () => {
-  const { isFormSubmitted } = useSelector(
+  const { isFormSubmitted, uploads, courseId } = useSelector(
     (state: RootState) => state.courseCreation
   );
-  const [uploadQueue, setUploadQueue] = useState<UploadItem[]>([]);
-  const [isUploading, setIsUploading] = useState(false);
+  const { queue, isUploading } = useSelector(
+    (state: RootState) => state.uploadQueue
+  );
+  const fileMapRef = useRef<Record<string, File>>({});
   const dispatch = useDispatch();
   const { toast } = useToast();
 
@@ -35,27 +41,49 @@ export const useVideoUploader = () => {
       chapterId: string,
       episodeId: string
     ) => {
-      setUploadQueue((prevQueue) => [
-        ...prevQueue,
-        { file, chapterIndex, episodeIndex, chapterId, episodeId, progress: 0 },
-      ]);
+      const key = `${chapterId}-${episodeId}`;
+      fileMapRef.current[key] = file;
+
+      dispatch(
+        addToUploadQueue({
+          fileName: file.name,
+          fileSize: file.size,
+          fileType: file.type,
+          chapterIndex,
+          episodeIndex,
+          chapterId,
+          episodeId,
+          progress: 0,
+          status: 'pending',
+        })
+      );
     },
-    []
+    [dispatch]
   );
 
   const processQueue = useCallback(async () => {
-    if (isUploading || uploadQueue.length === 0) return;
+    dispatch(setReset());
+    dispatch(setResetQueue());
+    if (isUploading || queue.length === 0) return;
 
-    setIsUploading(true);
+    dispatch(setIsUploading(true));
 
-    const [currentUpload, ...remainingQueue] = uploadQueue;
-    const { file, chapterIndex, episodeIndex, chapterId, episodeId } =
+    const currentUpload = queue[0];
+    const { chapterIndex, episodeIndex, chapterId, episodeId, progress } =
       currentUpload;
+    console.log('for checking', chapterId, episodeId, fileMapRef);
+
+    const file = fileMapRef.current[`${chapterId}-${episodeId}`];
+
+    if (!file) {
+      console.error('File not found in fileReference');
+      return;
+    }
 
     toast({
       title: `Uploading Video`,
-      description: `Chapter ${chapterIndex + 1}, Episode ${episodeIndex + 1}: Starting upload.`,
-      duration: 5000,
+      description: `Chapter ${chapterIndex + 1}, Episode ${episodeIndex + 1}: ${progress}% complete`,
+      duration: Infinity,
     });
 
     try {
@@ -72,20 +100,24 @@ export const useVideoUploader = () => {
         const { progress, success, url } = event.data;
 
         if (progress !== undefined) {
-          setUploadQueue((prevQueue) =>
-            prevQueue.map((item, index) =>
-              index === 0 ? { ...item, progress } : item
-            )
+          dispatch(
+            updateUploadProgress({
+              chapterId,
+              episodeId,
+              progress,
+            })
           );
-          toast({
-            title: `Uploading Video`,
-            description: `Chapter ${chapterIndex + 1}, Episode ${episodeIndex + 1}: ${progress}% complete`,
-            duration: 3000,
-          });
+
+          // toast({
+          //   title: `Uploading Video`,
+          //   description: `Chapter ${chapterIndex + 1}, Episode ${episodeIndex + 1}: ${progress}% complete`,
+          //   duration: 3000,
+          // });
         }
 
         if (success) {
           const videoUrl: string = url;
+          dispatch(setUploadSuccess({ chapterId, episodeId, videoUrl }));
           dispatch(setVideoUrl({ chapterId, episodeId, videoUrl }));
           toast({
             title: `Upload Complete`,
@@ -96,12 +128,13 @@ export const useVideoUploader = () => {
           console.log(`Uploaded video URL: ${url}`);
           // Here you would typically update your form state with the new URL
 
-          setUploadQueue(remainingQueue);
-          setIsUploading(false);
+          dispatch(removeFromUploadQueue({ chapterId, episodeId }));
+          dispatch(setIsUploading(false));
         }
       };
 
       worker.onerror = () => {
+        dispatch(setUploadFailed({ chapterId, episodeId }));
         dispatch(setStatusFailed({ chapterId, episodeId }));
         toast({
           title: `Upload Failed`,
@@ -110,8 +143,8 @@ export const useVideoUploader = () => {
           duration: 5000,
         });
 
-        setUploadQueue(remainingQueue);
-        setIsUploading(false);
+        dispatch(removeFromUploadQueue({ chapterId, episodeId }));
+        dispatch(setIsUploading(false));
       };
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
@@ -122,38 +155,55 @@ export const useVideoUploader = () => {
         duration: 5000,
       });
 
-      setUploadQueue(remainingQueue);
-      setIsUploading(false);
+      dispatch(removeFromUploadQueue({ chapterId, episodeId }));
+      dispatch(setIsUploading(false));
     }
-  }, [isUploading, uploadQueue, toast]);
+  }, [isUploading, queue, toast, dispatch]);
 
   useEffect(() => {
-    if (uploadQueue.length === 0 && isFormSubmitted) {
+    const uploadVideoUrl = async () => {
+      if (!courseId) {
+        return;
+      }
+      console.log('preparing to upload url');
+
+      const response = await uploadVideoUrlApi(uploads, courseId);
+      console.log(response);
+
+      if (response.success) {
+        dispatch(setReset());
+      }
+    };
+    if (queue.length === 0 && isFormSubmitted) {
       // save to mongoDB
-    } else {
+      uploadVideoUrl();
+    }
+    if (queue.length > 0 && !isUploading) {
       processQueue();
     }
-  }, [processQueue, uploadQueue, isFormSubmitted]);
+  }, [
+    processQueue,
+    queue,
+    isFormSubmitted,
+    courseId,
+    dispatch,
+    uploads,
+    isUploading,
+  ]);
 
   const cancelUpload = useCallback(
-    (chapterIndex: number, episodeIndex: number) => {
-      setUploadQueue((prevQueue) =>
-        prevQueue.filter(
-          (item) =>
-            item.chapterIndex !== chapterIndex ||
-            item.episodeIndex !== episodeIndex
-        )
-      );
+    (chapterId: string, episodeId: string) => {
+      dispatch(removeFromUploadQueue({ chapterId, episodeId }));
 
       toast({
         title: `Upload Canceled`,
-        description: `Upload for Chapter ${chapterIndex + 1}, Episode ${episodeIndex + 1} has been canceled.`,
+        description: `Upload for Chapter and Episode has been canceled.`,
         variant: 'destructive',
         duration: 5000,
       });
     },
-    [toast]
+    [dispatch, toast]
   );
 
-  return { enqueueUpload, cancelUpload, uploadQueue };
+  return { enqueueUpload, cancelUpload };
 };

@@ -14,6 +14,7 @@ import appReducer from './slices/user/appSlice';
 import adminReducer from './slices/admin/adminSlice';
 import instructorReducer from './slices/instructor/instructorSlice';
 import courseCreationReducer from './slices/instructor/courseCreationSlice';
+import uploadQueueReducer from './slices/instructor/uploadQueueSlice';
 
 const persistConfig = {
   key: 'root',
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
   admin: adminReducer,
   instructor: instructorReducer,
   courseCreation: courseCreationReducer,
+  uploadQueue: uploadQueueReducer,
 });
 
 const persistedReducer = persistReducer<RootState>(persistConfig, rootReducer);

@@ -6,6 +6,40 @@ import { v2 as cloudinaryV2 } from 'cloudinary';
 
 const courseRepository = new MongoCourseRepository();
 const instructorCourseUseCases = new InstructorCourseUseCases(courseRepository);
+
+const createCourse = async (req: Request, res: Response) => {
+  try {
+    const { formData } = req.body;
+    const instructorId = req.user?._id;
+    if (!instructorId) {
+      throw new Error('Server error');
+    }
+    const courseId = await instructorCourseUseCases.createCourse(
+      formData,
+      instructorId,
+    );
+    res
+      .status(201)
+      .json(createResponse(true, 'Course created successfully', { courseId }));
+  } catch (error) {
+    res
+      .status(500)
+      .json(createResponse(false, 'Course creation failed', {}, error));
+  }
+};
+
+const uploadVideoUrl = async (req: Request, res: Response) => {
+  try {
+    const { uploads, courseId } = req.body;
+    await instructorCourseUseCases.updateVideoUrl(uploads, courseId);
+    res.status(200).json(createResponse(true, 'Url updation success'));
+  } catch (error) {
+    res
+      .status(500)
+      .json(createResponse(false, 'Video url updation failed', {}, error));
+  }
+};
+
 const fetchCategories = async (req: Request, res: Response) => {
   try {
     const categories = await instructorCourseUseCases.fetchCategories();
@@ -70,6 +104,8 @@ const getvideoSign = async (req: Request, res: Response) => {
 };
 
 export default {
+  createCourse,
+  uploadVideoUrl,
   fetchCategories,
   getvideoSign,
 };

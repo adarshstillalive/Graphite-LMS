@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface UploadState {
+export interface UploadState {
   chapterId: string;
   episodeId: string;
   videoUrl: string;
@@ -8,12 +8,14 @@ interface UploadState {
 }
 
 interface VideoUploadState {
+  courseId: string | null;
   isCreating: boolean;
   uploads: UploadState[];
   isFormSubmitted: boolean;
 }
 
 const initialState: VideoUploadState = {
+  courseId: null,
   isCreating: false,
   uploads: [],
   isFormSubmitted: false,
@@ -88,6 +90,9 @@ const courseCreationSlice = createSlice({
     setReset: (state) => {
       Object.assign(state, initialState);
     },
+    setCourseId: (state, action: PayloadAction<string>) => {
+      state.courseId = action.payload;
+    },
   },
 });
 
@@ -100,6 +105,7 @@ export const {
   setDeleteEpisode,
   setIsFormSubmitted,
   setReset,
+  setCourseId,
 } = courseCreationSlice.actions;
 
 export default courseCreationSlice.reducer;

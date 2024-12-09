@@ -15,19 +15,28 @@ import { Form } from '@/components/ui/form';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { courseSchema } from '@/interfaces/zodCourseFormSchema';
+import {
+  setCourseId,
+  setIsFormSubmitted,
+} from '@/redux/slices/instructor/courseCreationSlice';
 import { ICategory } from '@/services/admin/courseService';
-import { fetchCategoriesFromApi } from '@/services/instructor/courseService';
+import {
+  createCourseApi,
+  fetchCategoriesFromApi,
+} from '@/services/instructor/courseService';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { nanoid } from '@reduxjs/toolkit';
 import { TriangleAlert } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { z } from 'zod';
 
 export type CourseFormValues = z.infer<typeof courseSchema>;
 
 const CreateCourse = () => {
+  const dispatch = useDispatch();
   const { toast } = useToast();
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [activeTab, setActiveTab] = useState('basicInfo');
@@ -62,9 +71,20 @@ const CreateCourse = () => {
     },
   });
 
-  const onSubmit = (data: CourseFormValues) => {
+  const onSubmit = async (data: CourseFormValues) => {
     console.log(data);
-    console.log(form.formState.errors);
+    try {
+      const response = await createCourseApi(data);
+      console.log(response);
+      if (response.success) {
+        const { courseId } = response.data;
+        dispatch(setIsFormSubmitted(true));
+        dispatch(setCourseId(courseId));
+        form.reset();
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -103,20 +123,29 @@ const CreateCourse = () => {
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="basicInfo">
                 Basic Info
-                <TriangleAlert className="text-red-500 mx-2" />
+                {form.formState.errors.title ||
+                form.formState.errors.subtitle ||
+                form.formState.errors.category ||
+                form.formState.errors.subcategory ||
+                form.formState.errors.language ||
+                form.formState.errors.level ? (
+                  <TriangleAlert className="text-red-500 mx-2" />
+                ) : null}
               </TabsTrigger>
               <TabsTrigger value="courseDetails">
                 Course Details
-                <TriangleAlert className="text-red-500 mx-2" />
+                {form.formState.errors.description ||
+                form.formState.errors.price ? (
+                  <TriangleAlert className="text-red-500 mx-2" />
+                ) : null}
               </TabsTrigger>
               <TabsTrigger value="curriculum">
                 Curriculum
-                <TriangleAlert className="text-red-500 mx-2" />
+                {form.formState.errors.chapters ? (
+                  <TriangleAlert className="text-red-500 mx-2" />
+                ) : null}
               </TabsTrigger>
-              <TabsTrigger value="marketing">
-                Marketing
-                <TriangleAlert className="text-red-500 mx-2" />
-              </TabsTrigger>
+              <TabsTrigger value="marketing">Marketing</TabsTrigger>
             </TabsList>
             <TabsContent value="basicInfo">
               {categories.length > 0 && (
@@ -133,7 +162,8 @@ const CreateCourse = () => {
               <Marketing form={form} />
             </TabsContent>
           </Tabs>
-          <div className="mt-6 flex justify-between">
+          <div className="mt-6 flex justify-between items-center">
+            {/* Previous Button */}
             <Button
               type="button"
               variant="outline"
@@ -156,26 +186,39 @@ const CreateCourse = () => {
             >
               Previous
             </Button>
-            <Button
-              type={activeTab === 'marketing' ? 'submit' : 'button'}
-              onClick={() => {
-                const currentIndex = [
-                  'basicInfo',
-                  'courseDetails',
-                  'curriculum',
-                  'marketing',
-                ].indexOf(activeTab);
-                if (currentIndex < 3) {
-                  setActiveTab(
-                    ['basicInfo', 'courseDetails', 'curriculum', 'marketing'][
-                      currentIndex + 1
-                    ]
-                  );
-                }
-              }}
-            >
-              {activeTab === 'marketing' ? 'Create Course' : 'Next'}
-            </Button>
+
+            {/* Next and Create Course Buttons */}
+            <div className="flex space-x-4">
+              {activeTab !== 'marketing' && (
+                <Button
+                  type="button"
+                  onClick={() => {
+                    const currentIndex = [
+                      'basicInfo',
+                      'courseDetails',
+                      'curriculum',
+                      'marketing',
+                    ].indexOf(activeTab);
+                    if (currentIndex < 3) {
+                      setActiveTab(
+                        [
+                          'basicInfo',
+                          'courseDetails',
+                          'curriculum',
+                          'marketing',
+                        ][currentIndex + 1]
+                      );
+                    }
+                  }}
+                >
+                  Next
+                </Button>
+              )}
+
+              {activeTab === 'marketing' && (
+                <Button type="submit">Create Course</Button>
+              )}
+            </div>
           </div>
         </form>
       </Form>

@@ -8,6 +8,7 @@ interface DropzoneProps {
   episodeIndex: number;
   chapterId: string;
   episodeId: string;
+  onVideoUploadSuccess: () => void;
 }
 
 const Dropzone: React.FC<DropzoneProps> = ({
@@ -15,6 +16,7 @@ const Dropzone: React.FC<DropzoneProps> = ({
   episodeIndex,
   chapterId,
   episodeId,
+  onVideoUploadSuccess,
 }) => {
   const { toast } = useToast();
   const { enqueueUpload } = useVideoUploader();
@@ -31,9 +33,18 @@ const Dropzone: React.FC<DropzoneProps> = ({
       if (acceptedFiles.length === 1) {
         const file = acceptedFiles[0];
         enqueueUpload(file, chapterIndex, episodeIndex, chapterId, episodeId);
+        onVideoUploadSuccess();
       }
     },
-    [enqueueUpload, chapterIndex, episodeIndex, chapterId, episodeId, toast]
+    [
+      toast,
+      enqueueUpload,
+      chapterIndex,
+      episodeIndex,
+      chapterId,
+      episodeId,
+      onVideoUploadSuccess,
+    ]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
