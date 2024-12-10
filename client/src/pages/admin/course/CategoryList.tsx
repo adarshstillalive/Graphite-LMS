@@ -36,7 +36,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ enableEditTab }) => {
       }
     };
     fetchData();
-  }, [currentPage]);
+  }, [currentPage, toast]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);

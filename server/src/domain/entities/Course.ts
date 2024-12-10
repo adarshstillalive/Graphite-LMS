@@ -32,6 +32,8 @@ export interface ICourse {
   mrp: number;
   price: number;
   isApproved?: boolean;
+  isRejected?: boolean;
+  rejectedReason?: string;
   isPublished?: boolean;
   rating?: number;
   welcomeMessage?: string;

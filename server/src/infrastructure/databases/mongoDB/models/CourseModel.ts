@@ -27,6 +27,8 @@ export interface IMongoCourse {
   mrp: number;
   price: number;
   isApproved?: boolean;
+  isRejected?: boolean;
+  rejectedReason?: string;
   isPublished?: boolean;
   rating?: number;
   welcomeMessage?: string;
@@ -41,6 +43,7 @@ const CourseSchema: Schema<IMongoCourse> = new Schema(
     instructorId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
+      ref: 'User',
     },
     title: {
       type: String,
@@ -59,7 +62,6 @@ const CourseSchema: Schema<IMongoCourse> = new Schema(
     subcategory: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: 'Category.subCategory',
     },
     language: {
       type: String,
@@ -84,6 +86,13 @@ const CourseSchema: Schema<IMongoCourse> = new Schema(
     isApproved: {
       type: Boolean,
       default: false,
+    },
+    isRejected: {
+      type: Boolean,
+      default: false,
+    },
+    rejectedReason: {
+      type: String,
     },
     isPublished: {
       type: Boolean,

@@ -55,7 +55,7 @@ const paginatedInstructorsList = async (req: Request, res: Response) => {
     const model = InstructorModel;
     const instructorRepository = new MongoGenericRepository(model);
 
-    const result = await instructorRepository.getPaginatedInstructor(
+    const result = await instructorRepository.getPaginatedWithPopulatedUserId(
       page,
       limit,
       filter,

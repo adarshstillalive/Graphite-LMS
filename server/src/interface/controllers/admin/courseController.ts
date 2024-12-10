@@ -4,10 +4,49 @@ import MongoCourseRepository from '../../../infrastructure/databases/mongoDB/adm
 import { createResponse } from '../../../utils/createResponse.js';
 import CategoryModel from '../../../infrastructure/databases/mongoDB/models/CategoryModel.js';
 import MongoGenericRepository from '../../../infrastructure/databases/mongoDB/MongoGenericRepository.js';
+import CourseModel from '../../../infrastructure/databases/mongoDB/models/CourseModel.js';
+import CourseUseCase from '../../../application/useCases/admin/course/courseUseCase.js';
 
 const courseRepository = new MongoCourseRepository();
 
 const category = new CreateCategory(courseRepository);
+const courseUseCase = new CourseUseCase(courseRepository);
+
+const paginatedAllCourses = async (req: Request, res: Response) => {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const filter = req.query.filter
+      ? JSON.parse(req.query.filter as string)
+      : {};
+
+    const model = CourseModel;
+    const courseRequestRepository = new MongoGenericRepository(model);
+
+    const result =
+      await courseRequestRepository.getPaginatedCoursesWithPopulatedUserId(
+        page,
+        limit,
+        filter,
+      );
+
+    res
+      .status(200)
+      .json(createResponse(true, 'Fetching request successfull', result));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res
+      .status(400)
+      .json(
+        createResponse(
+          false,
+          'Controller: Error in fetching courses',
+          {},
+          error?.message,
+        ),
+      );
+  }
+};
 
 const addCategory = async (req: Request, res: Response) => {
   try {
@@ -31,11 +70,7 @@ const paginatedCategoryList = async (req: Request, res: Response) => {
     const model = CategoryModel;
     const categoryRepository = new MongoGenericRepository(model);
 
-    const result = await categoryRepository.getPaginatedCategory(
-      page,
-      limit,
-      filter,
-    );
+    const result = await categoryRepository.getPaginated(page, limit, filter);
 
     res
       .status(200)
@@ -61,4 +96,108 @@ const editCategory = async (req: Request, res: Response) => {
   }
 };
 
-export default { addCategory, paginatedCategoryList, editCategory };
+const paginatedCourseRequests = async (req: Request, res: Response) => {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const filter = req.query.filter
+      ? JSON.parse(req.query.filter as string)
+      : {};
+
+    const model = CourseModel;
+    const courseRequestRepository = new MongoGenericRepository(model);
+
+    const result =
+      await courseRequestRepository.getPaginatedRequestWithPopulatedUserId(
+        page,
+        limit,
+        filter,
+      );
+
+    res
+      .status(200)
+      .json(createResponse(true, 'Fetching request successfull', result));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res
+      .status(500)
+      .json(
+        createResponse(false, 'Fetching request failed', {}, error?.message),
+      );
+  }
+};
+
+const paginatedRejectedCourseRequests = async (req: Request, res: Response) => {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const filter = req.query.filter
+      ? JSON.parse(req.query.filter as string)
+      : {};
+
+    const model = CourseModel;
+    const courseRequestRepository = new MongoGenericRepository(model);
+
+    const result =
+      await courseRequestRepository.getPaginatedRejectedRequestWithPopulatedUserId(
+        page,
+        limit,
+        filter,
+      );
+
+    res
+      .status(200)
+      .json(createResponse(true, 'Fetching request successfull', result));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res
+      .status(500)
+      .json(
+        createResponse(false, 'Fetching request failed', {}, error?.message),
+      );
+  }
+};
+
+const approveCourseRequest = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    await courseUseCase.approveCourse(id);
+
+    res.status(200).json(createResponse(true, 'Approved the course'));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res
+      .status(400)
+      .json(
+        createResponse(false, 'Approving request failed', {}, error?.message),
+      );
+  }
+};
+
+const rejectCourseRequest = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { reason } = req.body;
+    await courseUseCase.rejectCourse(id, reason);
+
+    res.status(200).json(createResponse(true, 'Approved the course'));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res
+      .status(400)
+      .json(
+        createResponse(false, 'Approving request failed', {}, error?.message),
+      );
+  }
+};
+
+export default {
+  paginatedAllCourses,
+  addCategory,
+  paginatedCategoryList,
+  editCategory,
+  paginatedCourseRequests,
+  paginatedRejectedCourseRequests,
+  approveCourseRequest,
+  rejectCourseRequest,
+};

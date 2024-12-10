@@ -46,6 +46,13 @@ adminRoute.get(
 );
 
 // Course
+
+adminRoute.get(
+  '/api/courses',
+  userAuthMiddleware.authorization,
+  courseController.paginatedAllCourses,
+);
+
 adminRoute.get(
   '/api/courses/category',
   userAuthMiddleware.authorization,
@@ -62,6 +69,30 @@ adminRoute.put(
   '/api/courses/category/:id',
   userAuthMiddleware.authorization,
   courseController.editCategory,
+);
+
+adminRoute.get(
+  '/api/courses/requests',
+  userAuthMiddleware.authorization,
+  courseController.paginatedCourseRequests,
+);
+
+adminRoute.get(
+  '/api/courses/rejectedRequests',
+  userAuthMiddleware.authorization,
+  courseController.paginatedRejectedCourseRequests,
+);
+
+adminRoute.patch(
+  '/api/courses/requests/approve/:id',
+  userAuthMiddleware.authorization,
+  courseController.approveCourseRequest,
+);
+
+adminRoute.patch(
+  '/api/courses/requests/reject/:id',
+  userAuthMiddleware.authorization,
+  courseController.rejectCourseRequest,
 );
 
 export default adminRoute;

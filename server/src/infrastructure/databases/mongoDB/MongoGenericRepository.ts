@@ -8,7 +8,7 @@ class MongoGenericRepository<T> {
     this.model = model;
   }
 
-  async getPaginatedUser(
+  async getPaginated(
     page: number,
     limit: number,
     filter: object = {},
@@ -25,7 +25,7 @@ class MongoGenericRepository<T> {
     };
   }
 
-  async getPaginatedInstructor(
+  async getPaginatedWithPopulatedUserId(
     page: number,
     limit: number,
     filter: object = {},
@@ -46,13 +46,62 @@ class MongoGenericRepository<T> {
     };
   }
 
-  async getPaginatedCategory(
+  async getPaginatedRequestWithPopulatedUserId(
     page: number,
     limit: number,
     filter: object = {},
   ): Promise<PaginatedResult<T>> {
     const skip = (page - 1) * limit;
-    const data = await this.model.find(filter).skip(skip).limit(limit);
+    const data = await this.model
+      .find({ ...filter, isApproved: false, isRejected: false })
+      .skip(skip)
+      .limit(limit)
+      .populate('instructorId')
+      .populate('category');
+
+    const total = await this.model.countDocuments(filter);
+    return {
+      data,
+      total,
+      page,
+      limit,
+    };
+  }
+
+  async getPaginatedRejectedRequestWithPopulatedUserId(
+    page: number,
+    limit: number,
+    filter: object = {},
+  ): Promise<PaginatedResult<T>> {
+    const skip = (page - 1) * limit;
+    const data = await this.model
+      .find({ ...filter, isRejected: true })
+      .skip(skip)
+      .limit(limit)
+      .populate('instructorId')
+      .populate('category');
+
+    const total = await this.model.countDocuments(filter);
+    return {
+      data,
+      total,
+      page,
+      limit,
+    };
+  }
+
+  async getPaginatedCoursesWithPopulatedUserId(
+    page: number,
+    limit: number,
+    filter: object = {},
+  ): Promise<PaginatedResult<T>> {
+    const skip = (page - 1) * limit;
+    const data = await this.model
+      .find({ ...filter, isApproved: true, isRejected: false })
+      .skip(skip)
+      .limit(limit)
+      .populate('instructorId')
+      .populate('category');
 
     const total = await this.model.countDocuments(filter);
     return {

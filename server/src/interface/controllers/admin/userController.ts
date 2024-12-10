@@ -13,7 +13,7 @@ const paginatedUsersList = async (req: Request, res: Response) => {
     const model = UserModel;
     const userRepository = new MongoGenericRepository(model);
 
-    const result = await userRepository.getPaginatedUser(page, limit, filter);
+    const result = await userRepository.getPaginated(page, limit, filter);
 
     res
       .status(200)
