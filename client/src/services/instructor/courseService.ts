@@ -35,3 +35,8 @@ export const uploadVideoUrlApi = async (
   });
   return response.data;
 };
+
+export const fetchCoursesApi = async (): Promise<ApiResponse> => {
+  const response = await instructorAxiosInstance.get('/api/courses');
+  return response.data;
+};

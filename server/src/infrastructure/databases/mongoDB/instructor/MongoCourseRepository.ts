@@ -3,7 +3,7 @@ import { ICategory } from '../../../../domain/entities/Category.js';
 import { ICourse, UploadState } from '../../../../domain/entities/Course.js';
 import CourseRepository from '../../../../domain/repositories/instructor/CourseRepository.js';
 import CategoryModel from '../models/CategoryModel.js';
-import CourseModel from '../models/CourseModel.js';
+import CourseModel, { IMongoCourse } from '../models/CourseModel.js';
 import InstructorModel from '../models/InstructorModel.js';
 
 class MongoCourseRepository implements CourseRepository {
@@ -74,6 +74,22 @@ class MongoCourseRepository implements CourseRepository {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log('Mongo: Error in updating video url', error);
+      throw new Error(error);
+    }
+  }
+
+  async fetchCourses(userId: string): Promise<IMongoCourse[]> {
+    try {
+      const courses = await CourseModel.find({ instructorId: userId })
+        .populate('instructorId')
+        .populate('category');
+      if (!courses) {
+        throw new Error('Mongo: Error in fetching courses');
+      }
+      return courses;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Mongo: Error in fetching courses', error);
       throw new Error(error);
     }
   }

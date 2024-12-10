@@ -90,6 +90,18 @@ class InstructorCourseUseCases {
       throw new Error(error);
     }
   }
+
+  async fetchCourses(userId: string) {
+    try {
+      return await this.courseRepository.fetchCourses(userId);
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Usecase Error: fetching courses', error);
+
+      throw new Error(error);
+    }
+  }
 }
 
 export default InstructorCourseUseCases;

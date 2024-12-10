@@ -28,6 +28,12 @@ instructorRoute.post(
 
 // Course
 
+instructorRoute.get(
+  '/api/courses',
+  userAuthMiddleware.authorization,
+  courseController.fetchCourses,
+);
+
 instructorRoute.post(
   '/api/course',
   userAuthMiddleware.authorization,

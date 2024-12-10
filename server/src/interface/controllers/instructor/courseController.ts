@@ -7,6 +7,21 @@ import { v2 as cloudinaryV2 } from 'cloudinary';
 const courseRepository = new MongoCourseRepository();
 const instructorCourseUseCases = new InstructorCourseUseCases(courseRepository);
 
+const fetchCourses = async (req: Request, res: Response) => {
+  try {
+    const instructorId = req.user?._id;
+    if (!instructorId) {
+      throw new Error('Server error');
+    }
+    const courses = await instructorCourseUseCases.fetchCourses(instructorId);
+    res
+      .status(200)
+      .json(createResponse(true, 'Fetching courses successfull', courses));
+  } catch (error) {
+    res.status(500).json(createResponse(false, 'Controller error', {}, error));
+  }
+};
+
 const createCourse = async (req: Request, res: Response) => {
   try {
     const { formData } = req.body;
@@ -104,6 +119,7 @@ const getvideoSign = async (req: Request, res: Response) => {
 };
 
 export default {
+  fetchCourses,
   createCourse,
   uploadVideoUrl,
   fetchCategories,

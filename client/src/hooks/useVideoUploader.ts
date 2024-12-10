@@ -62,8 +62,6 @@ export const useVideoUploader = () => {
   );
 
   const processQueue = useCallback(async () => {
-    dispatch(setReset());
-    dispatch(setResetQueue());
     if (isUploading || queue.length === 0) return;
 
     dispatch(setIsUploading(true));
@@ -71,7 +69,6 @@ export const useVideoUploader = () => {
     const currentUpload = queue[0];
     const { chapterIndex, episodeIndex, chapterId, episodeId, progress } =
       currentUpload;
-    console.log('for checking', chapterId, episodeId, fileMapRef);
 
     const file = fileMapRef.current[`${chapterId}-${episodeId}`];
 
@@ -107,12 +104,6 @@ export const useVideoUploader = () => {
               progress,
             })
           );
-
-          // toast({
-          //   title: `Uploading Video`,
-          //   description: `Chapter ${chapterIndex + 1}, Episode ${episodeIndex + 1}: ${progress}% complete`,
-          //   duration: 3000,
-          // });
         }
 
         if (success) {
@@ -124,9 +115,6 @@ export const useVideoUploader = () => {
             description: `Video uploaded successfully for Chapter ${chapterIndex + 1}, Episode ${episodeIndex + 1}.`,
             duration: 5000,
           });
-
-          console.log(`Uploaded video URL: ${url}`);
-          // Here you would typically update your form state with the new URL
 
           dispatch(removeFromUploadQueue({ chapterId, episodeId }));
           dispatch(setIsUploading(false));
@@ -146,7 +134,6 @@ export const useVideoUploader = () => {
         dispatch(removeFromUploadQueue({ chapterId, episodeId }));
         dispatch(setIsUploading(false));
       };
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast({
         title: `Upload Error`,
@@ -161,33 +148,37 @@ export const useVideoUploader = () => {
   }, [isUploading, queue, toast, dispatch]);
 
   useEffect(() => {
-    const uploadVideoUrl = async () => {
-      if (!courseId) {
-        return;
-      }
-      console.log('preparing to upload url');
+    console.log(
+      'Queue length:',
+      queue.length,
+      'isFormSubmitted:',
+      isFormSubmitted
+    );
 
-      const response = await uploadVideoUrlApi(uploads, courseId);
-      console.log(response);
+    const handleUploadCompletion = async () => {
+      if (queue.length === 0 && isFormSubmitted && courseId) {
+        console.log('Saving to MongoDB...');
+        const response = await uploadVideoUrlApi(uploads, courseId);
+        console.log(response);
 
-      if (response.success) {
-        dispatch(setReset());
+        if (response.success) {
+          dispatch(setReset());
+        }
       }
     };
-    if (queue.length === 0 && isFormSubmitted) {
-      // save to mongoDB
-      uploadVideoUrl();
-    }
+
+    handleUploadCompletion();
+
     if (queue.length > 0 && !isUploading) {
       processQueue();
     }
   }, [
-    processQueue,
-    queue,
+    queue.length,
     isFormSubmitted,
     courseId,
     dispatch,
     uploads,
+    processQueue,
     isUploading,
   ]);
 
