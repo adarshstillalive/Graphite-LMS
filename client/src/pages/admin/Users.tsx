@@ -14,7 +14,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
@@ -28,12 +27,17 @@ const Users = () => {
   const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [sortHelper, setSortHelper] = useState({
+    field: 'createdAt',
+    value: -1,
+  });
   const [users, setUsers] = useState<IUser[]>([]);
   // const [searchTerm, setSearchTerm] = useState('');
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await getUsers();
+        const sort = { [sortHelper.field]: sortHelper.value };
+        const response = await getUsers(currentPage, sort);
         const result = response.data;
         setUsers(result.data);
         setTotalPages(Math.ceil(result.total / 10));
@@ -46,7 +50,7 @@ const Users = () => {
       }
     };
     fetchUsers();
-  }, [currentPage]);
+  }, [currentPage, sortHelper.field, sortHelper.value, toast]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -75,15 +79,31 @@ const Users = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuLabel>Sort</DropdownMenuLabel>
                 <DropdownMenuItem
-                  // onClick={() => navigator.clipboard.writeText(payment.id)}
-                  className="text-red-500 hover:text-red-500"
+                  onClick={() => setSortHelper({ field: 'name', value: 1 })}
                 >
-                  Block
+                  aA-zZ
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>View user</DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setSortHelper({ field: 'name', value: -1 })}
+                >
+                  zZ-aA
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    setSortHelper({ field: 'createdAt', value: 1 })
+                  }
+                >
+                  Created (New)
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    setSortHelper({ field: 'createdAt', value: -1 })
+                  }
+                >
+                  Created (Old)
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

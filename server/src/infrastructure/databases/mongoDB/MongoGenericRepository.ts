@@ -1,5 +1,9 @@
-import { Model } from 'mongoose';
+import { Model, SortOrder } from 'mongoose';
 import PaginatedResult from '../../../domain/entities/PaginatedResult.js';
+
+type SortType = {
+  [key: string]: SortOrder;
+};
 
 class MongoGenericRepository<T> {
   private model: Model<T>;
@@ -12,9 +16,14 @@ class MongoGenericRepository<T> {
     page: number,
     limit: number,
     filter: object = {},
+    sort: SortType,
   ): Promise<PaginatedResult<T>> {
     const skip = (page - 1) * limit;
-    const data = await this.model.find(filter).skip(skip).limit(limit);
+    const data = await this.model
+      .find(filter)
+      .skip(skip)
+      .limit(limit)
+      .sort(sort);
 
     const total = await this.model.countDocuments(filter);
     return {
@@ -29,12 +38,14 @@ class MongoGenericRepository<T> {
     page: number,
     limit: number,
     filter: object = {},
+    sort: SortType,
   ): Promise<PaginatedResult<T>> {
     const skip = (page - 1) * limit;
     const data = await this.model
       .find(filter)
       .skip(skip)
       .limit(limit)
+      .sort(sort)
       .populate('userId');
 
     const total = await this.model.countDocuments(filter);
@@ -50,12 +61,14 @@ class MongoGenericRepository<T> {
     page: number,
     limit: number,
     filter: object = {},
+    sort: SortType,
   ): Promise<PaginatedResult<T>> {
     const skip = (page - 1) * limit;
     const data = await this.model
       .find({ ...filter, isApproved: false, isRejected: false })
       .skip(skip)
       .limit(limit)
+      .sort(sort)
       .populate('instructorId')
       .populate('category');
 
@@ -72,12 +85,14 @@ class MongoGenericRepository<T> {
     page: number,
     limit: number,
     filter: object = {},
+    sort: SortType,
   ): Promise<PaginatedResult<T>> {
     const skip = (page - 1) * limit;
     const data = await this.model
       .find({ ...filter, isRejected: true })
       .skip(skip)
       .limit(limit)
+      .sort(sort)
       .populate('instructorId')
       .populate('category');
 
@@ -94,12 +109,14 @@ class MongoGenericRepository<T> {
     page: number,
     limit: number,
     filter: object = {},
+    sort: SortType,
   ): Promise<PaginatedResult<T>> {
     const skip = (page - 1) * limit;
     const data = await this.model
       .find({ ...filter, isApproved: true, isRejected: false })
       .skip(skip)
       .limit(limit)
+      .sort(sort)
       .populate('instructorId')
       .populate('category');
 

@@ -14,7 +14,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
@@ -28,12 +27,17 @@ const InstructorList = () => {
   const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [sortHelper, setSortHelper] = useState({
+    field: 'createdAt',
+    value: -1,
+  });
   const [instructors, setInstructors] = useState<IInstructorPopulated[]>([]);
 
   useEffect(() => {
     const fetchInstructors = async () => {
       try {
-        const response = await getInstructors();
+        const sort = { [sortHelper.field]: sortHelper.value };
+        const response = await getInstructors(currentPage, sort);
 
         const result = response.data;
         setInstructors(result.data);
@@ -47,7 +51,7 @@ const InstructorList = () => {
       }
     };
     fetchInstructors();
-  }, [currentPage]);
+  }, [currentPage, sortHelper.field, sortHelper.value, toast]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -76,15 +80,31 @@ const InstructorList = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuLabel>Sort</DropdownMenuLabel>
                 <DropdownMenuItem
-                  // onClick={() => navigator.clipboard.writeText(payment.id)}
-                  className="text-red-500 hover:text-red-500"
+                  onClick={() => setSortHelper({ field: 'name', value: 1 })}
                 >
-                  Block
+                  aA-zZ
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>View Instructor</DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setSortHelper({ field: 'name', value: -1 })}
+                >
+                  zZ-aA
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    setSortHelper({ field: 'createdAt', value: 1 })
+                  }
+                >
+                  Created (New)
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    setSortHelper({ field: 'createdAt', value: -1 })
+                  }
+                >
+                  Created (Old)
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

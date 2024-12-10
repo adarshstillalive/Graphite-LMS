@@ -6,6 +6,7 @@ import CategoryModel from '../../../infrastructure/databases/mongoDB/models/Cate
 import MongoGenericRepository from '../../../infrastructure/databases/mongoDB/MongoGenericRepository.js';
 import CourseModel from '../../../infrastructure/databases/mongoDB/models/CourseModel.js';
 import CourseUseCase from '../../../application/useCases/admin/course/courseUseCase.js';
+import { SortOrder } from 'mongoose';
 
 const courseRepository = new MongoCourseRepository();
 
@@ -14,6 +15,8 @@ const courseUseCase = new CourseUseCase(courseRepository);
 
 const paginatedAllCourses = async (req: Request, res: Response) => {
   try {
+    const sort = req.query.sort as string;
+    const [[field, order]] = Object.entries(sort);
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const filter = req.query.filter
@@ -28,6 +31,7 @@ const paginatedAllCourses = async (req: Request, res: Response) => {
         page,
         limit,
         filter,
+        { [field]: Number(order) as SortOrder },
       );
 
     res
@@ -62,6 +66,8 @@ const addCategory = async (req: Request, res: Response) => {
 
 const paginatedCategoryList = async (req: Request, res: Response) => {
   try {
+    const sort = req.query.sort as string;
+    const [[field, order]] = Object.entries(sort);
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const filter = req.query.filter
@@ -70,7 +76,9 @@ const paginatedCategoryList = async (req: Request, res: Response) => {
     const model = CategoryModel;
     const categoryRepository = new MongoGenericRepository(model);
 
-    const result = await categoryRepository.getPaginated(page, limit, filter);
+    const result = await categoryRepository.getPaginated(page, limit, filter, {
+      [field]: Number(order) as SortOrder,
+    });
 
     res
       .status(200)
@@ -98,6 +106,8 @@ const editCategory = async (req: Request, res: Response) => {
 
 const paginatedCourseRequests = async (req: Request, res: Response) => {
   try {
+    const sort = req.query.sort as string;
+    const [[field, order]] = Object.entries(sort);
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const filter = req.query.filter
@@ -112,6 +122,7 @@ const paginatedCourseRequests = async (req: Request, res: Response) => {
         page,
         limit,
         filter,
+        { [field]: Number(order) as SortOrder },
       );
 
     res
@@ -129,6 +140,8 @@ const paginatedCourseRequests = async (req: Request, res: Response) => {
 
 const paginatedRejectedCourseRequests = async (req: Request, res: Response) => {
   try {
+    const sort = req.query.sort as string;
+    const [[field, order]] = Object.entries(sort);
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const filter = req.query.filter
@@ -143,6 +156,7 @@ const paginatedRejectedCourseRequests = async (req: Request, res: Response) => {
         page,
         limit,
         filter,
+        { [field]: Number(order) as SortOrder },
       );
 
     res

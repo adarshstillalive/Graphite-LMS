@@ -2,6 +2,10 @@ import adminAxiosInstance from '@/axios/adminAxiosInstance';
 import { ApiResponse } from '@/interfaces/Response';
 import { CategoryFormValues } from '@/pages/admin/course/AddCategory';
 
+type SortType = {
+  [key: string]: number;
+};
+
 export interface ISubCategory {
   _id?: string;
   name: string;
@@ -26,10 +30,25 @@ export const createCategory = async (
 };
 
 export const fetchCategories = async (
-  currentPage: number = 0
+  currentPage: number = 0,
+  sort: SortType
 ): Promise<ApiResponse> => {
-  const page = currentPage > 0 ? `?page=${currentPage}` : '';
-  const response = await adminAxiosInstance.get(`/api/courses/category${page}`);
+  const queryParams = new URLSearchParams();
+  if (currentPage > 0) {
+    queryParams.append('page', currentPage.toString());
+  }
+
+  if (sort) {
+    for (const key in sort) {
+      queryParams.append(`sort[${key}]`, sort[key].toString());
+    }
+  }
+
+  const queryString = queryParams.toString();
+
+  const response = await adminAxiosInstance.get(
+    `/api/courses/category?${queryString}`
+  );
   return response.data;
 };
 
@@ -44,19 +63,45 @@ export const updateCategory = async (
 };
 
 export const fetchRequestApi = async (
-  currentPage: number = 0
+  currentPage: number = 0,
+  sort: SortType
 ): Promise<ApiResponse> => {
-  const page = currentPage > 0 ? `?page=${currentPage}` : '';
-  const response = await adminAxiosInstance.get(`/api/courses/requests${page}`);
+  const queryParams = new URLSearchParams();
+  if (currentPage > 0) {
+    queryParams.append('page', currentPage.toString());
+  }
+
+  if (sort) {
+    for (const key in sort) {
+      queryParams.append(`sort[${key}]`, sort[key].toString());
+    }
+  }
+
+  const queryString = queryParams.toString();
+  const response = await adminAxiosInstance.get(
+    `/api/courses/requests?${queryString}`
+  );
   return response.data;
 };
 
 export const fetchRejectedRequestApi = async (
-  currentPage: number = 0
+  currentPage: number = 0,
+  sort: SortType
 ): Promise<ApiResponse> => {
-  const page = currentPage > 0 ? `?page=${currentPage}` : '';
+  const queryParams = new URLSearchParams();
+  if (currentPage > 0) {
+    queryParams.append('page', currentPage.toString());
+  }
+
+  if (sort) {
+    for (const key in sort) {
+      queryParams.append(`sort[${key}]`, sort[key].toString());
+    }
+  }
+
+  const queryString = queryParams.toString();
   const response = await adminAxiosInstance.get(
-    `/api/courses/rejectedRequests${page}`
+    `/api/courses/rejectedRequests?${queryString}`
   );
   return response.data;
 };
@@ -82,9 +127,21 @@ export const rejectCourseRequest = async (
 };
 
 export const fetchCoursesApi = async (
-  currentPage: number = 0
+  currentPage: number = 0,
+  sort: SortType
 ): Promise<ApiResponse> => {
-  const page = currentPage > 0 ? `?page=${currentPage}` : '';
-  const response = await adminAxiosInstance.get(`/api/courses${page}`);
+  const queryParams = new URLSearchParams();
+  if (currentPage > 0) {
+    queryParams.append('page', currentPage.toString());
+  }
+
+  if (sort) {
+    for (const key in sort) {
+      queryParams.append(`sort[${key}]`, sort[key].toString());
+    }
+  }
+
+  const queryString = queryParams.toString();
+  const response = await adminAxiosInstance.get(`/api/courses?${queryString}`);
   return response.data;
 };

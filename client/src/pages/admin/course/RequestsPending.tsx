@@ -15,7 +15,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
@@ -33,6 +32,10 @@ const RequestsPending = () => {
   const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [sortHelper, setSortHelper] = useState({
+    field: 'createdAt',
+    value: -1,
+  });
   const [requests, setRequests] = useState<IPopulatedCourse[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<
     (typeof requests)[0] | null
@@ -42,7 +45,8 @@ const RequestsPending = () => {
   useEffect(() => {
     const fetchRequest = async () => {
       try {
-        const response = await fetchRequestApi(currentPage);
+        const sort = { [sortHelper.field]: sortHelper.value };
+        const response = await fetchRequestApi(currentPage, sort);
         const result = response.data;
         setRequests(result.data);
         setTotalPages(Math.ceil(result.total / 10));
@@ -55,7 +59,7 @@ const RequestsPending = () => {
       }
     };
     fetchRequest();
-  }, [currentPage, toast]);
+  }, [currentPage, sortHelper.field, sortHelper.value, toast]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -126,7 +130,7 @@ const RequestsPending = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Users</CardTitle>
+        <CardTitle>Pending Requests</CardTitle>
         <CardDescription>
           <div className="mb-6 flex flex-col sm:flex-row pt-4 gap-4">
             <div className="relative flex-1">
@@ -147,15 +151,31 @@ const RequestsPending = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuLabel>Sort</DropdownMenuLabel>
                 <DropdownMenuItem
-                  // onClick={() => navigator.clipboard.writeText(payment.id)}
-                  className="text-red-500 hover:text-red-500"
+                  onClick={() => setSortHelper({ field: 'title', value: 1 })}
                 >
-                  Block
+                  aA-zZ
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>View request</DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setSortHelper({ field: 'title', value: -1 })}
+                >
+                  zZ-aA
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    setSortHelper({ field: 'createdAt', value: 1 })
+                  }
+                >
+                  Created (New)
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    setSortHelper({ field: 'createdAt', value: -1 })
+                  }
+                >
+                  Created (Old)
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

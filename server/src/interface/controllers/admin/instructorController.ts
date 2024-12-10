@@ -4,6 +4,7 @@ import MongoAdminInstructorRepository from '../../../infrastructure/databases/mo
 import InstructorModel from '../../../infrastructure/databases/mongoDB/models/InstructorModel.js';
 import MongoGenericRepository from '../../../infrastructure/databases/mongoDB/MongoGenericRepository.js';
 import InstructorAccessManagement from '../../../application/useCases/admin/instructor/instructorAccessManagement.js';
+import { SortOrder } from 'mongoose';
 
 const adminRepository = new MongoAdminInstructorRepository();
 const instructorAccessManagement = new InstructorAccessManagement(
@@ -47,6 +48,8 @@ const approveInstructorRequest = async (req: Request, res: Response) => {
 
 const paginatedInstructorsList = async (req: Request, res: Response) => {
   try {
+    const sort = req.query.sort as string;
+    const [[field, order]] = Object.entries(sort);
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const filter = req.query.filter
@@ -59,6 +62,7 @@ const paginatedInstructorsList = async (req: Request, res: Response) => {
       page,
       limit,
       filter,
+      { [field]: Number(order) as SortOrder },
     );
 
     res
