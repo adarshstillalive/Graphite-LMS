@@ -55,9 +55,11 @@ instructorAxiosInstance.interceptors.response.use(
   (res) => {
     if (res.data && res.data.user) {
       const { user } = res.data;
-
-      store.dispatch(setCurrentUser(user));
-      store.dispatch(setIsInstructor(user.isInstructor));
+      const currentUser = store.getState().user.currentUser;
+      if (JSON.stringify(currentUser) !== JSON.stringify(user)) {
+        store.dispatch(setCurrentUser(user));
+        store.dispatch(setIsInstructor(user.isInstructor));
+      }
     }
     return res;
   },

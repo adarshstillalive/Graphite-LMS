@@ -68,8 +68,10 @@ userAxiosInstance.interceptors.request.use(async (config) => {
 adminAxiosInstance.interceptors.response.use((res) => {
   if (res.data && res.data.user) {
     const { user } = res.data;
-
-    store.dispatch(setCurrentAdmin(user));
+    const currentAdmin = store.getState().admin.currentAdmin;
+    if (JSON.stringify(currentAdmin) !== JSON.stringify(user)) {
+      store.dispatch(setCurrentAdmin(user));
+    }
   }
   return res;
 });

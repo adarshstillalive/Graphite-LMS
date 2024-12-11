@@ -81,9 +81,19 @@ const CreateCourse = () => {
         dispatch(setIsFormSubmitted(true));
         dispatch(setCourseId(courseId));
         form.reset();
+        toast({
+          variant: 'default',
+          description:
+            'Your course has been created. Uploads will continue in the background.',
+        });
       }
     } catch (error) {
       console.log(error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to create the course. Please try again.',
+      });
     }
   };
 
