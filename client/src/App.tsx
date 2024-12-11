@@ -7,6 +7,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
 import appRoutes from './routes/appRoutes';
 import { Toaster } from './components/ui/toaster';
+import { UploadProvider } from './context/uploadContext';
 
 const persistor = persistStore(store);
 
@@ -17,7 +18,9 @@ function App() {
     <PersistGate persistor={persistor}>
       <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
         <Provider store={store}>
-          <RouterProvider router={appRoute} />
+          <UploadProvider>
+            <RouterProvider router={appRoute} />
+          </UploadProvider>
           <Toaster />
         </Provider>
       </GoogleOAuthProvider>

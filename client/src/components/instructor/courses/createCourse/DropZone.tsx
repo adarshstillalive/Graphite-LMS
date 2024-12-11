@@ -1,5 +1,5 @@
+import { useUpload } from '@/context/uploadContext';
 import { useToast } from '@/hooks/use-toast';
-import { useVideoUploader } from '@/hooks/useVideoUploader';
 import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 
@@ -19,7 +19,7 @@ const Dropzone: React.FC<DropzoneProps> = ({
   onVideoUploadSuccess,
 }) => {
   const { toast } = useToast();
-  const { enqueueUpload } = useVideoUploader();
+  const { enqueueUpload } = useUpload();
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {

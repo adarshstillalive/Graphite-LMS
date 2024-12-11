@@ -1,28 +1,61 @@
-import { useCallback, useEffect, useRef } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useCallback,
+  useRef,
+  useEffect,
+  ReactNode,
+} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   cloudinarySignedVideoUploadUrl,
   uploadVideoUrlApi,
 } from '@/services/instructor/courseService';
-import { useToast } from './use-toast';
-import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import {
+  addToUploadQueue,
+  removeFromUploadQueue,
+  setIsUploading,
+  setUploadFailed,
+  setUploadSuccess,
+  updateUploadProgress,
+} from '@/redux/slices/instructor/uploadQueueSlice';
 import {
   setAddUpload,
   setReset,
   setStatusFailed,
   setVideoUrl,
 } from '@/redux/slices/instructor/courseCreationSlice';
-import { RootState } from '@/redux/store';
-import {
-  addToUploadQueue,
-  removeFromUploadQueue,
-  setIsUploading,
-  setResetQueue,
-  setUploadFailed,
-  setUploadSuccess,
-  updateUploadProgress,
-} from '@/redux/slices/instructor/uploadQueueSlice';
+import { useToast } from '@/hooks/use-toast';
 
-export const useVideoUploader = () => {
+type UploadContextType = {
+  enqueueUpload: (
+    file: File,
+    chapterIndex: number,
+    episodeIndex: number,
+    chapterId: string,
+    episodeId: string
+  ) => void;
+  cancelUpload: (chapterId: string, episodeId: string) => void;
+};
+
+interface UploadProviderProps {
+  children: ReactNode;
+}
+
+const UploadContext = createContext<UploadContextType | undefined>(undefined);
+
+let progressPercentage = 0;
+
+export const useUpload = () => {
+  const context = useContext(UploadContext);
+  if (!context) {
+    throw new Error('useUpload must be used within an UploadProvider');
+  }
+  return context;
+};
+
+export const UploadProvider: React.FC<UploadProviderProps> = ({ children }) => {
   const { isFormSubmitted, uploads, courseId } = useSelector(
     (state: RootState) => state.courseCreation
   );
@@ -33,6 +66,7 @@ export const useVideoUploader = () => {
   const dispatch = useDispatch();
   const { toast } = useToast();
 
+  // Enqueue Upload
   const enqueueUpload = useCallback(
     (
       file: File,
@@ -61,15 +95,13 @@ export const useVideoUploader = () => {
     [dispatch]
   );
 
+  // Process Upload Queue
   const processQueue = useCallback(async () => {
     if (isUploading || queue.length === 0) return;
-
     dispatch(setIsUploading(true));
 
     const currentUpload = queue[0];
-    const { chapterIndex, episodeIndex, chapterId, episodeId, progress } =
-      currentUpload;
-
+    const { chapterIndex, episodeIndex, chapterId, episodeId } = currentUpload;
     const file = fileMapRef.current[`${chapterId}-${episodeId}`];
 
     if (!file) {
@@ -79,34 +111,30 @@ export const useVideoUploader = () => {
 
     toast({
       title: `Uploading Video`,
-      description: `Chapter ${chapterIndex + 1}, Episode ${episodeIndex + 1}: ${progress}% complete`,
+      description: `Chapter ${chapterIndex + 1}, Episode ${episodeIndex + 1}: ${progressPercentage}% complete`,
       duration: Infinity,
     });
 
     try {
       const { data } = await cloudinarySignedVideoUploadUrl();
       const { uploadURL, uploadParams } = data;
-
       const worker = new Worker(
         new URL('../workers/uploadWorker.ts', import.meta.url)
       );
+
       worker.postMessage({ file, uploadURL, uploadParams });
       dispatch(setAddUpload({ chapterId, episodeId }));
 
       worker.onmessage = (event) => {
         const { progress, success, url } = event.data;
-
+        progressPercentage = progress;
+        console.log(progress);
         if (progress !== undefined) {
-          dispatch(
-            updateUploadProgress({
-              chapterId,
-              episodeId,
-              progress,
-            })
-          );
+          dispatch(updateUploadProgress({ chapterId, episodeId, progress }));
         }
 
         if (success) {
+          progressPercentage = 0;
           const videoUrl: string = url;
           dispatch(setUploadSuccess({ chapterId, episodeId, videoUrl }));
           dispatch(setVideoUrl({ chapterId, episodeId, videoUrl }));
@@ -130,10 +158,10 @@ export const useVideoUploader = () => {
           variant: 'destructive',
           duration: 5000,
         });
-
-        dispatch(removeFromUploadQueue({ chapterId, episodeId }));
         dispatch(setIsUploading(false));
+        dispatch(removeFromUploadQueue({ chapterId, episodeId }));
       };
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast({
         title: `Upload Error`,
@@ -148,19 +176,10 @@ export const useVideoUploader = () => {
   }, [isUploading, queue, toast, dispatch]);
 
   useEffect(() => {
-    console.log(
-      'Queue length:',
-      queue.length,
-      'isFormSubmitted:',
-      isFormSubmitted
-    );
-
     const handleUploadCompletion = async () => {
       if (queue.length === 0 && isFormSubmitted && courseId) {
         console.log('Saving to MongoDB...');
         const response = await uploadVideoUrlApi(uploads, courseId);
-        console.log(response);
-
         if (response.success) {
           dispatch(setReset());
         }
@@ -172,16 +191,9 @@ export const useVideoUploader = () => {
     if (queue.length > 0 && !isUploading) {
       processQueue();
     }
-  }, [
-    queue.length,
-    isFormSubmitted,
-    courseId,
-    dispatch,
-    uploads,
-    processQueue,
-    isUploading,
-  ]);
+  }, [queue.length, isFormSubmitted, courseId, processQueue]);
 
+  // Cancel Upload
   const cancelUpload = useCallback(
     (chapterId: string, episodeId: string) => {
       dispatch(removeFromUploadQueue({ chapterId, episodeId }));
@@ -196,5 +208,9 @@ export const useVideoUploader = () => {
     [dispatch, toast]
   );
 
-  return { enqueueUpload, cancelUpload };
+  return (
+    <UploadContext.Provider value={{ enqueueUpload, cancelUpload }}>
+      {children}
+    </UploadContext.Provider>
+  );
 };
