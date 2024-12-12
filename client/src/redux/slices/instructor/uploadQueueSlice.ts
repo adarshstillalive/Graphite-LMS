@@ -10,17 +10,15 @@ interface UploadQueueItem {
   episodeId: string;
   progress: number;
   status: 'pending' | 'uploading' | 'completed' | 'failed';
-  videoUrl?: string;
+  notificationId?: string;
 }
 
 interface UploadQueueState {
   queue: UploadQueueItem[];
-  isUploading: boolean;
 }
 
 const initialState: UploadQueueState = {
   queue: [],
-  isUploading: false,
 };
 
 const uploadQueueSlice = createSlice({
@@ -34,10 +32,12 @@ const uploadQueueSlice = createSlice({
       state,
       action: PayloadAction<{ chapterId: string; episodeId: string }>
     ) => {
-      const { chapterId, episodeId } = action.payload;
       state.queue = state.queue.filter(
         (item) =>
-          !(item.chapterId === chapterId && item.episodeId === episodeId)
+          !(
+            item.chapterId === action.payload.chapterId &&
+            item.episodeId === action.payload.episodeId
+          )
       );
     },
     updateUploadProgress: (
@@ -48,14 +48,12 @@ const uploadQueueSlice = createSlice({
         progress: number;
       }>
     ) => {
+      const { chapterId, episodeId, progress } = action.payload;
       const item = state.queue.find(
-        (item) =>
-          item.chapterId === action.payload.chapterId &&
-          item.episodeId === action.payload.episodeId
+        (item) => item.chapterId === chapterId && item.episodeId === episodeId
       );
       if (item) {
-        item.progress = action.payload.progress;
-        item.status = 'uploading';
+        item.progress = progress;
       }
     },
     setUploadSuccess: (
@@ -63,38 +61,43 @@ const uploadQueueSlice = createSlice({
       action: PayloadAction<{
         chapterId: string;
         episodeId: string;
-        videoUrl: string;
       }>
     ) => {
+      const { chapterId, episodeId } = action.payload;
       const item = state.queue.find(
-        (item) =>
-          item.chapterId === action.payload.chapterId &&
-          item.episodeId === action.payload.episodeId
+        (item) => item.chapterId === chapterId && item.episodeId === episodeId
       );
       if (item) {
         item.status = 'completed';
-        item.videoUrl = action.payload.videoUrl;
-        item.progress = 100;
       }
     },
     setUploadFailed: (
       state,
       action: PayloadAction<{ chapterId: string; episodeId: string }>
     ) => {
+      const { chapterId, episodeId } = action.payload;
       const item = state.queue.find(
-        (item) =>
-          item.chapterId === action.payload.chapterId &&
-          item.episodeId === action.payload.episodeId
+        (item) => item.chapterId === chapterId && item.episodeId === episodeId
       );
       if (item) {
         item.status = 'failed';
       }
     },
-    setResetQueue: (state) => {
-      Object.assign(state, initialState);
-    },
-    setIsUploading: (state, action: PayloadAction<boolean>) => {
-      state.isUploading = action.payload;
+    setNotificationId: (
+      state,
+      action: PayloadAction<{
+        chapterId: string;
+        episodeId: string;
+        notificationId: string;
+      }>
+    ) => {
+      const { chapterId, episodeId, notificationId } = action.payload;
+      const item = state.queue.find(
+        (item) => item.chapterId === chapterId && item.episodeId === episodeId
+      );
+      if (item) {
+        item.notificationId = notificationId;
+      }
     },
   },
 });
@@ -105,8 +108,7 @@ export const {
   updateUploadProgress,
   setUploadSuccess,
   setUploadFailed,
-  setResetQueue,
-  setIsUploading,
+  setNotificationId,
 } = uploadQueueSlice.actions;
 
 export default uploadQueueSlice.reducer;

@@ -45,6 +45,16 @@ const courseCreationSlice = createSlice({
         });
       }
     },
+    setRemoveUpload: (
+      state,
+      action: PayloadAction<{ chapterId: string; episodeId: string }>
+    ) => {
+      const { chapterId, episodeId } = action.payload;
+      state.uploads = state.uploads.filter(
+        (upload) =>
+          upload.chapterId !== chapterId && upload.episodeId !== episodeId
+      );
+    },
     setVideoUrl: (
       state,
       action: PayloadAction<{
@@ -99,6 +109,7 @@ const courseCreationSlice = createSlice({
 export const {
   setIsCreating,
   setAddUpload,
+  setRemoveUpload,
   setVideoUrl,
   setStatusFailed,
   setDeleteChapter,

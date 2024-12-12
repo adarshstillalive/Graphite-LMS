@@ -1,7 +1,11 @@
 import { useUpload } from '@/context/uploadContext';
 import { useToast } from '@/hooks/use-toast';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 interface DropzoneProps {
   chapterIndex: number;
@@ -19,7 +23,10 @@ const Dropzone: React.FC<DropzoneProps> = ({
   onVideoUploadSuccess,
 }) => {
   const { toast } = useToast();
-  const { enqueueUpload } = useUpload();
+  const { enqueueUpload, cancelUpload } = useUpload();
+  const [isUploading, setIsUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const { queue } = useSelector((state: RootState) => state.uploadQueue);
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -32,7 +39,15 @@ const Dropzone: React.FC<DropzoneProps> = ({
       }
       if (acceptedFiles.length === 1) {
         const file = acceptedFiles[0];
-        enqueueUpload(file, chapterIndex, episodeIndex, chapterId, episodeId);
+        setIsUploading(true);
+        enqueueUpload(
+          file,
+          chapterIndex,
+          episodeIndex,
+          chapterId,
+          episodeId,
+          setProgress
+        );
         onVideoUploadSuccess();
       }
     },
@@ -51,24 +66,58 @@ const Dropzone: React.FC<DropzoneProps> = ({
     onDrop,
     accept: { 'video/*': [] },
     maxFiles: 1,
+    disabled: isUploading,
   });
 
+  const handleCancel = () => {
+    cancelUpload(chapterId, episodeId);
+  };
+
+  useEffect(() => {
+    const item = queue.find(
+      (item) => item.chapterId === chapterId && item.episodeId === episodeId
+    );
+    if (!item && isUploading) {
+      setIsUploading(false);
+      setProgress(0);
+    } else if (item) {
+      setIsUploading(true);
+      setProgress(item.progress);
+    }
+  }, [queue, chapterId, episodeId, isUploading]);
+
   return (
-    <div
-      {...getRootProps()}
-      className={`border-2 border-dashed rounded-lg p-12 cursor-pointer transition-all duration-200 
-        ${isDragActive ? 'border-black bg-gray-300' : 'border-gray-300 bg-gray-50 hover:bg-gray-200'}`}
-    >
-      <input {...getInputProps()} />
-      {isDragActive ? (
-        <p className="text-black font-semibold">Drop the video here...</p>
-      ) : (
-        <p className="text-gray-500">
-          Drag & drop a video here, or{' '}
-          <span className="text-black font-semibold">
-            click to select a video
-          </span>
-        </p>
+    <div className="space-y-4">
+      <div
+        {...getRootProps()}
+        className={`border-2 border-dashed rounded-lg p-12 cursor-pointer transition-all duration-200 
+          ${isDragActive ? 'border-black bg-gray-300' : 'border-gray-300 bg-gray-50 hover:bg-gray-200'}
+          ${isUploading ? 'pointer-events-none' : ''}`}
+      >
+        <input {...getInputProps()} />
+        {isUploading ? (
+          <p className="text-black font-semibold">Uploading...</p>
+        ) : isDragActive ? (
+          <p className="text-black font-semibold">Drop the video here...</p>
+        ) : (
+          <p className="text-gray-500">
+            Drag & drop a video here, or{' '}
+            <span className="text-black font-semibold">
+              click to select a video
+            </span>
+          </p>
+        )}
+      </div>
+      {isUploading && (
+        <div className="space-y-2">
+          <Progress value={progress} className="w-full" />
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-gray-500">{progress}% uploaded</span>
+            <Button onClick={handleCancel} variant="destructive" size="sm">
+              Cancel
+            </Button>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -8,6 +8,8 @@ import { persistStore } from 'redux-persist';
 import appRoutes from './routes/appRoutes';
 import { Toaster } from './components/ui/toaster';
 import { UploadProvider } from './context/uploadContext';
+import { SheetComponent } from './components/common/SheetComponent';
+import { NotificationProvider } from './context/notificationContext';
 
 const persistor = persistStore(store);
 
@@ -18,9 +20,12 @@ function App() {
     <PersistGate persistor={persistor}>
       <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
         <Provider store={store}>
-          <UploadProvider>
-            <RouterProvider router={appRoute} />
-          </UploadProvider>
+          <NotificationProvider>
+            <UploadProvider>
+              <SheetComponent />
+              <RouterProvider router={appRoute} />
+            </UploadProvider>
+          </NotificationProvider>
           <Toaster />
         </Provider>
       </GoogleOAuthProvider>
