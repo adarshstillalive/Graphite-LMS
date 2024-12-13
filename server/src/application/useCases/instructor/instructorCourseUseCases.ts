@@ -5,6 +5,7 @@ import Course, {
   UploadState,
 } from '../../../domain/entities/Course.js';
 import CourseRepository from '../../../domain/repositories/instructor/CourseRepository.js';
+import { v2 as cloudinaryV2 } from 'cloudinary';
 
 class InstructorCourseUseCases {
   constructor(private courseRepository: CourseRepository) {}
@@ -98,6 +99,38 @@ class InstructorCourseUseCases {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log('Usecase Error: fetching courses', error);
+
+      throw new Error(error);
+    }
+  }
+
+  async getVideoSign(userId: string) {
+    try {
+      const folder = `/instructor/course/${userId}`;
+      const timestamp = Math.round(new Date().getTime() / 1000);
+      const signature = cloudinaryV2.utils.api_sign_request(
+        {
+          timestamp: timestamp,
+          folder: folder,
+        },
+        `${process.env.CLOUDINARY_API_SECRET}`,
+      );
+
+      const data = {
+        uploadURL: `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/video/upload`,
+        uploadParams: {
+          signature,
+          apiKey: `${process.env.CLOUDINARY_API_KEY}`,
+          timestamp,
+          folder,
+        },
+      };
+
+      return data;
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Usecase Error: Creating signature failed', error);
 
       throw new Error(error);
     }

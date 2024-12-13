@@ -4,12 +4,20 @@ interface InstructorCourse {
   courseId: string;
   createdAt?: Date;
 }
+
+export interface SocialAccounts {
+  provider: string;
+  link: string;
+}
+
 export interface IInstructor {
   userId: string;
   profilePicture: string;
   expertise?: string[];
   qualifications?: string[];
   additionalInfo?: string[];
+  bio?: string;
+  socialAccounts?: SocialAccounts[];
   courses?: InstructorCourse[];
   rating?: number;
   isBlocked?: boolean;
@@ -24,6 +32,8 @@ export interface IInstructorPopulated {
   expertise?: string[];
   qualifications?: string[];
   additionalInfo?: string[];
+  bio?: string;
+  socialAccounts?: SocialAccounts[];
   courses?: InstructorCourse[];
   rating?: number;
   isBlocked?: boolean;

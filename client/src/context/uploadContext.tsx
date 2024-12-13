@@ -16,6 +16,7 @@ import {
   addToUploadQueue,
   removeFromUploadQueue,
   setNotificationId,
+  setRestQueue,
   setUploadFailed,
   setUploadSuccess,
   updateUploadProgress,
@@ -195,6 +196,7 @@ export const UploadProvider: React.FC<UploadProviderProps> = ({ children }) => {
         const response = await uploadVideoUrlApi(completedUploads, courseId);
         if (response.success) {
           dispatch(setReset());
+          dispatch(setRestQueue());
         }
       }
     };

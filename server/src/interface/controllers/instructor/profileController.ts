@@ -1,14 +1,14 @@
 import { Request, Response } from 'express';
 import { createResponse } from '../../../utils/createResponse.js';
 import { UploadedFile } from 'express-fileupload';
-import UpdateProfilePicture from '../../../application/useCases/instructor/updateProfilePicture.js';
-import MongoInstructorRepository from '../../../infrastructure/databases/mongoDB/MongoInstructorRepository.js';
 import InstructorUploadService from '../../../infrastructure/cloudinary/InstructorUploadService.js';
+import InstructorProfileUseCases from '../../../application/useCases/instructor/instructorProfileUseCases.js';
+import MongoInstructorProfileRepository from '../../../infrastructure/databases/mongoDB/instructor/MongoInstructorProfileRepository.js';
 
-const instructorRepository = new MongoInstructorRepository();
+const instructorProfileRepository = new MongoInstructorProfileRepository();
 const instructorUploadService = new InstructorUploadService();
-const updateProfilePicture = new UpdateProfilePicture(
-  instructorRepository,
+const instructorProfileUseCases = new InstructorProfileUseCases(
+  instructorProfileRepository,
   instructorUploadService,
 );
 
@@ -22,7 +22,10 @@ const updateInstructorProfilePicture = async (req: Request, res: Response) => {
     if (!userId) {
       throw new Error('Server error');
     }
-    const instructorData = await updateProfilePicture.execute(file, userId);
+    const instructorData = await instructorProfileUseCases.updateProfilePicture(
+      file,
+      userId,
+    );
 
     res
       .status(200)
@@ -33,4 +36,21 @@ const updateInstructorProfilePicture = async (req: Request, res: Response) => {
   }
 };
 
-export default { updateInstructorProfilePicture };
+const instructorDetails = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?._id;
+    if (!userId) {
+      throw new Error('DB error: User fetching failed');
+    }
+    const instructor = await instructorProfileUseCases.fetchInstructor(userId);
+
+    res
+      .status(200)
+      .json(createResponse(true, 'User data fetching successful', instructor));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(400).json(createResponse(false, error?.message));
+  }
+};
+
+export default { updateInstructorProfilePicture, instructorDetails };

@@ -70,7 +70,8 @@ export const updateCategory = async (
 
 export const fetchRequestApi = async (
   currentPage: number = 0,
-  sort: SortType
+  sort: SortType,
+  filter: string
 ): Promise<ApiResponse> => {
   const queryParams = new URLSearchParams();
   if (currentPage > 0) {
@@ -81,6 +82,11 @@ export const fetchRequestApi = async (
     for (const key in sort) {
       queryParams.append(`sort[${key}]`, sort[key].toString());
     }
+  }
+
+  if (filter) {
+    const query = { title: { $regex: filter, $options: 'i' } };
+    queryParams.append('filter', JSON.stringify(query));
   }
 
   const queryString = queryParams.toString();
@@ -92,7 +98,8 @@ export const fetchRequestApi = async (
 
 export const fetchRejectedRequestApi = async (
   currentPage: number = 0,
-  sort: SortType
+  sort: SortType,
+  filter: string
 ): Promise<ApiResponse> => {
   const queryParams = new URLSearchParams();
   if (currentPage > 0) {
@@ -103,6 +110,11 @@ export const fetchRejectedRequestApi = async (
     for (const key in sort) {
       queryParams.append(`sort[${key}]`, sort[key].toString());
     }
+  }
+
+  if (filter) {
+    const query = { title: { $regex: filter, $options: 'i' } };
+    queryParams.append('filter', JSON.stringify(query));
   }
 
   const queryString = queryParams.toString();
@@ -134,7 +146,8 @@ export const rejectCourseRequest = async (
 
 export const fetchCoursesApi = async (
   currentPage: number = 0,
-  sort: SortType
+  sort: SortType,
+  filter: string
 ): Promise<ApiResponse> => {
   const queryParams = new URLSearchParams();
   if (currentPage > 0) {
@@ -145,6 +158,11 @@ export const fetchCoursesApi = async (
     for (const key in sort) {
       queryParams.append(`sort[${key}]`, sort[key].toString());
     }
+  }
+
+  if (filter) {
+    const query = { title: { $regex: filter, $options: 'i' } };
+    queryParams.append('filter', JSON.stringify(query));
   }
 
   const queryString = queryParams.toString();

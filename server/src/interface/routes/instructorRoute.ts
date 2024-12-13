@@ -18,7 +18,7 @@ instructorRoute.get(
 instructorRoute.get(
   '/api/profile',
   userAuthMiddleware.authorization,
-  requestController.instructorDetails,
+  profileController.instructorDetails,
 );
 instructorRoute.post(
   '/api/profile/updateProfilePicture',

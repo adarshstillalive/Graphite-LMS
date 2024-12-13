@@ -27,6 +27,7 @@ const InstructorList = () => {
   const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [search, setSearch] = useState('');
   const [sortHelper, setSortHelper] = useState({
     field: 'createdAt',
     value: -1,
@@ -34,10 +35,10 @@ const InstructorList = () => {
   const [instructors, setInstructors] = useState<IInstructorPopulated[]>([]);
 
   useEffect(() => {
-    const fetchInstructors = async () => {
+    const handler = setTimeout(async () => {
       try {
         const sort = { [sortHelper.field]: sortHelper.value };
-        const response = await getInstructors(currentPage, sort);
+        const response = await getInstructors(currentPage, sort, search);
 
         const result = response.data;
         setInstructors(result.data);
@@ -49,9 +50,11 @@ const InstructorList = () => {
           description: 'Error in fetching instructor data',
         });
       }
+    }, 300);
+    return () => {
+      clearTimeout(handler);
     };
-    fetchInstructors();
-  }, [currentPage, sortHelper.field, sortHelper.value, toast]);
+  }, [currentPage, search, sortHelper.field, sortHelper.value, toast]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -68,8 +71,8 @@ const InstructorList = () => {
                 type="text"
                 placeholder="Search by name or email"
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-sm focus:border-black"
-                // value={searchTerm}
-                // onChange={(e) => setSearchTerm(e.target.value)}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
               />
             </div>
             <DropdownMenu>

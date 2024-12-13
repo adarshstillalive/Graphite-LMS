@@ -23,7 +23,8 @@ class MongoGenericRepository<T> {
       .find(filter)
       .skip(skip)
       .limit(limit)
-      .sort(sort);
+      .sort(sort)
+      .collation({ locale: 'en', strength: 2 });
 
     const total = await this.model.countDocuments(filter);
     return {
@@ -46,6 +47,7 @@ class MongoGenericRepository<T> {
       .skip(skip)
       .limit(limit)
       .sort(sort)
+      .collation({ locale: 'en', strength: 2 })
       .populate('userId');
 
     const total = await this.model.countDocuments(filter);
@@ -69,6 +71,7 @@ class MongoGenericRepository<T> {
       .skip(skip)
       .limit(limit)
       .sort(sort)
+      .collation({ locale: 'en', strength: 2 })
       .populate('instructorId')
       .populate('category');
 
@@ -93,6 +96,7 @@ class MongoGenericRepository<T> {
       .skip(skip)
       .limit(limit)
       .sort(sort)
+      .collation({ locale: 'en', strength: 2 })
       .populate('instructorId')
       .populate('category');
 
@@ -117,6 +121,7 @@ class MongoGenericRepository<T> {
       .skip(skip)
       .limit(limit)
       .sort(sort)
+      .collation({ locale: 'en', strength: 2 })
       .populate('instructorId')
       .populate('category');
 

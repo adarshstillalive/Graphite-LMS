@@ -99,6 +99,9 @@ const uploadQueueSlice = createSlice({
         item.notificationId = notificationId;
       }
     },
+    setRestQueue: (state) => {
+      Object.assign(state, initialState);
+    },
   },
 });
 
@@ -109,6 +112,7 @@ export const {
   setUploadSuccess,
   setUploadFailed,
   setNotificationId,
+  setRestQueue,
 } = uploadQueueSlice.actions;
 
 export default uploadQueueSlice.reducer;

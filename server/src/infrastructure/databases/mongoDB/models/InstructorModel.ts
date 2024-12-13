@@ -1,7 +1,28 @@
 import mongoose, { Schema } from 'mongoose';
-import { IInstructor } from '../../../../domain/entities/Instructor.js';
+import InstructorCourseUseCases from '../../../../application/useCases/instructor/instructorCourseUseCases.js';
 
-const instructorSchema: Schema<IInstructor> = new Schema(
+export interface SocialAccounts {
+  provider: string;
+  link: string;
+}
+
+export interface IMongoInstructor {
+  userId: mongoose.Schema.Types.ObjectId;
+  profilePicture: string;
+  expertise?: string[];
+  qualifications?: string[];
+  additionalInfo?: string[];
+  bio?: string;
+  socialAccounts?: SocialAccounts[];
+  courses?: InstructorCourseUseCases[];
+  rating?: number;
+  isBlocked?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
+  _id?: mongoose.Schema.Types.ObjectId;
+}
+
+const instructorSchema: Schema<IMongoInstructor> = new Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -23,6 +44,19 @@ const instructorSchema: Schema<IInstructor> = new Schema(
       type: [String],
       default: [],
     },
+    bio: {
+      type: String,
+    },
+    socialAccounts: [
+      {
+        provider: {
+          type: String,
+        },
+        link: {
+          type: String,
+        },
+      },
+    ],
     courses: [
       {
         courseId: {

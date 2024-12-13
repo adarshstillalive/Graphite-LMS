@@ -38,7 +38,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ enableEditTab }) => {
   });
   const [categories, setCategories] = useState<ICategory[]>([]);
   useEffect(() => {
-    const fetchData = async () => {
+    const handler = setTimeout(async () => {
       try {
         const sort = { [sortHelper.field]: sortHelper.value };
         const response = await fetchCategories(currentPage, sort, search);
@@ -52,8 +52,10 @@ const CategoryList: React.FC<CategoryListProps> = ({ enableEditTab }) => {
           description: 'Error in fetching category data',
         });
       }
+    }, 300);
+    return () => {
+      clearTimeout(handler);
     };
-    fetchData();
   }, [currentPage, search, sortHelper.field, sortHelper.value, toast]);
 
   const handlePageChange = (page: number) => {

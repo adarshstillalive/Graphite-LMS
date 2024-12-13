@@ -1,36 +1,57 @@
-import mongoose from 'mongoose';
+import { SocialAccounts } from '../../infrastructure/databases/mongoDB/models/InstructorModel.js';
+import { IUser } from '../../infrastructure/databases/mongoDB/models/UserModel.js';
 
 interface InstructorCourse {
-  courseId: mongoose.Schema.Types.ObjectId;
+  courseId: string;
   createdAt?: Date;
 }
 export interface IInstructor {
-  userId: mongoose.Types.ObjectId;
+  userId: string;
   profilePicture: string;
   expertise?: string[];
   qualifications?: string[];
   additionalInfo?: string[];
+  bio?: string;
+  socialAccounts: SocialAccounts[];
   courses?: InstructorCourse[];
   rating?: number;
   isBlocked?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
-  _id?: mongoose.Schema.Types.ObjectId;
+  _id?: string;
 }
 
-class Instructor implements IInstructor {
+export interface IInstructorPopulated {
+  userId: IUser;
+  profilePicture: string;
+  expertise?: string[];
+  qualifications?: string[];
+  additionalInfo?: string[];
+  bio?: string;
+  socialAccounts?: SocialAccounts[];
+  courses?: InstructorCourse[];
+  rating?: number;
+  isBlocked?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
+  _id?: string;
+}
+
+class Instructor implements IInstructorPopulated {
   constructor(
-    public userId: mongoose.Types.ObjectId,
+    public userId: IUser,
     public profilePicture: string,
     public expertise?: string[],
     public qualifications?: string[],
     public additionalInfo?: string[],
+    public bio?: string,
+    public socialAccounts?: SocialAccounts[],
     public courses?: InstructorCourse[],
     public rating?: number,
     public isBlocked?: boolean,
     public createdAt?: Date,
     public updatedAt?: Date,
-    public _id?: mongoose.Schema.Types.ObjectId,
+    public _id?: string,
   ) {}
 }
 

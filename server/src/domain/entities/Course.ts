@@ -43,7 +43,7 @@ export interface ICourse {
   chapters?: IChapter[];
 }
 
-class Course {
+class Course implements ICourse {
   constructor(
     public instructorId: string,
     public title: string,

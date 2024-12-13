@@ -1,11 +1,11 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
 export interface ISocialAccount {
   provider: 'Facebook' | 'Google' | 'X';
   createdAt?: Date;
 }
 
-export interface IUser extends Document {
+export interface IUser {
   _id: string;
   firstName?: string;
   lastName?: string;
@@ -21,7 +21,23 @@ export interface IUser extends Document {
   isSocialAuthenticated?: boolean;
 }
 
-const userSchema: Schema<IUser> = new Schema(
+export interface IMongoUser {
+  _id: mongoose.Schema.Types.ObjectId;
+  firstName?: string;
+  lastName?: string;
+  instructorId?: string;
+  email: string;
+  password?: string;
+  isBlocked?: boolean;
+  isInstructor?: boolean;
+  isAdmin?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
+  socialAccounts?: ISocialAccount[];
+  isSocialAuthenticated?: boolean;
+}
+
+const userSchema: Schema<IMongoUser> = new Schema(
   {
     firstName: {
       type: String,
@@ -74,6 +90,6 @@ const userSchema: Schema<IUser> = new Schema(
   },
 );
 
-const UserModel = mongoose.model<IUser>('User', userSchema);
+const UserModel = mongoose.model('User', userSchema);
 
 export default UserModel;
