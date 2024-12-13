@@ -2,6 +2,23 @@ import { UploadedFile } from 'express-fileupload';
 import InstructorUploadService from '../../../infrastructure/cloudinary/InstructorUploadService.js';
 import InstructorProfieRepository from '../../../domain/repositories/instructor/InstructorProfileRepository.js';
 
+interface ISocialAccount {
+  provider: string;
+  link: string;
+}
+
+export interface IUserProfileUpdationFormData {
+  firstName: string;
+  lastName: string;
+}
+
+export interface IInstructorProfileUpdationFormData {
+  bio: string;
+  expertise: string[];
+  education: string[];
+  socialAccounts: ISocialAccount[];
+}
+
 class InstructorProfileUseCases {
   constructor(
     private instructorProfileRepository: InstructorProfieRepository,
@@ -39,6 +56,26 @@ class InstructorProfileUseCases {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log('Usecase: Error in fetching instructor data', error);
+
+      throw new Error(error);
+    }
+  }
+
+  async updateProfileData(
+    id: string,
+    userFormData: IUserProfileUpdationFormData,
+    instructorFormData: IInstructorProfileUpdationFormData,
+  ) {
+    try {
+      await this.instructorProfileRepository.updateProfileData(
+        id,
+        userFormData,
+        instructorFormData,
+      );
+      return await this.fetchInstructor(id);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Usecase: Error in updating profile data', error);
 
       throw new Error(error);
     }

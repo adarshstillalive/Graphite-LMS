@@ -20,6 +20,11 @@ instructorRoute.get(
   userAuthMiddleware.authorization,
   profileController.instructorDetails,
 );
+instructorRoute.patch(
+  '/api/profile',
+  userAuthMiddleware.authorization,
+  profileController.updateProfileData,
+);
 instructorRoute.post(
   '/api/profile/updateProfilePicture',
   userAuthMiddleware.authorization,

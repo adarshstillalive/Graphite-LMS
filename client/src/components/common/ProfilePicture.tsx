@@ -46,7 +46,7 @@ const ProfilePicture: React.FC<ProfileSidebarProps> = ({
           <input
             id="profile-picture"
             type="file"
-            accept="image/*"
+            accept="'image/jpeg', 'image/png', 'image/jpeg'"
             className="hidden"
             onChange={handleProfilePictureChange}
           />

@@ -1,20 +1,21 @@
-import { User, Mail, Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { useToast } from '@/hooks/use-toast';
-import { changeProfilePicture } from '@/services/instructor/profileService';
+import {
+  changeProfilePicture,
+  updateProfileData,
+} from '@/services/instructor/profileService';
 import { setCurrentInstructor } from '@/redux/slices/instructor/instructorSlice';
 import ProfilePicture from '@/components/common/ProfilePicture';
-import ProfileDetails from '@/components/instructor/profile/ProfileDetails';
+import ProfileDetails, {
+  ProfileSchema,
+} from '@/components/instructor/profile/ProfileDetails';
+import { useState } from 'react';
 
 const Profile = () => {
   const { toast } = useToast();
   const dispatch = useDispatch();
-  // const [isLoading, setIsLoading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const { currentInstructor } = useSelector(
     (state: RootState) => state.instructor
   );
@@ -41,30 +42,50 @@ const Profile = () => {
         variant: 'destructive',
         description: 'Failed! Try again',
       });
+    }
+  };
+
+  const handleUpdateProfile = async (formData: ProfileSchema) => {
+    try {
+      const response = await updateProfileData(formData);
+      const instructorData = response.data;
+      dispatch(setCurrentInstructor(instructorData));
+      toast({
+        variant: 'default',
+        description: 'Profile updated',
+      });
+    } catch (error) {
+      console.log(error);
+      toast({
+        variant: 'destructive',
+        description: 'Failed! Try again',
+      });
     } finally {
-      // setIsLoading(false);
+      setIsEditing(false);
     }
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="">
-        {currentUser && currentInstructor && (
+    <div className="flex flex-col lg:flex-row gap-6 items-center lg:items-start">
+      {currentUser && currentInstructor && (
+        <div className="lg:order-2">
           <ProfilePicture
             name={currentUser?.firstName ? currentUser.firstName : ''}
             profilePicture={currentInstructor?.profilePicture}
             onProfilePictureChange={handleFileChange}
           />
-        )}
-      </div>
-      <div className="lg:w-3/4">
-        <ProfileDetails
-          instructorData={currentInstructor}
-          isEditing={isEditing}
-          onEdit={() => setIsEditing(true)}
-          onUpdate={handleUpdateProfile}
-        />
-      </div>
+        </div>
+      )}
+      {currentInstructor && (
+        <div className="lg:w-3/4 lg:order-1">
+          <ProfileDetails
+            instructorData={currentInstructor}
+            isEditing={isEditing}
+            onEdit={() => setIsEditing(!isEditing)}
+            onUpdate={handleUpdateProfile}
+          />
+        </div>
+      )}
     </div>
   );
 };

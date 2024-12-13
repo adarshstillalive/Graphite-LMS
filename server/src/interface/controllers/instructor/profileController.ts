@@ -12,6 +12,54 @@ const instructorProfileUseCases = new InstructorProfileUseCases(
   instructorUploadService,
 );
 
+const instructorDetails = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?._id;
+    if (!userId) {
+      throw new Error('DB error: User fetching failed');
+    }
+    const instructor = await instructorProfileUseCases.fetchInstructor(userId);
+
+    res
+      .status(200)
+      .json(createResponse(true, 'User data fetching successful', instructor));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(400).json(createResponse(false, error?.message));
+  }
+};
+
+const updateProfileData = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?._id;
+    if (!userId) {
+      throw new Error('DB error: User fetching failed');
+    }
+    const { userFormData, instructorFormData } = req.body;
+    const instructor = await instructorProfileUseCases.updateProfileData(
+      userId,
+      userFormData,
+      instructorFormData,
+    );
+
+    res
+      .status(200)
+      .json(createResponse(true, 'User data updation successful', instructor));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res
+      .status(400)
+      .json(
+        createResponse(
+          false,
+          'Controller Error: Updation failed',
+          {},
+          error?.message,
+        ),
+      );
+  }
+};
+
 const updateInstructorProfilePicture = async (req: Request, res: Response) => {
   try {
     if (!req.files || !req.files.file) {
@@ -36,21 +84,8 @@ const updateInstructorProfilePicture = async (req: Request, res: Response) => {
   }
 };
 
-const instructorDetails = async (req: Request, res: Response) => {
-  try {
-    const userId = req.user?._id;
-    if (!userId) {
-      throw new Error('DB error: User fetching failed');
-    }
-    const instructor = await instructorProfileUseCases.fetchInstructor(userId);
-
-    res
-      .status(200)
-      .json(createResponse(true, 'User data fetching successful', instructor));
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    res.status(400).json(createResponse(false, error?.message));
-  }
+export default {
+  instructorDetails,
+  updateInstructorProfilePicture,
+  updateProfileData,
 };
-
-export default { updateInstructorProfilePicture, instructorDetails };

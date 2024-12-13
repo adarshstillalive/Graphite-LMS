@@ -1,8 +1,8 @@
-import { IInstructor } from '@/interfaces/Instructor';
+import { IInstructorPopulated } from '@/interfaces/Instructor';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface UserState {
-  currentInstructor: IInstructor | null;
+  currentInstructor: IInstructorPopulated | null;
   isLoading: boolean;
   error: string | null;
 }
@@ -17,7 +17,10 @@ const instructorSlice = createSlice({
   name: 'instructor',
   initialState,
   reducers: {
-    setCurrentInstructor: (state, action: PayloadAction<IInstructor>) => {
+    setCurrentInstructor: (
+      state,
+      action: PayloadAction<IInstructorPopulated>
+    ) => {
       state.currentInstructor = {
         ...state.currentInstructor,
         ...action.payload,
