@@ -33,7 +33,6 @@ import { inputStyle } from '@/interfaces/zodCourseFormSchema';
 import { CourseFormValues } from '@/pages/instructor/courses/CreateCourse';
 import { Plus, Trash2 } from 'lucide-react';
 import { UseFormReturn } from 'react-hook-form';
-import Dropzone from './DropZone';
 import { Textarea } from '@/components/ui/textarea';
 import { useDispatch } from 'react-redux';
 import { nanoid } from '@reduxjs/toolkit';
@@ -41,6 +40,7 @@ import {
   setDeleteChapter,
   setDeleteEpisode,
 } from '@/redux/slices/instructor/courseCreationSlice';
+import VideoDropzone from './VideoDropZone';
 
 interface CurriculumProps {
   form: UseFormReturn<CourseFormValues>;
@@ -249,7 +249,7 @@ const Curriculum = ({ form }: CurriculumProps) => {
                           name={`chapters.${chapterIndex}.episodes.${episodeIndex}.content.video`}
                           render={() => (
                             <FormItem>
-                              <Dropzone
+                              <VideoDropzone
                                 chapterIndex={chapterIndex}
                                 episodeIndex={episodeIndex}
                                 chapterId={chapter.id}

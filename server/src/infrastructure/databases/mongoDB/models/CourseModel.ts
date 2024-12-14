@@ -26,6 +26,7 @@ export interface IMongoCourse {
   description: string;
   mrp: number;
   price: number;
+  thumbnail: string;
   isApproved?: boolean;
   isRejected?: boolean;
   rejectedReason?: string;
@@ -81,6 +82,10 @@ const CourseSchema: Schema<IMongoCourse> = new Schema(
     },
     price: {
       type: Number,
+      required: true,
+    },
+    thumbnail: {
+      type: String,
       required: true,
     },
     isApproved: {

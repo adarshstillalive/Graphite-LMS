@@ -1,3 +1,4 @@
+import { UploadedFile } from 'express-fileupload';
 import Course, {
   IChapter,
   ICourse,
@@ -6,9 +7,13 @@ import Course, {
 } from '../../../domain/entities/Course.js';
 import CourseRepository from '../../../domain/repositories/instructor/CourseRepository.js';
 import { v2 as cloudinaryV2 } from 'cloudinary';
+import InstructorUploadService from '../../../infrastructure/cloudinary/InstructorUploadService.js';
 
 class InstructorCourseUseCases {
-  constructor(private courseRepository: CourseRepository) {}
+  constructor(
+    private courseRepository: CourseRepository,
+    private instructorUploadService: InstructorUploadService,
+  ) {}
 
   async fetchCategories() {
     try {
@@ -34,6 +39,7 @@ class InstructorCourseUseCases {
         price,
         welcomeMessage,
         courseCompletionMessage,
+        thumbnail,
         chapters,
       } = formData;
       if (!chapters) {
@@ -65,6 +71,7 @@ class InstructorCourseUseCases {
         description,
         price,
         price,
+        thumbnail,
         false,
         false,
         0,
@@ -131,6 +138,39 @@ class InstructorCourseUseCases {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log('Usecase Error: Creating signature failed', error);
+
+      throw new Error(error);
+    }
+  }
+
+  async uploadCourseThumbnail(file: UploadedFile, instructorId: string) {
+    try {
+      if (!file.mimetype.startsWith('image/')) {
+        throw new Error('Usecase Error: Invaild file type');
+      }
+
+      const folderPath = 'instructor/course/thumbnail';
+      const result = await this.instructorUploadService.uploadfile(
+        file,
+        instructorId,
+        folderPath,
+      );
+      const imageUrl = result.secure_url;
+      return imageUrl;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Usecase: Error in uploading thumbnail', error);
+
+      throw new Error(error);
+    }
+  }
+
+  async removeCourseThumbnail(publicId: string) {
+    try {
+      await this.instructorUploadService.removefile(publicId);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Usecase: Error in uploading thumbnail', error);
 
       throw new Error(error);
     }

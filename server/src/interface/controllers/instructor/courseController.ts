@@ -2,9 +2,15 @@ import { Request, Response } from 'express';
 import MongoCourseRepository from '../../../infrastructure/databases/mongoDB/instructor/MongoCourseRepository.js';
 import InstructorCourseUseCases from '../../../application/useCases/instructor/instructorCourseUseCases.js';
 import { createResponse } from '../../../utils/createResponse.js';
+import { UploadedFile } from 'express-fileupload';
+import InstructorUploadService from '../../../infrastructure/cloudinary/InstructorUploadService.js';
 
 const courseRepository = new MongoCourseRepository();
-const instructorCourseUseCases = new InstructorCourseUseCases(courseRepository);
+const instructorUploadService = new InstructorUploadService();
+const instructorCourseUseCases = new InstructorCourseUseCases(
+  courseRepository,
+  instructorUploadService,
+);
 
 const fetchCourses = async (req: Request, res: Response) => {
   try {
@@ -39,6 +45,57 @@ const createCourse = async (req: Request, res: Response) => {
     res
       .status(500)
       .json(createResponse(false, 'Course creation failed', {}, error));
+  }
+};
+
+const uploadCourseThumbnail = async (req: Request, res: Response) => {
+  try {
+    if (!req.files || !req.files.file) {
+      throw new Error('Error fetching image file');
+    }
+    const file = req.files.file as UploadedFile;
+    const userId = req.user?._id;
+    if (!userId) {
+      throw new Error('Server error');
+    }
+    const imageUrl = await instructorCourseUseCases.uploadCourseThumbnail(
+      file,
+      userId,
+    );
+    res.status(200).json(createResponse(true, 'Thumbnail uploaded', imageUrl));
+  } catch (error) {
+    res
+      .status(500)
+      .json(
+        createResponse(
+          false,
+          'Controller error: Thumbnail upload failed',
+          {},
+          error,
+        ),
+      );
+  }
+};
+
+const removeCourseThumbnail = async (req: Request, res: Response) => {
+  try {
+    const { publicId } = req.query;
+    if (typeof publicId !== 'string') {
+      throw new Error('Invalid publicId');
+    }
+    await instructorCourseUseCases.removeCourseThumbnail(publicId);
+    res.status(200).json(createResponse(true, 'Thumbnail removed'));
+  } catch (error) {
+    res
+      .status(500)
+      .json(
+        createResponse(
+          false,
+          'Controller error: Thumbnail removal failed',
+          {},
+          error,
+        ),
+      );
   }
 };
 
@@ -108,6 +165,8 @@ const getvideoSign = async (req: Request, res: Response) => {
 export default {
   fetchCourses,
   createCourse,
+  removeCourseThumbnail,
+  uploadCourseThumbnail,
   uploadVideoUrl,
   fetchCategories,
   getvideoSign,

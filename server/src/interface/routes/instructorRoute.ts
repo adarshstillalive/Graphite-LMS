@@ -46,6 +46,18 @@ instructorRoute.post(
 );
 
 instructorRoute.post(
+  '/api/course/thumbnail',
+  userAuthMiddleware.authorization,
+  courseController.uploadCourseThumbnail,
+);
+
+instructorRoute.delete(
+  '/api/course/thumbnail',
+  userAuthMiddleware.authorization,
+  courseController.removeCourseThumbnail,
+);
+
+instructorRoute.post(
   '/api/course/videoUrl',
   userAuthMiddleware.authorization,
   courseController.uploadVideoUrl,

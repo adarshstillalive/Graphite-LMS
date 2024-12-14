@@ -31,6 +31,7 @@ export interface ICourse {
   description: string;
   mrp: number;
   price: number;
+  thumbnail: string;
   isApproved?: boolean;
   isRejected?: boolean;
   rejectedReason?: string;
@@ -55,6 +56,7 @@ class Course implements ICourse {
     public description: string,
     public mrp: number,
     public price: number,
+    public thumbnail: string,
     public isApproved?: boolean,
     public isPublished?: boolean,
     public rating?: number,

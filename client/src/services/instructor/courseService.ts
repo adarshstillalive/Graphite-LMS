@@ -36,6 +36,36 @@ export const uploadVideoUrlApi = async (
   return response.data;
 };
 
+export const uploadCourseThumbnail = async (
+  file: FormData
+): Promise<ApiResponse> => {
+  const response = await instructorAxiosInstance.post(
+    '/api/course/thumbnail',
+    file,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  );
+  return response.data;
+};
+
+export const removeCourseThumbnail = async (
+  imageUrl: string
+): Promise<ApiResponse> => {
+  const regex = /instructor\/course\/thumbnail\/(.+)\./;
+  const match = imageUrl.match(regex);
+  if (!match) {
+    throw new Error('Service Error: wrong image credentials');
+  }
+  const publicId = `instructor/course/thumbnail/${match[1]}`;
+  const response = await instructorAxiosInstance.delete(
+    `/api/course/thumbnail/?publicId=${publicId}`
+  );
+  return response.data;
+};
+
 export const fetchCoursesApi = async (): Promise<ApiResponse> => {
   const response = await instructorAxiosInstance.get('/api/courses');
   return response.data;

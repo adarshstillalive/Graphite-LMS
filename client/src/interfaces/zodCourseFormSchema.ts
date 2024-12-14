@@ -52,6 +52,7 @@ export const courseSchema = z.object({
   price: z.string().min(1, 'Please enter a valid price'),
   welcomeMessage: z.string().optional(),
   courseCompletionMessage: z.string().optional(),
+  thumbnail: z.string().url('Add one thumbnail for the course'),
   chapters: z.array(chapterSchema).min(1, 'Please add at least one chapter.'),
 });
 

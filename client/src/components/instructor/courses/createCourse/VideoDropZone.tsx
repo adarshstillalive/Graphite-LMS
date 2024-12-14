@@ -15,7 +15,7 @@ interface DropzoneProps {
   onVideoUploadSuccess: () => void;
 }
 
-const Dropzone: React.FC<DropzoneProps> = ({
+const VideoDropzone: React.FC<DropzoneProps> = ({
   chapterIndex,
   episodeIndex,
   chapterId,
@@ -123,4 +123,4 @@ const Dropzone: React.FC<DropzoneProps> = ({
   );
 };
 
-export default Dropzone;
+export default VideoDropzone;

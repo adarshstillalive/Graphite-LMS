@@ -54,6 +54,7 @@ const CreateCourse = () => {
       price: '',
       welcomeMessage: '',
       courseCompletionMessage: '',
+      thumbnail: '',
       chapters: [
         {
           id: nanoid(),
