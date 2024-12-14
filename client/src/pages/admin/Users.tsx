@@ -1,6 +1,6 @@
 import TableComponent from '@/components/admin/users/TableComponent';
 import DataPagination from '@/components/common/DataPagination';
-import { Button } from '@/components/ui/button';
+import SearchAndSort from '@/components/common/SearchAndSort';
 import {
   Card,
   CardContent,
@@ -9,19 +9,10 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
 import { IUser } from '@/interfaces/User';
 import { getUsers } from '@/services/admin/userService';
 import { useEffect, useState } from 'react';
-import { FaSearch } from 'react-icons/fa';
-import { FaFilter } from 'react-icons/fa6';
 
 const Users = () => {
   const { toast } = useToast();
@@ -62,53 +53,12 @@ const Users = () => {
       <CardHeader>
         <CardTitle>Users</CardTitle>
         <CardDescription>
-          <div className="mb-6 flex flex-col sm:flex-row pt-4 gap-4">
-            <div className="relative flex-1">
-              <FaSearch className="absolute left-3 top-3 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search by name or email"
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-sm focus:border-black"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <span className="sr-only">Open menu</span>
-                  <FaFilter />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Sort</DropdownMenuLabel>
-                <DropdownMenuItem
-                  onClick={() => setSortHelper({ field: 'name', value: 1 })}
-                >
-                  aA-zZ
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => setSortHelper({ field: 'name', value: -1 })}
-                >
-                  zZ-aA
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() =>
-                    setSortHelper({ field: 'createdAt', value: 1 })
-                  }
-                >
-                  Created (New)
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() =>
-                    setSortHelper({ field: 'createdAt', value: -1 })
-                  }
-                >
-                  Created (Old)
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <SearchAndSort
+            field="firstName"
+            search={search}
+            setSearch={setSearch}
+            setSortHelper={setSortHelper}
+          />
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-2">

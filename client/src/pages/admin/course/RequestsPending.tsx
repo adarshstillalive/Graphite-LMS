@@ -1,5 +1,4 @@
 import { RequestCard } from '@/components/admin/course/RequestCard';
-import { RequestDetails } from '@/components/admin/course/RequestDetails';
 import DataPagination from '@/components/common/DataPagination';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,11 +18,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
 import { IPopulatedCourse } from '@/interfaces/Course';
-import {
-  approveCourseRequest,
-  fetchRequestApi,
-  rejectCourseRequest,
-} from '@/services/admin/courseService';
+import { fetchRequestApi } from '@/services/admin/courseService';
 import { useEffect, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import { FaFilter } from 'react-icons/fa6';
@@ -38,10 +33,6 @@ const RequestsPending = () => {
     value: -1,
   });
   const [requests, setRequests] = useState<IPopulatedCourse[]>([]);
-  const [selectedCourse, setSelectedCourse] = useState<
-    (typeof requests)[0] | null
-  >(null);
-  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   useEffect(() => {
     const handler = setTimeout(async () => {
@@ -68,68 +59,6 @@ const RequestsPending = () => {
     setCurrentPage(page);
   };
 
-  const onViewDetails = (courseId: string) => {
-    const course = requests.find((c) => c._id === courseId);
-    if (course) {
-      setSelectedCourse(course);
-      setIsDetailOpen(true);
-    }
-  };
-
-  const handleCloseDetail = () => {
-    setIsDetailOpen(false);
-    setSelectedCourse(null);
-  };
-
-  const handleApproveCourse = async (courseId: string) => {
-    console.log(courseId);
-    try {
-      const response = await approveCourseRequest(courseId);
-      if (response.success) {
-        const filteredRequests = requests.filter(
-          (course) => course._id !== courseId
-        );
-        setRequests(filteredRequests);
-        toast({
-          variant: 'default',
-          description: 'Course status approved successfully',
-        });
-      }
-    } catch (error) {
-      console.log(error);
-      toast({
-        variant: 'destructive',
-        description: 'Approving course status failed, try again',
-      });
-    } finally {
-      setIsDetailOpen(false);
-    }
-  };
-
-  const handleRejectCourse = async (courseId: string, reason: string) => {
-    console.log(reason);
-    try {
-      const response = await rejectCourseRequest(courseId, reason);
-      if (response.success) {
-        const filteredRequests = requests.filter(
-          (course) => course._id !== courseId
-        );
-        setRequests(filteredRequests);
-        toast({
-          variant: 'default',
-          description: 'Course rejected successfully',
-        });
-      }
-    } catch (error) {
-      console.log(error);
-      toast({
-        variant: 'destructive',
-        description: 'Rejecting course status failed, try again',
-      });
-    } finally {
-      setIsDetailOpen(false);
-    }
-  };
   return (
     <Card>
       <CardHeader>
@@ -184,24 +113,11 @@ const RequestsPending = () => {
           </div>
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-2">
+      <CardContent className="grid grid-cols-3">
         {requests &&
           requests.map((request) => (
-            <RequestCard
-              key={request._id}
-              course={request}
-              onViewDetails={onViewDetails}
-            />
+            <RequestCard key={request._id} course={request} />
           ))}
-        {selectedCourse && (
-          <RequestDetails
-            course={selectedCourse}
-            isOpen={isDetailOpen}
-            onClose={handleCloseDetail}
-            onApprove={handleApproveCourse}
-            onReject={handleRejectCourse}
-          />
-        )}
       </CardContent>
       <CardFooter>
         <DataPagination

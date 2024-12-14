@@ -23,6 +23,28 @@ class InstructorUploadService {
     }
   }
 
+  async uploadProfilePicture(
+    file: UploadedFile,
+    instructorId: string,
+    folderPath: string,
+  ) {
+    try {
+      return cloudinaryV2.uploader.upload(file.tempFilePath, {
+        folder: folderPath,
+        public_id: instructorId,
+        overwrite: true,
+        width: 300,
+        height: 300,
+        crop: 'fill',
+        gravity: 'auto',
+      });
+    } catch (error) {
+      console.log(error);
+
+      throw new Error('Cloudinary Error: Upload failed');
+    }
+  }
+
   async removefile(publicId: string) {
     try {
       await cloudinaryV2.uploader.destroy(publicId);

@@ -1,6 +1,6 @@
 import CourseTable from '@/components/admin/course/CourseTable';
 import DataPagination from '@/components/common/DataPagination';
-import { Button } from '@/components/ui/button';
+import SearchAndSort from '@/components/common/SearchAndSort';
 import {
   Card,
   CardContent,
@@ -12,16 +12,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { IPopulatedCourse } from '@/interfaces/Course';
 import { fetchCoursesApi } from '@/services/admin/courseService';
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuItem,
-} from '@radix-ui/react-dropdown-menu';
 import { useEffect, useState } from 'react';
-import { FaSearch } from 'react-icons/fa';
-import { FaFilter } from 'react-icons/fa6';
 
 interface CourseListProps {
   enableEditTab: (course: IPopulatedCourse) => void;
@@ -50,7 +41,7 @@ const CourseList: React.FC<CourseListProps> = ({ enableEditTab }) => {
         console.log(error);
         toast({
           variant: 'destructive',
-          description: 'Error in fetching category data',
+          description: 'Fetching courses failed, Refresh the page',
         });
       }
     }, 300);
@@ -67,53 +58,12 @@ const CourseList: React.FC<CourseListProps> = ({ enableEditTab }) => {
       <CardHeader>
         <CardTitle>Courses</CardTitle>
         <CardDescription>
-          <div className="mb-6 flex flex-col sm:flex-row pt-4 gap-4">
-            <div className="relative flex-1">
-              <FaSearch className="absolute left-3 top-3 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search by name or email"
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-sm focus:border-black"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <span className="sr-only">Open menu</span>
-                  <FaFilter />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Sort</DropdownMenuLabel>
-                <DropdownMenuItem
-                  onClick={() => setSortHelper({ field: 'title', value: 1 })}
-                >
-                  aA-zZ
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => setSortHelper({ field: 'title', value: -1 })}
-                >
-                  zZ-aA
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() =>
-                    setSortHelper({ field: 'createdAt', value: 1 })
-                  }
-                >
-                  Created (New)
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() =>
-                    setSortHelper({ field: 'createdAt', value: -1 })
-                  }
-                >
-                  Created (Old)
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <SearchAndSort
+            field="title"
+            search={search}
+            setSearch={setSearch}
+            setSortHelper={setSortHelper}
+          />
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-2">

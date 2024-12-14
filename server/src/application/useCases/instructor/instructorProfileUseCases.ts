@@ -30,7 +30,7 @@ class InstructorProfileUseCases {
         throw new Error('Invalid file type. Only images are allowed.');
       }
       const folderPath = `instructor/profile_pictures`;
-      const result = await this.instructorUploadService.uploadfile(
+      const result = await this.instructorUploadService.uploadProfilePicture(
         file,
         instructorId,
         folderPath,

@@ -7,6 +7,7 @@ import AdminAuthProtectedRoute from './protectedRoutes/AdminAuthProtectedRoute';
 import Course from '@/pages/admin/course/Course';
 import Users from '@/pages/admin/Users';
 import Instructor from '@/pages/admin/instructor/Instructor';
+import CourseDetail from '@/pages/admin/course/CourseDetail';
 
 const adminRoutes = [
   {
@@ -45,6 +46,10 @@ const adminRoutes = [
       {
         path: 'courses',
         element: <Course />,
+      },
+      {
+        path: 'courses/courseDetail',
+        element: <CourseDetail />,
       },
       {
         path: 'communication',

@@ -27,6 +27,7 @@ export interface ICourse {
   description: string;
   mrp: number;
   price: number;
+  thumbnail: string;
   isApproved?: boolean;
   isRejected?: boolean;
   rejectedReason?: string;
@@ -51,6 +52,7 @@ export interface IPopulatedCourse {
   description: string;
   mrp: number;
   price: number;
+  thumbnail: string;
   isApproved?: boolean;
   isRejected?: boolean;
   rejectedReason?: string;

@@ -281,6 +281,7 @@ const Curriculum = ({ form }: CurriculumProps) => {
                                 className="min-h-[200px]"
                                 placeholder="Enter content here."
                               />
+
                               <FormMessage />
                             </FormItem>
                           )}

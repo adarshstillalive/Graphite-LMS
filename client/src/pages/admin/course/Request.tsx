@@ -28,10 +28,10 @@ const Request = () => {
   return (
     <Tabs
       value={activeTab}
-      className="w-3/4 pt-4 mx-auto"
+      className="w-full pt-4 mx-auto"
       onValueChange={handleInterfaceChange}
     >
-      <TabsList className="grid w-full grid-cols-2">
+      <TabsList className="grid grid-cols-2 w-3/4 mx-auto">
         <TabsTrigger
           className=" data-[state=active]:bg-black data-[state=active]:text-white "
           value="requestsPending"

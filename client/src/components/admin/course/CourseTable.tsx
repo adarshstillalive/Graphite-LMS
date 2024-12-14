@@ -4,7 +4,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
@@ -23,6 +22,7 @@ import {
 import { IPopulatedCourse } from '@/interfaces/Course';
 import { MoreHorizontal } from 'lucide-react';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface TableComponentProps {
   courseData: IPopulatedCourse[];
@@ -30,6 +30,7 @@ interface TableComponentProps {
 }
 
 const CourseTable: React.FC<TableComponentProps> = ({ courseData, onEdit }) => {
+  const navigate = useNavigate();
   return (
     <Table>
       <TableCaption>Courses</TableCaption>
@@ -108,7 +109,15 @@ const CourseTable: React.FC<TableComponentProps> = ({ courseData, onEdit }) => {
                   >
                     Block
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() =>
+                      navigate('/admin/courses/courseDetail', {
+                        state: { course },
+                      })
+                    }
+                  >
+                    View course
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => onEdit(course)}>
                     Edit course
                   </DropdownMenuItem>

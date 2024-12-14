@@ -1,5 +1,4 @@
-import { RejectedRequestCard } from '@/components/admin/course/RejectedRequestCard';
-import { RejectedRequestDetails } from '@/components/admin/course/RejectedRequestDetails';
+import { RequestCard } from '@/components/admin/course/RequestCard';
 import DataPagination from '@/components/common/DataPagination';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,10 +18,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
 import { IPopulatedCourse } from '@/interfaces/Course';
-import {
-  approveCourseRequest,
-  fetchRejectedRequestApi,
-} from '@/services/admin/courseService';
+import { fetchRejectedRequestApi } from '@/services/admin/courseService';
 import { useEffect, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import { FaFilter } from 'react-icons/fa6';
@@ -37,10 +33,6 @@ const RejectedRequests = () => {
     value: -1,
   });
   const [requests, setRequests] = useState<IPopulatedCourse[]>([]);
-  const [selectedCourse, setSelectedCourse] = useState<
-    (typeof requests)[0] | null
-  >(null);
-  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   useEffect(() => {
     const handler = setTimeout(async () => {
@@ -69,43 +61,6 @@ const RejectedRequests = () => {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-  };
-
-  const onViewDetails = (courseId: string) => {
-    const course = requests.find((c) => c._id === courseId);
-    if (course) {
-      setSelectedCourse(course);
-      setIsDetailOpen(true);
-    }
-  };
-
-  const handleCloseDetail = () => {
-    setIsDetailOpen(false);
-    setSelectedCourse(null);
-  };
-
-  const handleApproveCourse = async (courseId: string) => {
-    try {
-      const response = await approveCourseRequest(courseId);
-      if (response.success) {
-        const filteredRequests = requests.filter(
-          (course) => course._id !== courseId
-        );
-        setRequests(filteredRequests);
-        toast({
-          variant: 'default',
-          description: 'Course status approved successfully',
-        });
-      }
-    } catch (error) {
-      console.log(error);
-      toast({
-        variant: 'destructive',
-        description: 'Approving course status failed, try again',
-      });
-    } finally {
-      setIsDetailOpen(false);
-    }
   };
 
   return (
@@ -165,20 +120,8 @@ const RejectedRequests = () => {
       <CardContent className="space-y-2">
         {requests &&
           requests.map((request) => (
-            <RejectedRequestCard
-              key={request._id}
-              course={request}
-              onViewDetails={onViewDetails}
-            />
+            <RequestCard key={request._id} course={request} />
           ))}
-        {selectedCourse && (
-          <RejectedRequestDetails
-            course={selectedCourse}
-            isOpen={isDetailOpen}
-            onClose={handleCloseDetail}
-            onApprove={handleApproveCourse}
-          />
-        )}
       </CardContent>
       <CardFooter>
         <DataPagination
