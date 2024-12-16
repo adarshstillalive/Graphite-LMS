@@ -66,26 +66,24 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 items-center lg:items-start">
-      {currentUser && currentInstructor && (
-        <div className="lg:order-2">
-          <ProfilePicture
-            name={currentUser?.firstName ? currentUser.firstName : ''}
-            profilePicture={currentInstructor?.profilePicture}
-            onProfilePictureChange={handleFileChange}
-          />
-        </div>
-      )}
-      {currentInstructor && (
-        <div className="lg:w-3/4 lg:order-1">
+    <div className="flex flex-col gap-6 py-8">
+      <div className="flex flex-col lg:flex-row gap-6 items-center lg:items-start">
+        {currentInstructor && (
           <ProfileDetails
             instructorData={currentInstructor}
             isEditing={isEditing}
             onEdit={() => setIsEditing(!isEditing)}
             onUpdate={handleUpdateProfile}
           />
-        </div>
-      )}
+        )}
+        {currentUser && currentInstructor && (
+          <ProfilePicture
+            name={currentUser?.firstName ? currentUser.firstName : ''}
+            profilePicture={currentInstructor?.profilePicture}
+            onProfilePictureChange={handleFileChange}
+          />
+        )}
+      </div>
     </div>
   );
 };

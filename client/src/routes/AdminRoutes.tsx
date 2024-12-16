@@ -5,9 +5,10 @@ import { AdminAuthLayout, AdminLayout } from '@/layouts/AdminLayout';
 import adminAuthRoute from './adminAuthRoute';
 import AdminAuthProtectedRoute from './protectedRoutes/AdminAuthProtectedRoute';
 import Course from '@/pages/admin/course/Course';
-import Users from '@/pages/admin/Users';
+import Users from '@/pages/admin/user/Users';
 import Instructor from '@/pages/admin/instructor/Instructor';
 import CourseDetail from '@/pages/admin/course/CourseDetail';
+import Profile from '@/pages/admin/instructor/Profile';
 
 const adminRoutes = [
   {
@@ -42,6 +43,10 @@ const adminRoutes = [
       {
         path: 'instructors',
         element: <Instructor />,
+      },
+      {
+        path: 'instructors/profile',
+        element: <Profile />,
       },
       {
         path: 'courses',

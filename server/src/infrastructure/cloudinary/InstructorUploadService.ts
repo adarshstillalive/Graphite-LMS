@@ -1,5 +1,6 @@
 import { UploadedFile } from 'express-fileupload';
 import cloudinaryV2 from '../../config/cloudinary.js';
+import { v4 as uuidv4 } from 'uuid';
 
 class InstructorUploadService {
   async uploadfile(
@@ -8,9 +9,11 @@ class InstructorUploadService {
     folderPath: string,
   ) {
     try {
+      const uniqueId = uuidv4();
+      const publicId = `${instructorId}-${uniqueId}`;
       return cloudinaryV2.uploader.upload(file.tempFilePath, {
         folder: folderPath,
-        public_id: instructorId,
+        public_id: publicId,
         width: 300,
         height: 200,
         crop: 'fill',

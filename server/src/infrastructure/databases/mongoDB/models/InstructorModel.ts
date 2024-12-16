@@ -62,6 +62,7 @@ const instructorSchema: Schema<IMongoInstructor> = new Schema(
         courseId: {
           type: mongoose.Schema.Types.ObjectId,
           required: true,
+          ref: 'Course',
         },
         createdAt: {
           type: Date,

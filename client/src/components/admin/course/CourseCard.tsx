@@ -18,7 +18,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                  transition-all duration-300 hover:shadow-2xl hover:border-primary/50 
                  bg-white dark:bg-gray-900"
       onClick={() =>
-        navigate('/instructor/courses/courseDetail', { state: { course } })
+        navigate('/admin/courses/courseDetail', { state: { course } })
       }
     >
       <div className="relative aspect-video w-full overflow-hidden">
@@ -51,7 +51,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
         </div>
 
         <div className="flex items-center justify-between mb-3">
-          <span className="text-2xl font-semibold text-primary">
+          <span className="text-2xl font-bold text-primary">
             ₹{course.price.toFixed(2)}
           </span>
         </div>
@@ -66,7 +66,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
           <div className="flex items-center space-x-1 text-gray-500 dark:text-gray-400">
             <Layers className="h-4 w-4" />
             <span className="text-xs">
-              {course.chapters?.length || 0} Chapter(s)
+              {course.chapters?.length || 0} Chapters
             </span>
           </div>
         </div>

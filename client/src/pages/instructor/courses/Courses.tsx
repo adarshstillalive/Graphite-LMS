@@ -1,24 +1,11 @@
 import { CourseCard } from '@/components/instructor/courses/course/CourseCard';
-import { CourseDetailPage } from '@/components/instructor/courses/course/CourseDetailPage';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
 import { IPopulatedCourse } from '@/interfaces/Course';
 import { fetchCoursesApi } from '@/services/instructor/courseService';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const Courses = () => {
-  const [showDetails, setShowDetails] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<IPopulatedCourse | null>(
-    null
-  );
   const [courses, setCourses] = useState<IPopulatedCourse[]>([]);
 
   useEffect(() => {
@@ -33,11 +20,6 @@ const Courses = () => {
     fetchCourses();
   }, []);
 
-  const handleViewDetails = (course: IPopulatedCourse) => {
-    setSelectedCourse(course);
-    setShowDetails(true);
-  };
-
   // const handleBackToCourses = () => {
   //   setShowDetails(false);
   //   setSelectedCourse(null);
@@ -45,41 +27,23 @@ const Courses = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
+      <div className="flex justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Courses</h1>
+          <p className="text-gray-600">Manage and view your courses</p>
+        </div>
         <Button className="rounded-none">
           <Link to="/instructor/createCourse">Create Course</Link>
         </Button>
       </div>
-      <Card>
-        <CardHeader>
-          <CardTitle>Courses</CardTitle>
-          <CardDescription>Manage and view your courses</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="container mx-auto p-4">
-            {!showDetails ? (
-              courses.length > 0 ? (
-                courses.map((course) => (
-                  <CourseCard
-                    key={course._id}
-                    course={course}
-                    onViewDetails={() => handleViewDetails(course)}
-                  />
-                ))
-              ) : (
-                <p>No courses found. Start by creating a new course.</p>
-              )
-            ) : selectedCourse ? (
-              <CourseDetailPage course={selectedCourse} />
-            ) : (
-              <p>Loading course details...</p>
-            )}
-          </div>
-        </CardContent>
-        <CardFooter>
-          <p>End of Courses</p>
-        </CardFooter>
-      </Card>
+
+      <div className="space-y-6 w-full lg:w-2/3">
+        <div className="container mx-auto p-4">
+          {courses.map((course) => (
+            <CourseCard key={course._id} course={course} />
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

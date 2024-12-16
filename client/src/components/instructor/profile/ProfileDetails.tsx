@@ -3,8 +3,6 @@ import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
 import {
   Form,
   FormControl,
@@ -15,7 +13,8 @@ import {
 } from '@/components/ui/form';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { IInstructorPopulated } from '@/interfaces/Instructor';
+import { IInstructorPopulated, SocialAccounts } from '@/interfaces/Instructor';
+import { inputStyle } from '@/interfaces/zodCourseFormSchema';
 
 // Zod Schema
 const profileSchema = z.object({
@@ -91,75 +90,89 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({
 
   if (!isEditing) {
     return (
-      <Card className="w-full max-w-3xl mx-auto rounded-none">
-        <CardHeader>
-          <CardTitle className="text-3xl font-bold">
+      <div className="space-y-6 w-full lg:w-2/3">
+        <div>
+          <h1 className="text-3xl font-bold">
             {instructorData.userId.firstName +
               ' ' +
               instructorData.userId.lastName}
-          </CardTitle>
+          </h1>
           <p className="text-gray-600">{instructorData.userId.email}</p>
-        </CardHeader>
-        <CardContent className="space-y-6">
+        </div>
+
+        <div className="space-y-6">
           <div>
             <h3 className="text-xl font-semibold mb-2">About</h3>
             <p className="text-gray-700">{instructorData.bio || 'Empty'}</p>
           </div>
-          <Separator />
-          <div>
-            <h3 className="text-xl font-semibold mb-2">Expertise</h3>
-            <ul className="list-disc list-inside text-gray-700">
-              {instructorData.expertise?.map((item, index) => (
-                <li key={index}>{item}</li>
-              ))}
-            </ul>
-          </div>
-          <Separator />
-          <div>
-            <h3 className="text-xl font-semibold mb-2">Education</h3>
-            <ul className="list-disc list-inside text-gray-700">
-              {instructorData.qualifications?.map((item, index) => (
-                <li key={index}>{item}</li>
-              ))}
-            </ul>
-          </div>
-          <Separator />
-          <div>
-            <h3 className="text-xl font-semibold mb-2">Social Links</h3>
-            <ul className="space-y-2">
-              {instructorData.socialAccounts?.map((account, index) => (
-                <li key={index}>
-                  <a
-                    href={account.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline flex items-center"
-                  >
-                    <span className="font-medium mr-2">
-                      {account.provider}:
-                    </span>
-                    {account.link}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="mt-6">
-            <Button onClick={onEdit}>Edit Profile</Button>
-          </div>
-        </CardContent>
-      </Card>
+
+          {instructorData.expertise && instructorData.expertise.length > 0 && (
+            <div>
+              <h3 className="text-xl font-semibold mb-2">Expertise</h3>
+              <ul className="list-disc list-inside text-gray-700">
+                {instructorData.expertise.map((item: string, index: number) => (
+                  <li key={index}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {instructorData.qualifications &&
+            instructorData.qualifications.length > 0 && (
+              <div>
+                <h3 className="text-xl font-semibold mb-2">Education</h3>
+                <ul className="list-disc list-inside text-gray-700">
+                  {instructorData.qualifications.map(
+                    (item: string, index: number) => (
+                      <li key={index}>{item}</li>
+                    )
+                  )}
+                </ul>
+              </div>
+            )}
+
+          {instructorData.socialAccounts &&
+            instructorData.socialAccounts.length > 0 && (
+              <div>
+                <h3 className="text-xl font-semibold mb-2">Social Links</h3>
+                <ul className="space-y-2">
+                  {instructorData.socialAccounts.map(
+                    (account: SocialAccounts, index: number) => (
+                      <li key={index}>
+                        <a
+                          href={account.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:underline flex items-center"
+                        >
+                          <span className="font-medium mr-2">
+                            {account.provider}:
+                          </span>
+                          {account.link}
+                        </a>
+                      </li>
+                    )
+                  )}
+                </ul>
+              </div>
+            )}
+        </div>
+        <div className="mt-6">
+          <Button onClick={onEdit}>Edit Profile</Button>
+        </div>
+      </div>
     );
   }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
-      <CardHeader>
-        <CardTitle>Edit Profile</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <div className="space-y-6 w-full lg:w-2/3">
+      <div>
+        <h1 className="text-3xl font-bold">Edit Profile</h1>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-6 mt-8"
+          >
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -168,7 +181,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({
                   <FormItem>
                     <FormLabel>First Name</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} className={inputStyle} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -181,7 +194,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({
                   <FormItem>
                     <FormLabel>Last Name</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} className={inputStyle} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -196,7 +209,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input {...field} disabled />
+                    <Input {...field} className={inputStyle} disabled />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -210,7 +223,11 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({
                 <FormItem>
                   <FormLabel>Bio</FormLabel>
                   <FormControl>
-                    <Textarea {...field} value={field.value || ''} />
+                    <Textarea
+                      className="min-h-[200px] rounded-none"
+                      {...field}
+                      value={field.value || ''}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -228,7 +245,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({
                     render={({ field }) => (
                       <FormItem className="flex-grow">
                         <FormControl>
-                          <Input {...field} />
+                          <Input {...field} className={inputStyle} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -263,7 +280,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({
                     render={({ field }) => (
                       <FormItem className="flex-grow">
                         <FormControl>
-                          <Input {...field} />
+                          <Input {...field} className={inputStyle} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -298,7 +315,11 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({
                     render={({ field }) => (
                       <FormItem className="flex-grow">
                         <FormControl>
-                          <Input {...field} placeholder="Provider" />
+                          <Input
+                            {...field}
+                            className={inputStyle}
+                            placeholder="Provider"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -310,7 +331,11 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({
                     render={({ field }) => (
                       <FormItem className="flex-grow">
                         <FormControl>
-                          <Input {...field} placeholder="Link" />
+                          <Input
+                            {...field}
+                            className={inputStyle}
+                            placeholder="Link"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -342,8 +367,8 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({
             </div>
           </form>
         </Form>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 

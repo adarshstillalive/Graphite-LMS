@@ -32,6 +32,7 @@ const InstructorList = () => {
         const response = await getInstructors(currentPage, sort, search);
 
         const result = response.data;
+
         setInstructors(result.data);
         setTotalPages(Math.ceil(result.total / 10));
       } catch (error) {

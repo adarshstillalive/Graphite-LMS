@@ -26,7 +26,7 @@ export const RequestCard: React.FC<CourseRequestCardProps> = ({ course }) => {
       </div>
 
       <CardContent className="p-4">
-        <h3 className="mb-2 line-clamp-2 text-lg font-bold text-gray-900">
+        <h3 className="mb-2 line-clamp-2 text-lg font-bold text-gray-800">
           {course.title}
         </h3>
 

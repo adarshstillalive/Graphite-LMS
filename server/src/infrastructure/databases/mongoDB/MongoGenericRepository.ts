@@ -48,7 +48,11 @@ class MongoGenericRepository<T> {
       .limit(limit)
       .sort(sort)
       .collation({ locale: 'en', strength: 2 })
-      .populate('userId');
+      .populate('userId')
+      .populate({
+        path: 'courses.courseId',
+        model: 'Course',
+      });
 
     const total = await this.model.countDocuments(filter);
     return {

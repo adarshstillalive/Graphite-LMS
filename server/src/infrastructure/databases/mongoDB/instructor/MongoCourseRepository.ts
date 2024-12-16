@@ -28,7 +28,14 @@ class MongoCourseRepository implements CourseRepository {
 
       await InstructorModel.updateOne(
         { userId: courseData.instructorId },
-        { $push: { courses: newCourse._id } },
+        {
+          $push: {
+            courses: {
+              courseId: newCourse._id,
+              createdAt: new Date(),
+            },
+          },
+        },
         { session },
       );
 

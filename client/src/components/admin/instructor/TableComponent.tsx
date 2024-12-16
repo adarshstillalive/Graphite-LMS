@@ -4,7 +4,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
@@ -22,6 +21,7 @@ import { IInstructorPopulated } from '@/interfaces/Instructor';
 import { handleBlock } from '@/services/admin/instructorService';
 import { MoreHorizontal } from 'lucide-react';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface TableComponentProps {
   instructorData: IInstructorPopulated[];
@@ -29,6 +29,7 @@ interface TableComponentProps {
 
 const TableComponent: React.FC<TableComponentProps> = ({ instructorData }) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const blockHandler = async (instructorId: string) => {
     try {
       const response = await handleBlock(instructorId);
@@ -60,16 +61,16 @@ const TableComponent: React.FC<TableComponentProps> = ({ instructorData }) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {instructorData.map((instructorData) => (
-          <TableRow key={instructorData._id}>
+        {instructorData.map((instructor) => (
+          <TableRow key={instructor._id}>
             <TableCell className="font-medium">
-              {`${instructorData.userId.firstName}` +
+              {`${instructor.userId.firstName}` +
                 ' ' +
-                `${instructorData.userId.lastName}`}
+                `${instructor.userId.lastName}`}
             </TableCell>
-            <TableCell>{instructorData.userId.email}</TableCell>
-            <TableCell>{String(instructorData.courses?.length)}</TableCell>
-            <TableCell>{String(instructorData.rating)}</TableCell>
+            <TableCell>{instructor.userId.email}</TableCell>
+            <TableCell>{String(instructor.courses?.length)}</TableCell>
+            <TableCell>{String(instructor.rating)}</TableCell>
             <TableCell className="text-right">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -82,14 +83,21 @@ const TableComponent: React.FC<TableComponentProps> = ({ instructorData }) => {
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuItem
                     onClick={() =>
-                      instructorData._id && blockHandler(instructorData._id)
+                      instructor._id && blockHandler(instructor._id)
                     }
                     className="text-red-500 hover:text-red-500"
                   >
-                    {instructorData.isBlocked ? 'Unblock' : 'Block'}
+                    {instructor.isBlocked ? 'Unblock' : 'Block'}
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>View Instructor</DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() =>
+                      navigate('/admin/instructors/profile', {
+                        state: { instructor },
+                      })
+                    }
+                  >
+                    View Instructor
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </TableCell>
