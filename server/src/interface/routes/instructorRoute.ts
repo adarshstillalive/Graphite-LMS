@@ -39,6 +39,12 @@ instructorRoute.get(
   courseController.fetchCourses,
 );
 
+instructorRoute.get(
+  '/api/course/:id',
+  userAuthMiddleware.authorization,
+  courseController.fetchCourseById,
+);
+
 instructorRoute.post(
   '/api/course',
   userAuthMiddleware.authorization,
@@ -55,6 +61,12 @@ instructorRoute.delete(
   '/api/course/thumbnail',
   userAuthMiddleware.authorization,
   courseController.removeCourseThumbnail,
+);
+
+instructorRoute.patch(
+  '/api/course/publish/:id',
+  userAuthMiddleware.authorization,
+  courseController.publishAction,
 );
 
 instructorRoute.post(

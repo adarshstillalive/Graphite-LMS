@@ -27,6 +27,27 @@ const fetchCourses = async (req: Request, res: Response) => {
   }
 };
 
+const fetchCourseById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const course = await instructorCourseUseCases.fetchCourse(id);
+    res
+      .status(200)
+      .json(createResponse(true, 'Fetching course successfull', course));
+  } catch (error) {
+    res
+      .status(500)
+      .json(
+        createResponse(
+          false,
+          'Controller error: Fetching course failed',
+          {},
+          error,
+        ),
+      );
+  }
+};
+
 const createCourse = async (req: Request, res: Response) => {
   try {
     const { formData } = req.body;
@@ -99,6 +120,28 @@ const removeCourseThumbnail = async (req: Request, res: Response) => {
   }
 };
 
+const publishAction = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    if (typeof id !== 'string') {
+      throw new Error('Invalid publicId');
+    }
+    const course = await instructorCourseUseCases.publishAction(id);
+    res.status(200).json(createResponse(true, 'Action successfull', course));
+  } catch (error) {
+    res
+      .status(500)
+      .json(
+        createResponse(
+          false,
+          'Controller error: Publish action failed',
+          {},
+          error,
+        ),
+      );
+  }
+};
+
 const uploadVideoUrl = async (req: Request, res: Response) => {
   try {
     const { uploads, courseId } = req.body;
@@ -164,9 +207,11 @@ const getvideoSign = async (req: Request, res: Response) => {
 
 export default {
   fetchCourses,
+  fetchCourseById,
   createCourse,
   removeCourseThumbnail,
   uploadCourseThumbnail,
+  publishAction,
   uploadVideoUrl,
   fetchCategories,
   getvideoSign,

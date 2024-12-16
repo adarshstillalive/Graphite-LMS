@@ -100,6 +100,39 @@ class MongoCourseRepository implements CourseRepository {
       throw new Error(error);
     }
   }
+
+  async fetchCourse(courseId: string): Promise<IMongoCourse> {
+    try {
+      const course = await CourseModel.findById(courseId)
+        .populate('instructorId')
+        .populate('category');
+      if (!course) {
+        throw new Error('Mongo: Error in fetching courses');
+      }
+      return course;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Mongo: Error in fetching course', error);
+      throw new Error(error);
+    }
+  }
+
+  async publishAction(courseId: string): Promise<void> {
+    try {
+      const course = await CourseModel.findById(courseId);
+
+      if (!course) {
+        throw new Error('Course not found for the given ID');
+      }
+
+      course.isPublished = !course.isPublished;
+      await course.save();
+    } catch (error) {
+      console.error('Error in publishAction:', error);
+
+      throw new Error('Failed to toggle the publish status of the course');
+    }
+  }
 }
 
 export default MongoCourseRepository;

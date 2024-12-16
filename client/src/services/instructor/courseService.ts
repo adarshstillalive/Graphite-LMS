@@ -70,3 +70,17 @@ export const fetchCoursesApi = async (): Promise<ApiResponse> => {
   const response = await instructorAxiosInstance.get('/api/courses');
   return response.data;
 };
+
+export const fetchCourseApi = async (
+  courseId: string
+): Promise<ApiResponse> => {
+  const response = await instructorAxiosInstance.get(`/api/course/${courseId}`);
+  return response.data;
+};
+
+export const publishAction = async (courseId: string): Promise<ApiResponse> => {
+  const response = await instructorAxiosInstance.patch(
+    `/api/course/publish/${courseId}`
+  );
+  return response.data;
+};

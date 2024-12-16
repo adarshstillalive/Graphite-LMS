@@ -170,7 +170,30 @@ class InstructorCourseUseCases {
       await this.instructorUploadService.removefile(publicId);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      console.log('Usecase: Error in uploading thumbnail', error);
+      console.log('Usecase Error: in uploading thumbnail', error);
+
+      throw new Error(error);
+    }
+  }
+
+  async fetchCourse(courseId: string) {
+    try {
+      return await this.courseRepository.fetchCourse(courseId);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Usecase Error: fetching course', error);
+
+      throw new Error(error);
+    }
+  }
+
+  async publishAction(courseId: string) {
+    try {
+      await this.courseRepository.publishAction(courseId);
+      return await this.courseRepository.fetchCourse(courseId);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Usecase Error: Publish action failed', error);
 
       throw new Error(error);
     }

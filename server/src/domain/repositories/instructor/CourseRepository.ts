@@ -7,6 +7,8 @@ interface CourseRepository {
   createCourse(courseData: ICourse): Promise<string>;
   uploadVideoUrl(uploads: UploadState[], courseId: string): Promise<void>;
   fetchCourses(userId: string): Promise<IMongoCourse[]>;
+  fetchCourse(courseId: string): Promise<IMongoCourse>;
+  publishAction(courseId: string): Promise<void>;
 }
 
 export default CourseRepository;

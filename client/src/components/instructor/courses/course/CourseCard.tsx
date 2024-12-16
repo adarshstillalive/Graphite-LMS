@@ -14,16 +14,12 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
 
   return (
     <Card
-      className="rounded-none cursor-pointer w-full max-w-[320px] overflow-hidden border-2 border-gray-200 
+      className="rounded-none cursor-pointer w-full max-w-[320px] overflow-hidden border-0  
                    
                  bg-white dark:bg-gray-900"
-      onClick={() =>
-        navigate('/instructor/courses/courseDetail', {
-          state: { courseId: course._id },
-        })
-      }
+      onClick={() => navigate(`/instructor/courses/courseDetail/${course._id}`)}
     >
-      <div className="relative aspect-video w-full overflow-hidden">
+      <div className="relative aspect-video  w-full overflow-hidden">
         <img
           src={course.thumbnail}
           alt={course.title}
@@ -39,7 +35,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
 
       <CardContent className="p-5">
         <div className="flex justify-between items-start mb-3">
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white line-clamp-2 pr-2">
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white line-clamp-2 pr-2">
             {course.title}
           </h3>
           <div className="flex items-center space-x-1">
@@ -61,7 +57,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
         <div className="flex justify-between items-center">
           <Badge
             variant={course.isPublished ? 'default' : 'secondary'}
-            className="px-3 py-1 text-sm font-semibold"
+            className="px-3 py-1 text-sm font-normal"
           >
             {course.isPublished ? 'Published' : 'Not Published'}
           </Badge>

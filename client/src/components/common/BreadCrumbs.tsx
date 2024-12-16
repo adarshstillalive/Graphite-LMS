@@ -15,30 +15,38 @@ const BreadCrumbs = () => {
 
   const generateBreadcrumbs = () => {
     let linkPath = '';
-    return path.map((segment, index) => {
-      linkPath += `/${segment}`;
-      const isLast = index === path.length - 1;
+    const breadcrumbs = [];
 
-      return (
-        <React.Fragment key={index}>
+    for (let i = 0; i < path.length; i++) {
+      const segment = path[i];
+      const isId = /\d/.test(segment); // Check if the segment contains any numbers
+
+      // If the current segment is an ID, skip the previous one
+      if (isId && breadcrumbs.length > 0) {
+        breadcrumbs.pop(); // Remove the last breadcrumb
+      }
+
+      linkPath += `/${segment}`;
+
+      const isLast = i === path.length - 1;
+
+      breadcrumbs.push(
+        <React.Fragment key={i}>
           <BreadcrumbItem>
             {isLast ? (
-              <BreadcrumbPage>
-                {segment === 'admin' ? 'home' : segment}
-              </BreadcrumbPage>
+              <BreadcrumbPage>{segment}</BreadcrumbPage>
             ) : (
               <BreadcrumbLink asChild>
-                <Link to={linkPath}>
-                  {segment === 'admin' ? 'home' : segment}
-                </Link>
+                <Link to={linkPath}>{segment}</Link>
               </BreadcrumbLink>
             )}
           </BreadcrumbItem>
-          {!isLast && <BreadcrumbSeparator />}{' '}
-          {/* Place the separator outside of BreadcrumbItem */}
+          {!isLast && <BreadcrumbSeparator />}
         </React.Fragment>
       );
-    });
+    }
+
+    return breadcrumbs;
   };
 
   return (
