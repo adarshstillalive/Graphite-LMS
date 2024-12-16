@@ -48,6 +48,12 @@ adminRoute.get(
 // Course
 
 adminRoute.get(
+  '/api/course/:id',
+  userAuthMiddleware.authorization,
+  courseController.fetchCourseById,
+);
+
+adminRoute.get(
   '/api/courses',
   userAuthMiddleware.authorization,
   courseController.paginatedAllCourses,

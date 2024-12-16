@@ -18,7 +18,9 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
                  transition-all duration-300 hover:shadow-2xl hover:border-primary/50 
                  bg-white dark:bg-gray-900"
       onClick={() =>
-        navigate('/admin/courses/courseDetail', { state: { course } })
+        navigate('/admin/courses/courseDetail', {
+          state: { courseId: course._id },
+        })
       }
     >
       <div className="relative aspect-video w-full overflow-hidden">

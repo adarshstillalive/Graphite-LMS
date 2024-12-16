@@ -112,7 +112,7 @@ const CourseTable: React.FC<TableComponentProps> = ({ courseData, onEdit }) => {
                   <DropdownMenuItem
                     onClick={() =>
                       navigate('/admin/courses/courseDetail', {
-                        state: { course },
+                        state: { courseId: course._id },
                       })
                     }
                   >

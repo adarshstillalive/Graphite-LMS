@@ -13,6 +13,29 @@ const courseRepository = new MongoCourseRepository();
 const category = new CreateCategory(courseRepository);
 const courseUseCase = new CourseUseCase(courseRepository);
 
+const fetchCourseById = async (req: Request, res: Response) => {
+  try {
+    const courseId = req.params.id;
+    if (typeof courseId !== 'string') {
+      throw new Error('Controller Error: Incorrect params');
+    }
+    const course = await courseRepository.fetchCourseById(courseId);
+    res.status(200).json(createResponse(true, 'Course fetched', course));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res
+      .status(400)
+      .json(
+        createResponse(
+          false,
+          'Controller: Error in fetching course',
+          {},
+          error?.message,
+        ),
+      );
+  }
+};
+
 const paginatedAllCourses = async (req: Request, res: Response) => {
   try {
     const sort = req.query.sort as string;
@@ -206,6 +229,7 @@ const rejectCourseRequest = async (req: Request, res: Response) => {
 };
 
 export default {
+  fetchCourseById,
   paginatedAllCourses,
   addCategory,
   paginatedCategoryList,

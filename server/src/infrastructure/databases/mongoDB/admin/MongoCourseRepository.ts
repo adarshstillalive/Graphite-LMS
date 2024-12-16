@@ -1,7 +1,7 @@
 import { ICategory } from '../../../../domain/entities/Category.js';
 import CourseRepository from '../../../../domain/repositories/admin/CourseRepository.js';
 import CategoryModel from '../models/CategoryModel.js';
-import CourseModel from '../models/CourseModel.js';
+import CourseModel, { IMongoCourse } from '../models/CourseModel.js';
 
 class MongoCourseRepository implements CourseRepository {
   async createCategory(categoryData: ICategory): Promise<void> {
@@ -64,6 +64,24 @@ class MongoCourseRepository implements CourseRepository {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log('Mongo: Error in rejecting request', error);
+
+      throw new Error(error);
+    }
+  }
+
+  async fetchCourseById(id: string): Promise<IMongoCourse> {
+    try {
+      const course = await CourseModel.findById(id)
+        .populate('instructorId')
+        .populate('category');
+      if (!course) {
+        throw new Error('Mongo: Error in fetching course');
+      }
+
+      return course;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Mongo: Error in fetching course', error);
 
       throw new Error(error);
     }

@@ -169,3 +169,10 @@ export const fetchCoursesApi = async (
   const response = await adminAxiosInstance.get(`/api/courses?${queryString}`);
   return response.data;
 };
+
+export const fetchCourseApi = async (
+  courseId: string
+): Promise<ApiResponse> => {
+  const response = await adminAxiosInstance.get(`/api/course/${courseId}`);
+  return response.data;
+};

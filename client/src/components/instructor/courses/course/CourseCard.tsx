@@ -14,11 +14,13 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
 
   return (
     <Card
-      className="rounded-sm cursor-pointer w-full max-w-[320px] overflow-hidden border-2 border-gray-200 
-                 transition-all duration-300 hover:shadow-2xl hover:border-primary/50 
+      className="rounded-none cursor-pointer w-full max-w-[320px] overflow-hidden border-2 border-gray-200 
+                   
                  bg-white dark:bg-gray-900"
       onClick={() =>
-        navigate('/instructor/courses/courseDetail', { state: { course } })
+        navigate('/instructor/courses/courseDetail', {
+          state: { courseId: course._id },
+        })
       }
     >
       <div className="relative aspect-video w-full overflow-hidden">
