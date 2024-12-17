@@ -1,4 +1,3 @@
-import BreadCrumbs from '@/components/common/BreadCrumbs';
 import BasicInfo from '@/components/instructor/courses/createCourse/BasicInfo';
 import CourseDetails from '@/components/instructor/courses/createCourse/CourseDetails';
 import Curriculum from '@/components/instructor/courses/createCourse/Curriculum';
@@ -12,10 +11,11 @@ import {
   setCourseId,
   setIsFormSubmitted,
 } from '@/redux/slices/instructor/courseCreationSlice';
-import { ICategory } from '@/services/admin/courseService';
+import { ICategory, ISubCategory } from '@/services/admin/courseService';
 import {
   createCourseApi,
   fetchCategoriesFromApi,
+  fetchCourseApi,
 } from '@/services/instructor/courseService';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { nanoid } from '@reduxjs/toolkit';
@@ -23,13 +23,15 @@ import { TriangleAlert } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { z } from 'zod';
+import { CourseFormValues } from './CreateCourse';
+import BreadCrumbs from '@/components/common/BreadCrumbs';
+import { useParams } from 'react-router-dom';
+import { IChapter } from '@/interfaces/Course';
 
-export type CourseFormValues = z.infer<typeof courseSchema>;
-
-const CreateCourse = () => {
+const EditCourse = () => {
   const dispatch = useDispatch();
   const { toast } = useToast();
+  const { id } = useParams<{ id: string }>();
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [activeTab, setActiveTab] = useState('basicInfo');
 
@@ -91,10 +93,33 @@ const CreateCourse = () => {
   };
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchInitials = async () => {
       try {
-        const response = await fetchCategoriesFromApi();
-        setCategories(response.data);
+        if (!id) return;
+        const response1 = await fetchCourseApi(id);
+        const subcategory =
+          response1.data.category.subCategory.find(
+            (curr: ISubCategory) => curr._id === response1.data.subcategory
+          )?._id || '';
+
+        form.reset({
+          ...response1.data,
+          category: response1.data.category?._id || '',
+          subcategory: subcategory || '',
+          chapters:
+            response1.data?.chapters?.map((chapter: IChapter) => ({
+              ...chapter,
+              episodes: chapter.episodes.map((episode) => ({
+                ...episode,
+                content:
+                  episode.type === 'text'
+                    ? { content: episode.content }
+                    : episode.content,
+              })),
+            })) || [],
+        });
+        const response2 = await fetchCategoriesFromApi();
+        setCategories(response2.data);
       } catch (error) {
         toast({
           variant: 'destructive',
@@ -103,7 +128,8 @@ const CreateCourse = () => {
         console.log(error);
       }
     };
-    fetchCategories();
+
+    fetchInitials();
   }, [toast]);
   return (
     <div className="space-y-4">
@@ -207,7 +233,7 @@ const CreateCourse = () => {
               )}
 
               {activeTab === 'marketing' && (
-                <Button type="submit">Create Course</Button>
+                <Button type="submit">Edit Course</Button>
               )}
             </div>
           </div>
@@ -217,4 +243,4 @@ const CreateCourse = () => {
   );
 };
 
-export default CreateCourse;
+export default EditCourse;

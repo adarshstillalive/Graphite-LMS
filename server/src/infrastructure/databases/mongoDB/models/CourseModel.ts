@@ -7,12 +7,25 @@ export interface IMongoEpisode {
   description?: string;
   content: string;
 }
+export interface IMongoEpisodeCommon {
+  id: string;
+  title: string;
+  type: string;
+  description?: string;
+}
 
 export interface IMongoChapter {
   id: string;
   title: string;
   description?: string;
   episodes: IMongoEpisode[];
+}
+
+export interface IMongoChapterCommon {
+  id: string;
+  title: string;
+  description?: string;
+  episodes: IMongoEpisodeCommon[];
 }
 
 export interface IMongoCourse {
@@ -37,6 +50,30 @@ export interface IMongoCourse {
   createdAt?: Date;
   updatedAt?: Date;
   chapters?: IMongoChapter[];
+}
+
+export interface IMongoCourseCommon {
+  instructorId: mongoose.Schema.Types.ObjectId;
+  title: string;
+  subtitle: string;
+  category: mongoose.Schema.Types.ObjectId;
+  subcategory: mongoose.Schema.Types.ObjectId;
+  language: string;
+  level: string;
+  description: string;
+  mrp: number;
+  price: number;
+  thumbnail: string;
+  isApproved?: boolean;
+  isRejected?: boolean;
+  rejectedReason?: string;
+  isPublished?: boolean;
+  rating?: number;
+  welcomeMessage?: string;
+  courseCompletionMessage?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  chapters?: IMongoChapterCommon[];
 }
 
 const CourseSchema: Schema<IMongoCourse> = new Schema(

@@ -9,11 +9,25 @@ export interface IEpisode {
   content: string | { content: string } | null;
 }
 
+export interface IEpisodeCommon {
+  id: string;
+  title: string;
+  type: string;
+  description?: string;
+}
+
 export interface IChapter {
   id: string;
   title: string;
   description?: string;
   episodes: IEpisode[];
+}
+
+export interface IChapterCommon {
+  id: string;
+  title: string;
+  description?: string;
+  episodes: IEpisodeCommon[];
 }
 
 export interface ICourse {
@@ -64,4 +78,29 @@ export interface IPopulatedCourse {
   updatedAt?: Date;
   chapters?: IChapter[];
   _id?: string;
+}
+
+export interface IPopulatedCourseCommon {
+  instructorId: IUser;
+  title: string;
+  subtitle: string;
+  category: ICategory;
+  subcategory: string;
+  language: string;
+  level: string;
+  description: string;
+  mrp: number;
+  price: number;
+  thumbnail: string;
+  isApproved?: boolean;
+  isRejected?: boolean;
+  rejectedReason?: string;
+  isPublished?: boolean;
+  rating?: number;
+  welcomeMessage?: string;
+  courseCompletionMessage?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  chapters?: IChapterCommon[];
+  _id: string;
 }

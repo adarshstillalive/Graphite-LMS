@@ -38,7 +38,7 @@ const BasicInfo = ({ form, categories }: BasicInfoProps) => {
     const currentCategory = form.getValues('category');
     if (currentCategory) {
       const foundCategory = categories.find(
-        (cat) => cat.name === currentCategory
+        (cat) => cat._id === currentCategory
       );
       if (foundCategory) {
         setSubCategories(foundCategory.subCategory || []);
@@ -46,7 +46,7 @@ const BasicInfo = ({ form, categories }: BasicInfoProps) => {
         const currentSubcategory = form.getValues('subcategory');
         if (currentSubcategory) {
           const isValidSubcategory = foundCategory.subCategory?.some(
-            (subCat) => subCat.name === currentSubcategory
+            (subCat) => subCat._id === currentSubcategory
           );
 
           if (!isValidSubcategory) {

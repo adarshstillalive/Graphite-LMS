@@ -4,7 +4,7 @@ import { RootState } from '../../../redux/store';
 import { IoCartSharp, IoMenuOutline, IoCloseOutline } from 'react-icons/io5';
 import { FiSearch } from 'react-icons/fi';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import UserProfileDropdown from './UserProfileDropdown';
 import ToggleButton from './ToggleButton';
 
@@ -12,7 +12,7 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { currentUser } = useSelector((state: RootState) => state.user);
   const { role } = useSelector((state: RootState) => state.app);
-
+  const navigate = useNavigate();
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
@@ -22,7 +22,12 @@ const Header = () => {
       <div className="container mx-auto px-4 h-full flex items-center">
         {/* Logo and Search Container */}
         <div className="flex items-center w-1/2">
-          <div className="flex items-center justify-center mr-4">
+          <div
+            className="flex items-center justify-center mr-4 cursor-pointer"
+            onClick={() =>
+              role === 'instructor' ? navigate('/instructor') : navigate('/')
+            }
+          >
             <img
               className="h-8 object-contain"
               alt="Graphite logo"

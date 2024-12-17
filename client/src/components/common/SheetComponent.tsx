@@ -27,7 +27,7 @@ export function SheetComponent() {
       </SheetTrigger>
       <SheetContent>
         <SheetHeader className="mb-4">
-          <SheetTitle>Notifications & Uploads</SheetTitle>
+          <SheetTitle>Notifications</SheetTitle>
         </SheetHeader>
         <SheetDescription asChild>
           <div className="space-y-2">

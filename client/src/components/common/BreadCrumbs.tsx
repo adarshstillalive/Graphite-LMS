@@ -11,7 +11,7 @@ import { Link, useLocation } from 'react-router-dom';
 
 const BreadCrumbs = () => {
   const location = useLocation();
-  const path = location.pathname.split('/').filter((segment) => segment); // Remove empty segments
+  const path = location.pathname.split('/').filter((segment) => segment);
 
   const generateBreadcrumbs = () => {
     let linkPath = '';
@@ -19,11 +19,10 @@ const BreadCrumbs = () => {
 
     for (let i = 0; i < path.length; i++) {
       const segment = path[i];
-      const isId = /\d/.test(segment); // Check if the segment contains any numbers
+      const isId = /\d/.test(segment);
 
-      // If the current segment is an ID, skip the previous one
       if (isId && breadcrumbs.length > 0) {
-        breadcrumbs.pop(); // Remove the last breadcrumb
+        breadcrumbs.pop();
       }
 
       linkPath += `/${segment}`;

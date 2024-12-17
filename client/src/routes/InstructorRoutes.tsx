@@ -11,6 +11,7 @@ import Home from '@/pages/instructor/home/Home';
 import Courses from '@/pages/instructor/courses/Courses';
 import CreateCourse from '@/pages/instructor/courses/CreateCourse';
 import CourseDetail from '@/pages/instructor/courses/CourseDetail';
+import EditCourse from '@/pages/instructor/courses/EditCourse';
 
 const instructorRoutes = [
   {
@@ -38,6 +39,7 @@ const instructorRoutes = [
       { path: '', element: <Home /> },
       { path: 'profile', element: <Profile /> },
       { path: 'courses', element: <Courses /> },
+      { path: 'courses/edit/:id', element: <EditCourse /> },
       { path: 'courses/courseDetail/:id', element: <CourseDetail /> },
       { path: 'createCourse', element: <CreateCourse /> },
     ],

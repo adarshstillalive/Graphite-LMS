@@ -3,7 +3,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import VideoPlayer from '@/components/common/course/VideoPlayer';
 import { IChapter, IEpisode, IPopulatedCourse } from '@/interfaces/Course';
 import ChapterEpisodeSelector from '@/components/common/course/ChapterEpisodeDropdown';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import TextContent from '@/components/common/course/TextContent';
 import BreadCrumbs from '@/components/common/BreadCrumbs';
@@ -175,8 +175,9 @@ const CourseDetail = () => {
               <Button
                 className="h-14 border-2 border-gray-800 text-lg"
                 variant={'outline'}
+                asChild
               >
-                Edit
+                <Link to={`/instructor/courses/edit/${course._id}`}>Edit</Link>
               </Button>
             </div>
           </div>

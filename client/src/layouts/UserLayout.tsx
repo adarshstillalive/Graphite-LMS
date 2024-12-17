@@ -7,7 +7,9 @@ export const UserLayout = () => {
   return (
     <>
       <Header />
-      <Outlet />
+      <main className="py-16">
+        <Outlet />
+      </main>
       <Footer />
     </>
   );
