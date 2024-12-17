@@ -16,7 +16,7 @@ const instructorDetails = async (req: Request, res: Response) => {
   try {
     const userId = req.user?._id;
     if (!userId) {
-      throw new Error('DB error: User fetching failed');
+      throw new Error('Controller error: User fetching failed');
     }
     const instructor = await instructorProfileUseCases.fetchInstructor(userId);
 
@@ -33,7 +33,7 @@ const updateProfileData = async (req: Request, res: Response) => {
   try {
     const userId = req.user?._id;
     if (!userId) {
-      throw new Error('DB error: User fetching failed');
+      throw new Error('Controller error: User fetching failed');
     }
     const { userFormData, instructorFormData } = req.body;
     const instructor = await instructorProfileUseCases.updateProfileData(

@@ -23,7 +23,7 @@ const CourseCardWide: React.FC<CourseCardProps> = ({ course }) => {
         <div className="flex justify-between items-start">
           <div>
             <h2 className="text-base font-bold">{course.title}</h2>
-            <p className="text-sm">
+            <p className="text-sm pb-2">
               {course.description.length > 250
                 ? course.description.substring(0, 250) + '...'
                 : course.description}

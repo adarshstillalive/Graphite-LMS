@@ -12,6 +12,7 @@ export interface IUser {
   instructorId?: string;
   email: string;
   password?: string;
+  profilePicture?: string;
   isBlocked?: boolean;
   isInstructor?: boolean;
   isAdmin?: boolean;
@@ -28,6 +29,7 @@ export interface IMongoUser {
   instructorId?: string;
   email: string;
   password?: string;
+  profilePicture?: string;
   isBlocked?: boolean;
   isInstructor?: boolean;
   isAdmin?: boolean;
@@ -54,6 +56,9 @@ const userSchema: Schema<IMongoUser> = new Schema(
       required: true,
     },
     password: {
+      type: String,
+    },
+    profilePicture: {
       type: String,
     },
     isBlocked: {

@@ -33,21 +33,27 @@ const UserProfileDropdown = () => {
           <FaUserLarge className="text-xl text-gray-800" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+      <DropdownMenuContent className="w-56 rounded-none">
+        <DropdownMenuLabel className="text-lg">My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={() => navigate('/profile')}>
+          <DropdownMenuItem
+            className="text-lg font-light cursor-pointer"
+            onClick={() => navigate('/profile')}
+          >
             Profile
           </DropdownMenuItem>
-          <DropdownMenuItem>Billing</DropdownMenuItem>
-          <DropdownMenuItem>Settings</DropdownMenuItem>
-          <DropdownMenuItem>Keyboard shortcuts</DropdownMenuItem>
+          <DropdownMenuItem className="text-lg font-light cursor-pointer">
+            Billing
+          </DropdownMenuItem>
+          <DropdownMenuItem className="text-lg font-light cursor-pointer">
+            Settings
+          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>
           <LogOut />
-          <span>Log out</span>
+          <span className="text-lg font-light cursor-pointer">Log out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -1,9 +1,10 @@
 import Profile from '@/pages/user/Profile';
 import UserProtectedRoute from './protectedRoutes/UserProtectedRoute';
-import { UserLayout } from '@/layouts/UserLayout';
+import { UserLayout, UserProfileLayout } from '@/layouts/UserLayout';
 import Home from '@/pages/user/Home';
 import CourseDetail from '@/pages/user/CourseDetail';
 import Courses from '@/pages/user/Courses';
+import ChangePassword from '@/pages/user/ChangePassword';
 
 const userRoutes = [
   {
@@ -20,7 +21,17 @@ const userRoutes = [
       },
       {
         path: 'profile',
-        element: <Profile />,
+        element: <UserProfileLayout />,
+        children: [
+          {
+            path: '',
+            element: <Profile />,
+          },
+          {
+            path: 'changePassword',
+            element: <ChangePassword />,
+          },
+        ],
       },
       {
         path: 'courses',

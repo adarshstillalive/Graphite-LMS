@@ -6,6 +6,7 @@ class User {
     public lastName?: string,
     public email?: string,
     public password?: string,
+    public profilePicture?: string,
     public socialAccounts?: ISocialAccount[],
     public isSocialAuthenticated?: boolean,
     public isInstructor?: boolean,

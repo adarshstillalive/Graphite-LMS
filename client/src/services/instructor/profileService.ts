@@ -2,7 +2,9 @@ import instructorAxiosInstance from '@/axios/instructorAxiosInstance';
 import { ProfileSchema } from '@/components/instructor/profile/ProfileDetails';
 import { ApiResponse } from '@/interfaces/Response';
 
-export const changeProfilePicture = async (formData: FormData) => {
+export const changeProfilePicture = async (
+  formData: FormData
+): Promise<ApiResponse> => {
   const response = await instructorAxiosInstance.post(
     '/api/profile/updateProfilePicture',
     formData,

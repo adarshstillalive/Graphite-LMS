@@ -10,6 +10,7 @@ export interface IUser {
   instructorId: string;
   email?: string;
   password?: string;
+  profilePicture: string;
   isBlocked?: boolean;
   isInstructor?: boolean;
   isAdmin?: boolean;

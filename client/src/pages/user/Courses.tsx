@@ -8,7 +8,7 @@ import {
   fetchCoursesForHomePage,
 } from '@/services/user/courseService';
 import { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 const Courses = () => {
   const { toast } = useToast();
