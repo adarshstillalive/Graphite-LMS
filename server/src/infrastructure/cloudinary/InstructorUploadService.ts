@@ -56,6 +56,15 @@ class InstructorUploadService {
       throw new Error('Cloudinary Error: Remove failed');
     }
   }
+
+  async bulkDeleteFromCloudinary(publicIds: string[]) {
+    try {
+      await cloudinaryV2.api.delete_resources(publicIds);
+    } catch (error) {
+      console.log(error);
+      throw new Error('Cloudinary Error: Remove failed');
+    }
+  }
 }
 
 export default InstructorUploadService;

@@ -69,6 +69,31 @@ const createCourse = async (req: Request, res: Response) => {
   }
 };
 
+const deleteCourse = async (req: Request, res: Response) => {
+  try {
+    const courseId = req.params.id;
+    const instructorId = req.user?._id;
+    if (!instructorId) {
+      throw new Error('Server error');
+    }
+
+    await instructorCourseUseCases.deleteCourse(courseId, instructorId);
+
+    res.status(200).json(createResponse(true, 'Course deleted successfully'));
+  } catch (error) {
+    res
+      .status(500)
+      .json(
+        createResponse(
+          false,
+          'Controller error: Course deleton failed',
+          {},
+          error,
+        ),
+      );
+  }
+};
+
 const uploadCourseThumbnail = async (req: Request, res: Response) => {
   try {
     if (!req.files || !req.files.file) {
@@ -209,6 +234,7 @@ export default {
   fetchCourses,
   fetchCourseById,
   createCourse,
+  deleteCourse,
   removeCourseThumbnail,
   uploadCourseThumbnail,
   publishAction,

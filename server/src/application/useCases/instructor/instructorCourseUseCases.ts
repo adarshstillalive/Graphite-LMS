@@ -198,6 +198,58 @@ class InstructorCourseUseCases {
       throw new Error(error);
     }
   }
+
+  generateThumbnailPublicId(url: string): string {
+    const regex = /instructor\/course\/thumbnail\/(.+)\./;
+    const match = url.match(regex);
+
+    if (!match) {
+      throw new Error('Service Error: Invalid thumbnail URL format');
+    }
+    return `instructor/course/thumbnail/${match[1]}`;
+  }
+
+  generateVideoPublicId(url: string): string {
+    const regex = /instructor\/course\/(.+)\./;
+    const match = url.match(regex);
+
+    if (!match) {
+      throw new Error('Service Error: Invalid video URL format');
+    }
+    return `instructor/course/${match[1]}`;
+  }
+
+  async deleteCourse(courseId: string, instructorId: string) {
+    try {
+      const course = await this.courseRepository.fetchCourse(courseId);
+
+      const videoUrls: string[] = [];
+      const thumbnailUrl = this.generateThumbnailPublicId(course.thumbnail);
+
+      course.chapters?.forEach((chapter) => {
+        chapter.episodes.forEach((episode) => {
+          if (episode.type === 'video') {
+            videoUrls.push(episode.content);
+          }
+        });
+      });
+
+      const publicIds = videoUrls.map((url) => this.generateVideoPublicId(url));
+      publicIds.push(thumbnailUrl);
+      await this.instructorUploadService.bulkDeleteFromCloudinary(publicIds);
+
+      await this.courseRepository.deleteCourse(courseId);
+      await this.courseRepository.removeCourseFromInstructor(
+        courseId,
+        instructorId,
+      );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Usecase Error: Deletion of course failed', error);
+
+      throw new Error(error);
+    }
+  }
 }
 
 export default InstructorCourseUseCases;

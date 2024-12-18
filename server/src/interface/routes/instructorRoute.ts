@@ -51,6 +51,12 @@ instructorRoute.post(
   courseController.createCourse,
 );
 
+instructorRoute.delete(
+  '/api/course/:id',
+  userAuthMiddleware.authorization,
+  courseController.deleteCourse,
+);
+
 instructorRoute.post(
   '/api/course/thumbnail',
   userAuthMiddleware.authorization,

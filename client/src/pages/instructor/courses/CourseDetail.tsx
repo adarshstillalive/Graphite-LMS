@@ -3,15 +3,25 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import VideoPlayer from '@/components/common/course/VideoPlayer';
 import { IChapter, IEpisode, IPopulatedCourse } from '@/interfaces/Course';
 import ChapterEpisodeSelector from '@/components/common/course/ChapterEpisodeDropdown';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import TextContent from '@/components/common/course/TextContent';
 import BreadCrumbs from '@/components/common/BreadCrumbs';
 import { useToast } from '@/hooks/use-toast';
 import {
+  deleteCourse,
   fetchCourseApi,
   publishAction,
 } from '@/services/instructor/courseService';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
 const CourseDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,6 +29,7 @@ const CourseDetail = () => {
   const [selectedChapter, setSelectedChapter] = useState<IChapter | null>(null);
   const [selectedEpisode, setSelectedEpisode] = useState<IEpisode | null>(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (course?.chapters && course.chapters.length > 0) {
@@ -49,6 +60,23 @@ const CourseDetail = () => {
           ? 'Course unpublished'
           : 'Course published',
       });
+    } catch (error) {
+      console.log(error);
+      toast({
+        variant: 'destructive',
+        description: 'Action failed, Try again.',
+      });
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteCourse(id);
+      toast({
+        variant: 'default',
+        description: 'Course deleted',
+      });
+      navigate('/instructor/courses');
     } catch (error) {
       console.log(error);
       toast({
@@ -179,6 +207,32 @@ const CourseDetail = () => {
               >
                 <Link to={`/instructor/courses/edit/${course._id}`}>Edit</Link>
               </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button className="h-14 border-2 border-black text-lg">
+                    Delete course
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Are you sure?</DialogTitle>
+                    <DialogDescription>
+                      This action cannot be undone. This will delete your
+                      course.
+                    </DialogDescription>
+                    <div className="flex justify-end space-x-4 mt-4">
+                      <DialogClose asChild>
+                        <Button variant="outline">Cancel</Button>
+                      </DialogClose>
+                      <Button
+                        onClick={() => course._id && handleDelete(course._id)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </div>

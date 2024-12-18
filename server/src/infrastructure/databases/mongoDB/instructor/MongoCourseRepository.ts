@@ -133,6 +133,40 @@ class MongoCourseRepository implements CourseRepository {
       throw new Error('Failed to toggle the publish status of the course');
     }
   }
+
+  async deleteCourse(courseId: string): Promise<void> {
+    try {
+      const status = await CourseModel.deleteOne({ _id: courseId });
+
+      if (status.deletedCount !== 1) {
+        throw new Error('Mongo Error: Course not found for the given ID');
+      }
+    } catch (error) {
+      console.error('Error in deletion action:', error);
+
+      throw new Error('Mongo Error: Failed to delete the course');
+    }
+  }
+
+  async removeCourseFromInstructor(
+    courseId: string,
+    instructorId: string,
+  ): Promise<void> {
+    try {
+      const status = await InstructorModel.updateOne(
+        { userId: instructorId },
+        { $pull: { courses: { courseId: courseId } } },
+      );
+
+      if (status.modifiedCount !== 1) {
+        throw new Error('Course not found for the given ID');
+      }
+    } catch (error) {
+      console.error('Error in deletion action:', error);
+
+      throw new Error('Mongo Error: Failed to process deletion of course');
+    }
+  }
 }
 
 export default MongoCourseRepository;

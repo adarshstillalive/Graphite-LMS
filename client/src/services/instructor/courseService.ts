@@ -84,3 +84,10 @@ export const publishAction = async (courseId: string): Promise<ApiResponse> => {
   );
   return response.data;
 };
+
+export const deleteCourse = async (courseId: string): Promise<ApiResponse> => {
+  const response = await instructorAxiosInstance.delete(
+    `/api/course/${courseId}`
+  );
+  return response.data;
+};

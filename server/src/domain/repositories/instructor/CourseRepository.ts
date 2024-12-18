@@ -9,6 +9,11 @@ interface CourseRepository {
   fetchCourses(userId: string): Promise<IMongoCourse[]>;
   fetchCourse(courseId: string): Promise<IMongoCourse>;
   publishAction(courseId: string): Promise<void>;
+  deleteCourse(courseId: string): Promise<void>;
+  removeCourseFromInstructor(
+    courseId: string,
+    instructorId: string,
+  ): Promise<void>;
 }
 
 export default CourseRepository;
