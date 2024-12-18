@@ -43,6 +43,10 @@ userRoute.put(
 // Courses
 
 userRoute.get('/api/courses', courseController.fetchPaginatedCourse);
+userRoute.get(
+  '/api/courses/productpage',
+  courseController.fetchPaginatedCourseProductPage,
+);
 userRoute.get('/api/categories', courseController.fetchCategories);
 userRoute.get('/api/course/:id', courseController.fetchCourseById);
 
