@@ -247,27 +247,41 @@ const Curriculum = ({ form }: CurriculumProps) => {
                         <FormField
                           control={form.control}
                           name={`chapters.${chapterIndex}.episodes.${episodeIndex}.content.video`}
-                          render={() => (
-                            <FormItem>
-                              <VideoDropzone
-                                chapterIndex={chapterIndex}
-                                episodeIndex={episodeIndex}
-                                chapterId={chapter.id}
-                                episodeId={episode.id}
-                                onVideoUploadSuccess={() => {
-                                  form.setValue(
-                                    `chapters.${chapterIndex}.episodes.${episodeIndex}.content.video`,
-                                    true
-                                  );
-                                  form.clearErrors(
-                                    `chapters.${chapterIndex}.episodes.${episodeIndex}.content.video`
-                                  );
-                                }}
-                              />
+                          render={({ field }) => {
+                            const videoUrl = field.value;
+                            return (
+                              <FormItem>
+                                {typeof videoUrl === 'string' &&
+                                videoUrl.trim() !== '' ? (
+                                  <div>
+                                    <video width="320" height="240" controls>
+                                      <source src={videoUrl} type="video/mp4" />
+                                      Your browser does not support the video
+                                      tag.
+                                    </video>
+                                  </div>
+                                ) : (
+                                  <VideoDropzone
+                                    chapterIndex={chapterIndex}
+                                    episodeIndex={episodeIndex}
+                                    chapterId={chapter.id}
+                                    episodeId={episode.id}
+                                    onVideoUploadSuccess={() => {
+                                      form.setValue(
+                                        `chapters.${chapterIndex}.episodes.${episodeIndex}.content.video`,
+                                        true
+                                      );
+                                      form.clearErrors(
+                                        `chapters.${chapterIndex}.episodes.${episodeIndex}.content.video`
+                                      );
+                                    }}
+                                  />
+                                )}
 
-                              <FormMessage />
-                            </FormItem>
-                          )}
+                                <FormMessage />
+                              </FormItem>
+                            );
+                          }}
                         />
                       ) : (
                         <FormField

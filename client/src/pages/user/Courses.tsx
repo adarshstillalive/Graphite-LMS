@@ -5,7 +5,7 @@ import { IPopulatedCourseCommon } from '@/interfaces/Course';
 import { ICategory, ISubCategory } from '@/services/admin/courseService';
 import {
   fetchCategoriesFromApi,
-  fetchCoursesForHomePage,
+  fetchCoursesForProductsPage,
 } from '@/services/user/courseService';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -15,6 +15,8 @@ const Courses = () => {
   const [subcategory, setSubcategory] = useState<ISubCategory[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [queryString, setQueryString] = useState<string>();
+
   const [courses, setCourses] = useState<IPopulatedCourseCommon[]>([]);
 
   const location = useLocation();
@@ -24,7 +26,7 @@ const Courses = () => {
   useEffect(() => {
     const fetchFeaturedCourses = async () => {
       try {
-        const response1 = await fetchCoursesForHomePage(currentPage);
+        const response1 = await fetchCoursesForProductsPage(queryString);
         const response2 = await fetchCategoriesFromApi();
 
         const categoryData = response2.data.find(
@@ -47,7 +49,8 @@ const Courses = () => {
       }
     };
     fetchFeaturedCourses();
-  }, [currentPage]);
+  }, [category, currentPage, queryString, toast]);
+
   return (
     <div className="min-h-screen px-16">
       <header className="bg-white shadow-sm">
@@ -56,7 +59,7 @@ const Courses = () => {
         </div>
       </header>
       <div className="flex">
-        <Sidebar subcategories={subcategory} />
+        <Sidebar subcategories={subcategory} setQueryString={setQueryString} />
         <main className="flex-1 p-6">
           <div className="grid ">
             {courses.map((course: IPopulatedCourseCommon) => (

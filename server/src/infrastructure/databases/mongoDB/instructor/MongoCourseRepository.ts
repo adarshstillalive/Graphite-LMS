@@ -1,6 +1,10 @@
 import mongoose from 'mongoose';
 import { ICategory } from '../../../../domain/entities/Category.js';
-import { ICourse, UploadState } from '../../../../domain/entities/Course.js';
+import {
+  ICourse,
+  IEditCourse,
+  UploadState,
+} from '../../../../domain/entities/Course.js';
 import CourseRepository from '../../../../domain/repositories/instructor/CourseRepository.js';
 import CategoryModel from '../models/CategoryModel.js';
 import CourseModel, { IMongoCourse } from '../models/CourseModel.js';
@@ -49,6 +53,22 @@ class MongoCourseRepository implements CourseRepository {
       session.endSession();
       console.error('Mongo: Error in creating course', error);
       throw error;
+    }
+  }
+
+  async editCourse(courseId: string, courseData: IEditCourse): Promise<void> {
+    try {
+      const status = await CourseModel.updateOne(
+        { _id: courseId },
+        { $set: { ...courseData } },
+      );
+      if (status.matchedCount === 0) {
+        throw new Error('Mongo Error: Updating the course');
+      }
+    } catch (error) {
+      console.log(error);
+
+      throw new Error('Mongo Error: Updating the course');
     }
   }
 

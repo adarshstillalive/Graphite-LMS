@@ -69,6 +69,19 @@ const createCourse = async (req: Request, res: Response) => {
   }
 };
 
+const editCourse = async (req: Request, res: Response) => {
+  try {
+    const courseId = req.params.id;
+    const { formData } = req.body;
+    await instructorCourseUseCases.editCourse(formData, courseId);
+    res.status(201).json(createResponse(true, 'Course created successfully'));
+  } catch (error) {
+    res
+      .status(500)
+      .json(createResponse(false, 'Course creation failed', {}, error));
+  }
+};
+
 const deleteCourse = async (req: Request, res: Response) => {
   try {
     const courseId = req.params.id;
@@ -234,6 +247,7 @@ export default {
   fetchCourses,
   fetchCourseById,
   createCourse,
+  editCourse,
   deleteCourse,
   removeCourseThumbnail,
   uploadCourseThumbnail,

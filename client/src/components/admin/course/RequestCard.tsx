@@ -14,7 +14,9 @@ export const RequestCard: React.FC<CourseRequestCardProps> = ({ course }) => {
     <Card
       className="rounded-sm cursor-pointer w-full max-w-[320px] overflow-hidden shadow-md transition-transform duration-300  hover:shadow-xl"
       onClick={() =>
-        navigate('/admin/courses/courseDetail', { state: { course } })
+        navigate('/admin/courses/courseDetail', {
+          state: { courseId: course._id },
+        })
       }
     >
       <div className="relative aspect-video w-full">

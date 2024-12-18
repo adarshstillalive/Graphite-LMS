@@ -13,7 +13,7 @@ import {
 } from '@/redux/slices/instructor/courseCreationSlice';
 import { ICategory, ISubCategory } from '@/services/admin/courseService';
 import {
-  createCourseApi,
+  editCourseApi,
   fetchCategoriesFromApi,
   fetchCourseApi,
 } from '@/services/instructor/courseService';
@@ -25,7 +25,7 @@ import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { CourseFormValues } from './CreateCourse';
 import BreadCrumbs from '@/components/common/BreadCrumbs';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { IChapter } from '@/interfaces/Course';
 
 const EditCourse = () => {
@@ -34,6 +34,7 @@ const EditCourse = () => {
   const { id } = useParams<{ id: string }>();
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [activeTab, setActiveTab] = useState('basicInfo');
+  const navigate = useNavigate();
 
   const form = useForm<CourseFormValues>({
     resolver: zodResolver(courseSchema),
@@ -68,26 +69,19 @@ const EditCourse = () => {
 
   const onSubmit = async (data: CourseFormValues) => {
     console.log(data);
+    if (!id) return;
     try {
-      const response = await createCourseApi(data);
-      console.log(response);
-      if (response.success) {
-        const { courseId } = response.data;
-        dispatch(setIsFormSubmitted(true));
-        dispatch(setCourseId(courseId));
-        form.reset();
-        toast({
-          variant: 'default',
-          description:
-            'Your course has been created. Uploads will continue in the background.',
-        });
-      }
+      await editCourseApi(id, data);
+
+      dispatch(setIsFormSubmitted(true));
+      dispatch(setCourseId(id));
+      navigate('/instructor/courses');
     } catch (error) {
       console.log(error);
       toast({
         variant: 'destructive',
         title: 'Error',
-        description: 'Failed to create the course. Please try again.',
+        description: 'Failed to update the course. Please try again.',
       });
     }
   };
@@ -114,9 +108,10 @@ const EditCourse = () => {
                 content:
                   episode.type === 'text'
                     ? { content: episode.content }
-                    : episode.content,
+                    : { video: episode.content },
               })),
             })) || [],
+          price: String(response1.data.price),
         });
         const response2 = await fetchCategoriesFromApi();
         setCategories(response2.data);
@@ -233,7 +228,7 @@ const EditCourse = () => {
               )}
 
               {activeTab === 'marketing' && (
-                <Button type="submit">Edit Course</Button>
+                <Button type="submit">Submit</Button>
               )}
             </div>
           </div>

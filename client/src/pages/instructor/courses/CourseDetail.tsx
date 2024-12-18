@@ -50,6 +50,28 @@ const CourseDetail = () => {
   };
 
   const handlePublish = async (id: string) => {
+    if (!course || !course.chapters) return;
+    let videoUploadIncomplete = false;
+
+    for (const chapter of course?.chapters || []) {
+      for (const episode of chapter.episodes) {
+        if (episode.type === 'video' && !episode.content) {
+          videoUploadIncomplete = true;
+          break;
+        }
+      }
+      if (videoUploadIncomplete) {
+        break;
+      }
+    }
+
+    if (videoUploadIncomplete) {
+      toast({
+        variant: 'destructive',
+        description: 'Video upload is not complete',
+      });
+      return;
+    }
     try {
       const response = await publishAction(id);
       const updatedCourse = response.data;
@@ -194,6 +216,7 @@ const CourseDetail = () => {
             </div>
             <div className="flex flex-col my-2 gap-2">
               <Button
+                disabled={!course.isApproved}
                 className="h-14 border-2 border-black text-lg"
                 variant={'outline'}
                 onClick={() => course._id && handlePublish(course._id)}

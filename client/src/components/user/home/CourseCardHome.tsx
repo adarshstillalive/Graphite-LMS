@@ -17,12 +17,11 @@ export const CourseCardHome: React.FC<CourseCardProps> = ({ course }) => {
                  bg-white dark:bg-gray-900"
       onClick={() => navigate(`/courses/courseDetail/${course._id}`)}
     >
-      <div className="relative aspect-video  w-full overflow-hidden">
+      <div className="w-full aspect-video overflow-hidden">
         <img
           src={course.thumbnail}
           alt={course.title}
-          className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 
-                     group-hover:scale-110"
+          className="h-full w-full object-cover transition-transform duration-300 hover:scale-110"
         />
       </div>
 

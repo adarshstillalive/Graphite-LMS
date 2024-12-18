@@ -10,11 +10,25 @@ const userCourseUseCases = new UserCourseUseCases(courseRepository);
 
 const fetchPaginatedCourse = async (req: Request, res: Response) => {
   try {
+    const { subcategories, level, language } = req.query;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const filter: any = {};
+
+    if (typeof subcategories === 'string') {
+      filter['subcategory'] = { $in: subcategories.split(',') };
+    }
+
+    if (typeof level === 'string') {
+      filter['level'] = { $in: level.split(',') };
+    }
+
+    if (typeof language === 'string') {
+      filter['language'] = { $in: language.split(',') };
+    }
+
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
-    const filter = req.query.filter
-      ? JSON.parse(req.query.filter as string)
-      : {};
     const model = CourseModel;
     const courseRepository = new MongoGenericRepository(model);
     const result =

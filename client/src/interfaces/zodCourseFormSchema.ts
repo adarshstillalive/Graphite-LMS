@@ -23,9 +23,16 @@ export const curriculumEpisodeSchema = z.object({
         .min(50, 'Text content must be at least 50 characters.'),
     }),
     z.object({
-      video: z.boolean().refine((selected) => selected === true, {
-        message: 'Please select a video for this episode.',
-      }),
+      video: z
+        .union([z.boolean(), z.string()])
+        .refine(
+          (selected) =>
+            selected === true ||
+            (typeof selected === 'string' && selected.trim() !== ''),
+          {
+            message: 'Please select a video for this episode.',
+          }
+        ),
     }),
   ]),
 });

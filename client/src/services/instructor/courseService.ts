@@ -91,3 +91,16 @@ export const deleteCourse = async (courseId: string): Promise<ApiResponse> => {
   );
   return response.data;
 };
+
+export const editCourseApi = async (
+  courseId: string,
+  formData: CourseFormValues
+): Promise<ApiResponse> => {
+  const response = await instructorAxiosInstance.put(
+    `/api/course/${courseId}`,
+    {
+      formData: formData,
+    }
+  );
+  return response.data;
+};

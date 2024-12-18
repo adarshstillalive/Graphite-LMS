@@ -95,7 +95,9 @@ const VideoDropzone: React.FC<DropzoneProps> = ({
           ${isUploading ? 'pointer-events-none' : ''}`}
       >
         <input {...getInputProps()} />
-        {isUploading ? (
+        {isUploading && progress === 100 ? (
+          <p className="text-black font-semibold">Upload complete</p>
+        ) : isUploading ? (
           <p className="text-black font-semibold">Uploading...</p>
         ) : isDragActive ? (
           <p className="text-black font-semibold">Drop the video here...</p>
@@ -108,7 +110,7 @@ const VideoDropzone: React.FC<DropzoneProps> = ({
           </p>
         )}
       </div>
-      {isUploading && (
+      {isUploading && progress !== 100 && (
         <div className="space-y-2">
           <Progress value={progress} className="w-full" />
           <div className="flex justify-between items-center">

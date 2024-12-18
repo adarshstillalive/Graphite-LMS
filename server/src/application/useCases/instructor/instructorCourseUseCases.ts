@@ -2,6 +2,7 @@ import { UploadedFile } from 'express-fileupload';
 import Course, {
   IChapter,
   ICourse,
+  IEditCourse,
   IEpisode,
   UploadState,
 } from '../../../domain/entities/Course.js';
@@ -80,6 +81,68 @@ class InstructorCourseUseCases {
         alteredChapters,
       );
       return await this.courseRepository.createCourse(courseData);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Usecase Error: Creating course', error);
+
+      throw new Error(error);
+    }
+  }
+
+  async editCourse(formData: ICourse, courseId: string) {
+    try {
+      const {
+        title,
+        subtitle,
+        category,
+        subcategory,
+        language,
+        level,
+        description,
+        price,
+        welcomeMessage,
+        courseCompletionMessage,
+        thumbnail,
+        chapters,
+      } = formData;
+      if (!chapters) {
+        throw new Error('Invalid form data');
+      }
+      const alteredChapters = chapters.map((chapter: IChapter) => ({
+        ...chapter,
+        episodes: chapter.episodes.map((episode: IEpisode) => ({
+          ...episode,
+          content:
+            episode.type === 'video'
+              ? typeof episode.content === 'object' &&
+                episode.content &&
+                'video' in episode.content
+                ? episode.content.video
+                : null
+              : typeof episode.content === 'object' &&
+                  episode.content &&
+                  'content' in episode.content
+                ? episode.content.content
+                : null,
+        })),
+      }));
+
+      const courseData: IEditCourse = {
+        title,
+        subtitle,
+        category,
+        subcategory,
+        language,
+        level,
+        description,
+        mrp: price,
+        price,
+        thumbnail,
+        welcomeMessage,
+        courseCompletionMessage,
+        chapters: alteredChapters,
+      };
+      return await this.courseRepository.editCourse(courseId, courseData);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log('Usecase Error: Creating course', error);

@@ -14,6 +14,15 @@ export const fetchCoursesForHomePage = async (
   return response.data;
 };
 
+export const fetchCoursesForProductsPage = async (
+  queryString: string | undefined
+): Promise<ApiResponse> => {
+  const response = await userAxiosInstance.get(
+    `/api/courses${queryString ? `?${queryString}` : ''}`
+  );
+  return response.data;
+};
+
 export const fetchCategoriesFromApi = async (): Promise<ApiResponse> => {
   const response = await userAxiosInstance.get('/api/categories');
   return response.data;

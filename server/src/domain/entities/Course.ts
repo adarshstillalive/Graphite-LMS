@@ -13,11 +13,26 @@ export interface IEpisode {
   content: string | { content: string } | null;
 }
 
+export interface IEditEpisode {
+  id: string;
+  title: string;
+  type: string;
+  description?: string;
+  content: { video: string } | { content: string } | null | unknown;
+}
+
 export interface IChapter {
   id: string;
   title: string;
   description?: string;
   episodes: IEpisode[];
+}
+
+export interface IEditChapter {
+  id: string;
+  title: string;
+  description?: string;
+  episodes: IEditEpisode[];
 }
 
 export interface ICourse {
@@ -42,6 +57,22 @@ export interface ICourse {
   createdAt?: Date;
   updatedAt?: Date;
   chapters?: IChapter[];
+}
+
+export interface IEditCourse {
+  title: string;
+  subtitle: string;
+  category: string;
+  subcategory: string;
+  language: string;
+  level: string;
+  description: string;
+  mrp: number;
+  price: number;
+  thumbnail: string;
+  welcomeMessage?: string;
+  courseCompletionMessage?: string;
+  chapters?: IEditChapter[];
 }
 
 class Course implements ICourse {
