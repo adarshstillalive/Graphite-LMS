@@ -45,6 +45,12 @@ adminRoute.get(
   userController.paginatedUsersList,
 );
 
+adminRoute.patch(
+  '/api/users/:id',
+  userAuthMiddleware.authorization,
+  userController.userAction,
+);
+
 // Course
 
 adminRoute.get(

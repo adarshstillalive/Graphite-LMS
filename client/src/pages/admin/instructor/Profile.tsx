@@ -13,7 +13,6 @@ interface CourseObj {
 const Profile = () => {
   const location = useLocation();
   const { instructor } = location.state;
-  console.log(instructor);
 
   return (
     <>

@@ -30,3 +30,8 @@ export const getUsers = async (
   const response = await adminAxiosInstance.get(`/api/users?${queryString}`);
   return response.data;
 };
+
+export const handleBlock = async (userId: string): Promise<ApiResponse> => {
+  const response = await adminAxiosInstance.patch(`/api/users/${userId}`);
+  return response.data;
+};

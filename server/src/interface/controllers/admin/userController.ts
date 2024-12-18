@@ -3,6 +3,11 @@ import UserModel from '../../../infrastructure/databases/mongoDB/models/UserMode
 import MongoGenericRepository from '../../../infrastructure/databases/mongoDB/MongoGenericRepository.js';
 import { createResponse } from '../../../utils/createResponse.js';
 import { SortOrder } from 'mongoose';
+import UserAccessManagement from '../../../application/useCases/admin/user/userAccessManagement.js';
+import MongoAdminUserRepository from '../../../infrastructure/databases/mongoDB/admin/MongoAdminUserRepository.js';
+
+const adminUserRepository = new MongoAdminUserRepository();
+const userAccessManagement = new UserAccessManagement(adminUserRepository);
 
 const paginatedUsersList = async (req: Request, res: Response) => {
   try {
@@ -31,6 +36,21 @@ const paginatedUsersList = async (req: Request, res: Response) => {
   }
 };
 
+const userAction = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const updatedUser = await userAccessManagement.handleAccess(id);
+    res
+      .status(200)
+      .json(createResponse(true, 'Action successful', updatedUser));
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(createResponse(false, 'Error making action', error));
+  }
+};
+
 export default {
   paginatedUsersList,
+  userAction,
 };

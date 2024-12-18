@@ -20,7 +20,7 @@ class MongoGenericRepository<T> {
   ): Promise<PaginatedResult<T>> {
     const skip = (page - 1) * limit;
     const data = await this.model
-      .find(filter)
+      .find({ ...filter, isAdmin: false })
       .skip(skip)
       .limit(limit)
       .sort(sort)

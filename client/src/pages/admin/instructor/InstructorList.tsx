@@ -11,7 +11,10 @@ import {
 } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { IInstructorPopulated } from '@/interfaces/Instructor';
-import { getInstructors } from '@/services/admin/instructorService';
+import {
+  getInstructors,
+  handleBlock,
+} from '@/services/admin/instructorService';
 import { useEffect, useState } from 'react';
 
 const InstructorList = () => {
@@ -48,6 +51,35 @@ const InstructorList = () => {
     };
   }, [currentPage, search, sortHelper.field, sortHelper.value, toast]);
 
+  const blockHandler = async (instructorId: string) => {
+    try {
+      const response = await handleBlock(instructorId);
+      console.log(response.data);
+      const updatedInstructors = instructors.map(
+        (instructor: IInstructorPopulated) => {
+          if (instructor._id === response.data._id) {
+            return response.data;
+          }
+          return instructor;
+        }
+      );
+
+      setInstructors(updatedInstructors);
+      if (response.success) {
+        toast({
+          variant: 'default',
+          description: 'Action success',
+        });
+      }
+    } catch (error) {
+      console.log(error);
+
+      toast({
+        variant: 'destructive',
+        description: 'Action failed',
+      });
+    }
+  };
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -65,7 +97,10 @@ const InstructorList = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-2">
-        <TableComponent instructorData={instructors} />
+        <TableComponent
+          instructorData={instructors}
+          blockHandler={blockHandler}
+        />
       </CardContent>
       <CardFooter>
         <DataPagination

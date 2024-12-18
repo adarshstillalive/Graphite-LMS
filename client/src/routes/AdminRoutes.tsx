@@ -9,6 +9,7 @@ import Users from '@/pages/admin/user/Users';
 import Instructor from '@/pages/admin/instructor/Instructor';
 import CourseDetail from '@/pages/admin/course/CourseDetail';
 import Profile from '@/pages/admin/instructor/Profile';
+import UserProfile from '@/pages/admin/user/UserProfile';
 
 const adminRoutes = [
   {
@@ -39,6 +40,10 @@ const adminRoutes = [
       {
         path: 'users',
         element: <Users />,
+      },
+      {
+        path: 'users/profile',
+        element: <UserProfile />,
       },
       {
         path: 'instructors',

@@ -2,7 +2,9 @@ import InstructorRequest from '../../../../domain/entities/InstructorRequest.js'
 import InstructorRequestModel from '../models/InstructorRequest.js';
 import AdminInstructorRepository from '../../../../domain/repositories/admin/AdminInstructorRepository.js';
 import UserModel from '../models/UserModel.js';
-import InstructorModel from '../models/InstructorModel.js';
+import InstructorModel, {
+  IMongoInstructor,
+} from '../models/InstructorModel.js';
 import mongoose from 'mongoose';
 
 class MongoAdminInstructorRepository implements AdminInstructorRepository {
@@ -85,21 +87,17 @@ class MongoAdminInstructorRepository implements AdminInstructorRepository {
     }
   }
 
-  async instructorAction(id: string): Promise<void> {
+  async instructorAction(id: string): Promise<IMongoInstructor> {
     try {
-      const instructorData = await InstructorModel.findById(id);
+      const instructorData =
+        await InstructorModel.findById(id).populate('userId');
       if (!instructorData) {
         throw new Error('Database Error');
       }
-      const updateInstructor = await InstructorModel.updateOne(
-        { _id: id },
-        { $set: { isBlocked: !instructorData.isBlocked } },
-      );
 
-      if (updateInstructor.modifiedCount <= 0) {
-        throw new Error('Updation failed');
-      }
-
+      instructorData.isBlocked = !instructorData.isBlocked;
+      const updatedInstructor = await instructorData.save();
+      return updatedInstructor;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error('Action failed:', error);

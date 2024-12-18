@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { IUser } from '@/interfaces/User';
-import { getUsers } from '@/services/admin/userService';
+import { getUsers, handleBlock } from '@/services/admin/userService';
 import { useEffect, useState } from 'react';
 
 const Users = () => {
@@ -45,6 +45,34 @@ const Users = () => {
     };
   }, [currentPage, search, sortHelper.field, sortHelper.value, toast]);
 
+  const blockHandler = async (userId: string) => {
+    try {
+      const response = await handleBlock(userId);
+      console.log(response.data);
+      const updatedUsers = users.map((user: IUser) => {
+        if (user._id === response.data._id) {
+          return response.data;
+        }
+        return user;
+      });
+
+      setUsers(updatedUsers);
+      if (response.success) {
+        toast({
+          variant: 'default',
+          description: 'Action success',
+        });
+      }
+    } catch (error) {
+      console.log(error);
+
+      toast({
+        variant: 'destructive',
+        description: 'Action failed',
+      });
+    }
+  };
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -62,7 +90,7 @@ const Users = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-2">
-        <TableComponent userData={users} />
+        <TableComponent userData={users} blockHandler={blockHandler} />
       </CardContent>
       <CardFooter>
         <DataPagination

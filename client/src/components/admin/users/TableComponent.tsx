@@ -20,12 +20,19 @@ import {
 import { IUser } from '@/interfaces/User';
 import { MoreHorizontal } from 'lucide-react';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface TableComponentProps {
   userData: IUser[];
+  blockHandler: (userId: string) => void;
 }
 
-const TableComponent: React.FC<TableComponentProps> = ({ userData }) => {
+const TableComponent: React.FC<TableComponentProps> = ({
+  userData,
+  blockHandler,
+}) => {
+  const navigate = useNavigate();
+
   return (
     <Table>
       <TableCaption>Users</TableCaption>
@@ -54,13 +61,21 @@ const TableComponent: React.FC<TableComponentProps> = ({ userData }) => {
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuItem
-                    // onClick={() => navigator.clipboard.writeText(payment.id)}
+                    onClick={() => userData._id && blockHandler(userData._id)}
                     className="text-red-500 hover:text-red-500"
                   >
                     {userData.isBlocked ? 'Unblock' : 'Block'}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>View user</DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() =>
+                      navigate('/admin/users/profile', {
+                        state: { user: userData },
+                      })
+                    }
+                  >
+                    View user
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </TableCell>

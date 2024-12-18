@@ -80,8 +80,10 @@ const instructorAction = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
-    await instructorAccessManagement.handleAccess(id);
-    res.status(200).json(createResponse(true, 'Action successful'));
+    const updatedInstructor = await instructorAccessManagement.handleAccess(id);
+    res
+      .status(200)
+      .json(createResponse(true, 'Action successful', updatedInstructor));
   } catch (error) {
     console.log(error);
     res.status(500).json(createResponse(false, 'Error making action', error));

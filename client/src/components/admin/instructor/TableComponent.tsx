@@ -16,38 +16,22 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { useToast } from '@/hooks/use-toast';
 import { IInstructorPopulated } from '@/interfaces/Instructor';
-import { handleBlock } from '@/services/admin/instructorService';
 import { MoreHorizontal } from 'lucide-react';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface TableComponentProps {
   instructorData: IInstructorPopulated[];
+  blockHandler: (instructorId: string) => void;
 }
 
-const TableComponent: React.FC<TableComponentProps> = ({ instructorData }) => {
-  const { toast } = useToast();
+const TableComponent: React.FC<TableComponentProps> = ({
+  instructorData,
+  blockHandler,
+}) => {
   const navigate = useNavigate();
-  const blockHandler = async (instructorId: string) => {
-    try {
-      const response = await handleBlock(instructorId);
-      if (response.success) {
-        toast({
-          variant: 'default',
-          description: 'Action success',
-        });
-      }
-    } catch (error) {
-      console.log(error);
 
-      toast({
-        variant: 'destructive',
-        description: 'Action failed',
-      });
-    }
-  };
   return (
     <Table>
       <TableCaption>Instructors</TableCaption>

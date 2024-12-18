@@ -9,6 +9,7 @@ import instructorRoute from './interface/routes/instructorRoute.js';
 import prisma from './infrastructure/orm/prismaClient.js';
 import fileUpload from 'express-fileupload';
 import userResponseMiddleware from './infrastructure/middleware/userResponseMiddleware.js';
+import userAuthMiddleware from './infrastructure/middleware/userAuthMiddleware.js';
 dotenv.config();
 
 mongoose
@@ -35,7 +36,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(userResponseMiddleware);
 app.use('/', userRoute);
 app.use('/admin', adminRoute);
-app.use('/instructor', instructorRoute);
+app.use('/instructor', userAuthMiddleware.setInstructorRole, instructorRoute);
 
 // app.use((err: Error, req: Request, res: Response) => {
 //   res.status(500).json(createResponse(false, 'Internal server error', {}, err));

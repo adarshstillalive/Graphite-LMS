@@ -35,7 +35,7 @@ class InstructorAccessManagement {
 
   async handleAccess(id: string) {
     try {
-      await this.adminInstructorRepository.instructorAction(id);
+      return await this.adminInstructorRepository.instructorAction(id);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
