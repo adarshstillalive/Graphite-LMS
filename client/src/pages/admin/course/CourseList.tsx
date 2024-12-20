@@ -36,7 +36,7 @@ const CourseList: React.FC<CourseListProps> = ({ enableEditTab }) => {
         const response = await fetchCoursesApi(currentPage, sort, search);
         const result = response.data;
         setCourses(result.data);
-        setTotalPages(Math.ceil(result.total / 10));
+        setTotalPages(Math.ceil(result.total / 2));
       } catch (error) {
         console.log(error);
         toast({

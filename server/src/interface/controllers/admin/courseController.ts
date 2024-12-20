@@ -41,7 +41,7 @@ const paginatedAllCourses = async (req: Request, res: Response) => {
     const sort = req.query.sort as string;
     const [[field, order]] = Object.entries(sort);
     const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 10;
+    const limit = parseInt(req.query.limit as string) || 2;
     const filter = req.query.filter
       ? JSON.parse(req.query.filter as string)
       : {};
@@ -99,9 +99,14 @@ const paginatedCategoryList = async (req: Request, res: Response) => {
     const model = CategoryModel;
     const categoryRepository = new MongoGenericRepository(model);
 
-    const result = await categoryRepository.getPaginated(page, limit, filter, {
-      [field]: Number(order) as SortOrder,
-    });
+    const result = await categoryRepository.getPaginatedCategory(
+      page,
+      limit,
+      filter,
+      {
+        [field]: Number(order) as SortOrder,
+      },
+    );
 
     res
       .status(200)

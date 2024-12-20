@@ -51,7 +51,7 @@ const Sidebar: React.FC<SidebarProps> = ({ subcategories, setQueryString }) => {
   return (
     <aside className="w-80 p-6 border-r">
       <Accordion type="single" collapsible className="w-full">
-        <AccordionItem value="topic">
+        <AccordionItem value="subcategory">
           <AccordionTrigger className="py-4 text-xl font-semibold">
             Subcategory
           </AccordionTrigger>

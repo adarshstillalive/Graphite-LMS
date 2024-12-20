@@ -1,5 +1,14 @@
 import { Button } from '@/components/ui/button';
 import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -66,12 +75,41 @@ const TableComponent: React.FC<TableComponentProps> = ({
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuItem
-                    onClick={() =>
-                      instructor._id && blockHandler(instructor._id)
-                    }
+                    onSelect={(e) => {
+                      e.preventDefault();
+                    }}
                     className="text-red-500 hover:text-red-500"
                   >
-                    {instructor.isBlocked ? 'Unblock' : 'Block'}
+                    <Dialog>
+                      <DialogTrigger>
+                        {instructor.isBlocked ? 'Unblock' : 'Block'}
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Are you sure?</DialogTitle>
+                          <DialogDescription>
+                            This will{' '}
+                            {instructor.isBlocked ? 'Unblock' : 'Block'} the
+                            instructor
+                          </DialogDescription>
+                          <div className="flex justify-end space-x-4 mt-4">
+                            <DialogClose asChild>
+                              <Button variant="outline">Cancel</Button>
+                            </DialogClose>
+                            <DialogClose asChild>
+                              <Button
+                                variant="default"
+                                onClick={() =>
+                                  instructor._id && blockHandler(instructor._id)
+                                }
+                              >
+                                {instructor.isBlocked ? 'Unblock' : 'Block'}
+                              </Button>
+                            </DialogClose>
+                          </div>
+                        </DialogHeader>
+                      </DialogContent>
+                    </Dialog>
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() =>

@@ -1,5 +1,14 @@
 import { Button } from '@/components/ui/button';
 import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -61,10 +70,40 @@ const TableComponent: React.FC<TableComponentProps> = ({
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuItem
-                    onClick={() => userData._id && blockHandler(userData._id)}
                     className="text-red-500 hover:text-red-500"
+                    onSelect={(e) => {
+                      e.preventDefault();
+                    }}
                   >
-                    {userData.isBlocked ? 'Unblock' : 'Block'}
+                    <Dialog>
+                      <DialogTrigger>
+                        {userData.isBlocked ? 'Unblock' : 'Block'}
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Are you sure?</DialogTitle>
+                          <DialogDescription>
+                            This will {userData.isBlocked ? 'Unblock' : 'Block'}{' '}
+                            the user
+                          </DialogDescription>
+                          <div className="flex justify-end space-x-4 mt-4">
+                            <DialogClose asChild>
+                              <Button variant="outline">Cancel</Button>
+                            </DialogClose>
+                            <DialogClose asChild>
+                              <Button
+                                variant="default"
+                                onClick={() =>
+                                  userData._id && blockHandler(userData._id)
+                                }
+                              >
+                                {userData.isBlocked ? 'Unblock' : 'Block'}
+                              </Button>
+                            </DialogClose>
+                          </div>
+                        </DialogHeader>
+                      </DialogContent>
+                    </Dialog>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem

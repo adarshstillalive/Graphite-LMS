@@ -51,6 +51,9 @@ class MongoUserRepository implements UserRepository {
           $set: { isSocialAuthenticated },
           $push: { socialAccounts: socialAccount },
         },
+        {
+          upsert: true,
+        },
       );
 
       if (!updateData) {
