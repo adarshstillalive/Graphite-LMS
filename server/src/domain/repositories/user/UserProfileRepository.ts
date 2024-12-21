@@ -9,6 +9,10 @@ interface UserProfileRepository {
     userFormData: IUserProfileUpdationFormData,
   ): Promise<void>;
   updatePassword(userId: string, newPassword: string): Promise<void>;
+  addToWishlist(userId: string, courseId: string): Promise<void>;
+  removeFromWishlist(userId: string, courseId: string): Promise<void>;
+  addToCart(userId: string, courseId: string): Promise<void>;
+  removeFromCart(userId: string, courseId: string): Promise<void>;
 }
 
 export default UserProfileRepository;

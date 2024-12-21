@@ -16,6 +16,8 @@ class User {
     public updatedAt?: Date,
     public _id?: string,
     public instructorId?: string,
+    public cart?: string[],
+    public wishlist?: string[],
   ) {}
 }
 

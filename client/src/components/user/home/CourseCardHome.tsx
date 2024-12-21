@@ -2,6 +2,14 @@ import React from 'react';
 import { IPopulatedCourseCommon } from '@/interfaces/Course';
 import { useNavigate } from 'react-router-dom';
 import { Star, Layers } from 'lucide-react';
+import { FaHeart } from 'react-icons/fa6';
+import {
+  addToWishlist,
+  removeFromWishlist,
+} from '@/services/user/profileService';
+import { useToast } from '@/hooks/use-toast';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 interface CourseCardProps {
   course: IPopulatedCourseCommon;
@@ -9,7 +17,30 @@ interface CourseCardProps {
 
 export const CourseCardHome: React.FC<CourseCardProps> = ({ course }) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const { currentUser } = useSelector((state: RootState) => state.user);
 
+  const handleWishlistToggle = async (courseId: string) => {
+    try {
+      if (!currentUser) {
+        navigate('/auth/login');
+      }
+      const isExist =
+        currentUser?.wishlist &&
+        currentUser?.wishlist.some((item) => item._id === courseId);
+      if (isExist) {
+        await removeFromWishlist(courseId);
+      } else {
+        await addToWishlist(courseId);
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        variant: 'destructive',
+        description: 'Adding to wishlist failed, Try again.',
+      });
+    }
+  };
   return (
     <div
       className="rounded-none cursor-pointer w-full max-w-[250px] overflow-hidden hover:shadow-md transition-all
@@ -17,12 +48,24 @@ export const CourseCardHome: React.FC<CourseCardProps> = ({ course }) => {
                  bg-white dark:bg-gray-900"
       onClick={() => navigate(`/courses/courseDetail/${course._id}`)}
     >
-      <div className="w-full aspect-video overflow-hidden">
+      <div className="w-full relative aspect-video overflow-hidden">
         <img
           src={course.thumbnail}
           alt={course.title}
           className="h-full w-full object-cover transition-transform duration-300 hover:scale-110"
         />
+        <button
+          className="absolute top-2 right-2 p-2 bg-black bg-opacity-50 rounded-full hover:bg-opacity-70 transition"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleWishlistToggle(course._id);
+          }}
+          aria-label="Add to Favorites"
+        >
+          <FaHeart
+            className={`text-2xl ${currentUser?.wishlist?.some((item) => item._id === course._id) ? 'fill-red-500' : 'fill-white'}`}
+          />
+        </button>
       </div>
 
       <div className="py-2">

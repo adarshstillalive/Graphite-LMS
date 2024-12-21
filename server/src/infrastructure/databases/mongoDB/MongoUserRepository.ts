@@ -20,12 +20,11 @@ class MongoUserRepository implements UserRepository {
 
   async findByEmail(email: string): Promise<User | null> {
     try {
-      const userData = await UserModel.findOne({ email });
+      const userData = await UserModel.findOne({ email })
+        .populate('wishlist')
+        .populate('cart');
       if (!userData) {
         throw new Error('Database error');
-      }
-      if (userData?.isBlocked) {
-        throw new Error('User blocked, contact Admin');
       }
       return userData;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

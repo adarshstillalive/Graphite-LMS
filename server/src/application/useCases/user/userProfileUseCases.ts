@@ -87,6 +87,54 @@ class UserProfileUseCases {
       throw new Error(error);
     }
   }
+
+  async addToWishlist(userId: string, courseId: string) {
+    try {
+      await this.userProfileRepository.addToWishlist(userId, courseId);
+      return await this.userProfileRepository.fetchUserById(userId);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Usecase: Error in adding course to wishlist', error);
+
+      throw new Error(error);
+    }
+  }
+
+  async removeFromWishlist(userId: string, courseId: string) {
+    try {
+      await this.userProfileRepository.removeFromWishlist(userId, courseId);
+      return await this.userProfileRepository.fetchUserById(userId);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Usecase: Error in removing course from wishlist', error);
+
+      throw new Error(error);
+    }
+  }
+
+  async addToCart(userId: string, courseId: string) {
+    try {
+      await this.userProfileRepository.addToCart(userId, courseId);
+      return await this.userProfileRepository.fetchUserById(userId);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Usecase: Error in adding course to cart', error);
+
+      throw new Error(error);
+    }
+  }
+
+  async removeFromCart(userId: string, courseId: string) {
+    try {
+      await this.userProfileRepository.removeFromCart(userId, courseId);
+      return await this.userProfileRepository.fetchUserById(userId);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Usecase: Error in removing course from cart', error);
+
+      throw new Error(error);
+    }
+  }
 }
 
 export default UserProfileUseCases;

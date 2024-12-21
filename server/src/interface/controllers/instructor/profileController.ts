@@ -14,7 +14,7 @@ const instructorProfileUseCases = new InstructorProfileUseCases(
 
 const instructorDetails = async (req: Request, res: Response) => {
   try {
-    const userId = req.user?._id;
+    const userId = String(req.user?._id);
     if (!userId) {
       throw new Error('Controller error: User fetching failed');
     }
@@ -31,7 +31,7 @@ const instructorDetails = async (req: Request, res: Response) => {
 
 const updateProfileData = async (req: Request, res: Response) => {
   try {
-    const userId = req.user?._id;
+    const userId = String(req.user?._id);
     if (!userId) {
       throw new Error('Controller error: User fetching failed');
     }
@@ -66,7 +66,7 @@ const updateInstructorProfilePicture = async (req: Request, res: Response) => {
       throw new Error('Error fetching image');
     }
     const file = req.files.file as UploadedFile;
-    const userId = req.user?._id;
+    const userId = String(req.user?._id);
     if (!userId) {
       throw new Error('Server error');
     }

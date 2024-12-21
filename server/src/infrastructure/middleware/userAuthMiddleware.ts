@@ -21,12 +21,18 @@ const authorization = async (
     }
 
     const user = await tokenService.verifyToken(authHeader);
+    if (user?.isBlocked) {
+      res
+        .status(403)
+        .json(createResponse(false, 'User blocked, contact Admin'));
+      return;
+    }
     req.user = user;
 
     next();
   } catch (error) {
     res
-      .status(403)
+      .status(401)
       .json(
         createResponse(false, 'Unauthorized: No token provided', {}, error),
       );

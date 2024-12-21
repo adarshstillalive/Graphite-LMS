@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Link, useNavigate } from 'react-router-dom';
 import UserProfileDropdown from './UserProfileDropdown';
 import ToggleButton from './ToggleButton';
+import { FaHeart } from 'react-icons/fa6';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -50,6 +51,49 @@ const Header = () => {
 
         {/* Right Side Actions */}
         <div className="w-1/2 flex items-center justify-end space-x-4">
+          {/* wishlist Button */}
+          {currentUser && role !== 'instructor' && (
+            <Link to="/profile/wishlist">
+              <Button
+                className="relative md:flex rounded-full bg-gray-200 hover:bg-gray-300 p-5"
+                variant="default"
+              >
+                <FaHeart className="text-gray-800" />
+                {currentUser.wishlist && currentUser.wishlist?.length > 0 && (
+                  <span className="absolute top-0 right-0 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-black rounded-full">
+                    {currentUser.wishlist.length}
+                  </span>
+                )}
+              </Button>
+            </Link>
+          )}
+
+          {/* Cart Button */}
+          {currentUser && role !== 'instructor' && (
+            <Link to="/profile/cart">
+              <Button
+                className=" md:flex rounded-full bg-gray-200 hover:bg-gray-300 p-5"
+                variant="default"
+              >
+                <IoCartSharp className="text-gray-800" />
+                {currentUser.cart && currentUser.cart?.length > 0 && (
+                  <span className="absolute top-0 right-0 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full">
+                    {currentUser.cart.length}
+                  </span>
+                )}
+              </Button>
+            </Link>
+          )}
+
+          {/* Profile/Login Button */}
+          {currentUser ? (
+            role === 'user' && <UserProfileDropdown />
+          ) : (
+            <Button className="hidden md:flex rounded-none" variant="default">
+              <Link to={'/auth/login'}>Login</Link>
+            </Button>
+          )}
+
           {/* Toggle Buttons */}
           {currentUser ? (
             <div className="hidden md:flex items-center space-x-2">
@@ -61,25 +105,6 @@ const Header = () => {
             <div className="hidden md:flex items-center space-x-2">
               <h2 className="text-sm font-medium text-gray-600">Guest</h2>
             </div>
-          )}
-
-          {/* Cart Button */}
-          {currentUser && role !== 'instructor' && (
-            <Button
-              className=" md:flex rounded-full bg-gray-200 hover:bg-gray-300 p-5"
-              variant="default"
-            >
-              <IoCartSharp className="text-gray-800" />
-            </Button>
-          )}
-
-          {/* Profile/Login Button */}
-          {currentUser ? (
-            role === 'user' && <UserProfileDropdown />
-          ) : (
-            <Button className="hidden md:flex rounded-none" variant="default">
-              <Link to={'/auth/login'}>Login</Link>
-            </Button>
           )}
 
           {/* Mobile Menu Toggle */}

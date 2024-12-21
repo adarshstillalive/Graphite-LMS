@@ -46,3 +46,35 @@ export const changePasswordApi = async (
   });
   return response.data;
 };
+
+export const addToWishlist = async (courseId: string): Promise<ApiResponse> => {
+  const response = await userAxiosInstance.post('/api/profile/wishlist', {
+    courseId,
+  });
+  return response.data;
+};
+
+export const removeFromWishlist = async (
+  courseId: string
+): Promise<ApiResponse> => {
+  const response = await userAxiosInstance.delete(
+    `/api/profile/wishlist/${courseId}`
+  );
+  return response.data;
+};
+
+export const addToCart = async (courseId: string): Promise<ApiResponse> => {
+  const response = await userAxiosInstance.post('/api/profile/cart', {
+    courseId,
+  });
+  return response.data;
+};
+
+export const removeFromCart = async (
+  courseId: string
+): Promise<ApiResponse> => {
+  const response = await userAxiosInstance.delete(
+    `/api/profile/cart/${courseId}`
+  );
+  return response.data;
+};

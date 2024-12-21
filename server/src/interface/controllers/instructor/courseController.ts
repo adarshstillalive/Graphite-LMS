@@ -14,7 +14,7 @@ const instructorCourseUseCases = new InstructorCourseUseCases(
 
 const fetchCourses = async (req: Request, res: Response) => {
   try {
-    const instructorId = req.user?._id;
+    const instructorId = String(req.user?._id);
     if (!instructorId) {
       throw new Error('Server error');
     }
@@ -51,7 +51,7 @@ const fetchCourseById = async (req: Request, res: Response) => {
 const createCourse = async (req: Request, res: Response) => {
   try {
     const { formData } = req.body;
-    const instructorId = req.user?._id;
+    const instructorId = String(req.user?._id);
     if (!instructorId) {
       throw new Error('Server error');
     }
@@ -85,7 +85,7 @@ const editCourse = async (req: Request, res: Response) => {
 const deleteCourse = async (req: Request, res: Response) => {
   try {
     const courseId = req.params.id;
-    const instructorId = req.user?._id;
+    const instructorId = String(req.user?._id);
     if (!instructorId) {
       throw new Error('Server error');
     }
@@ -113,7 +113,7 @@ const uploadCourseThumbnail = async (req: Request, res: Response) => {
       throw new Error('Error fetching image file');
     }
     const file = req.files.file as UploadedFile;
-    const userId = req.user?._id;
+    const userId = String(req.user?._id);
     if (!userId) {
       throw new Error('Server error');
     }
@@ -218,7 +218,7 @@ const fetchCategories = async (req: Request, res: Response) => {
 
 const getvideoSign = async (req: Request, res: Response) => {
   try {
-    const instructorId = req.user?._id;
+    const instructorId = String(req.user?._id);
     if (!instructorId) {
       throw new Error('Server error');
     }

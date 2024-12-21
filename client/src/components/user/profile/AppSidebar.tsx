@@ -11,6 +11,7 @@ import {
   SidebarSeparator,
 } from '@/components/ui/sidebar';
 import {
+  Heart,
   Inbox,
   Key,
   Library,
@@ -39,6 +40,11 @@ const items = [
     title: 'Orders',
     url: '/profile/orders',
     icon: Logs,
+  },
+  {
+    title: 'Wishlist',
+    url: '/profile/wishlist',
+    icon: Heart,
   },
   {
     title: 'Cart',
@@ -75,8 +81,8 @@ const items = [
 const AppSidebar = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);
   return (
-    <Sidebar className="fixed left-0 top-16 bottom-0">
-      <SidebarContent className="bg-gray-200">
+    <Sidebar className="fixed left-0 top-16 bottom-0 ">
+      <SidebarContent className="bg-gray-200 scrollbar-hide">
         <SidebarGroup>
           <SidebarGroupLabel>
             {currentUser?.firstName?.toUpperCase() +

@@ -5,7 +5,9 @@ import UserModel, { IMongoUser } from '../models/UserModel.js';
 class MongoUserProfileRepository implements UserProfileRepository {
   async fetchUserById(userId: string): Promise<IMongoUser> {
     try {
-      const user = await UserModel.findById(userId);
+      const user = await UserModel.findById(userId)
+        .populate('wishlist')
+        .populate('cart');
       if (!user) {
         throw new Error('user not found');
       }
@@ -72,6 +74,74 @@ class MongoUserProfileRepository implements UserProfileRepository {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log('Error in updating user Password', error);
+
+      throw new Error(error);
+    }
+  }
+
+  async addToWishlist(userId: string, courseId: string): Promise<void> {
+    try {
+      const status = await UserModel.updateOne(
+        { _id: userId },
+        { $push: { wishlist: courseId } },
+      );
+      if (status.modifiedCount <= 0) {
+        throw new Error('Mongo Error: Adding to wishlist');
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Mongo Error: Adding to wishlist', error);
+
+      throw new Error(error);
+    }
+  }
+
+  async removeFromWishlist(userId: string, courseId: string): Promise<void> {
+    try {
+      const status = await UserModel.updateOne(
+        { _id: userId },
+        { $pull: { wishlist: courseId } },
+      );
+      if (status.modifiedCount <= 0) {
+        throw new Error('Mongo Error: Removal from wishlist');
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Mongo Error: Removal from wishlist', error);
+
+      throw new Error(error);
+    }
+  }
+
+  async addToCart(userId: string, courseId: string): Promise<void> {
+    try {
+      const status = await UserModel.updateOne(
+        { _id: userId },
+        { $push: { cart: courseId } },
+      );
+      if (status.modifiedCount <= 0) {
+        throw new Error('Mongo Error: Adding to cart');
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Mongo Error: Adding to cart', error);
+
+      throw new Error(error);
+    }
+  }
+
+  async removeFromCart(userId: string, courseId: string): Promise<void> {
+    try {
+      const status = await UserModel.updateOne(
+        { _id: userId },
+        { $pull: { cart: courseId } },
+      );
+      if (status.modifiedCount <= 0) {
+        throw new Error('Mongo Error: Removal from cart');
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Mongo Error: Removal from cart', error);
 
       throw new Error(error);
     }

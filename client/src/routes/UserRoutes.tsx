@@ -5,6 +5,8 @@ import Home from '@/pages/user/Home';
 import CourseDetail from '@/pages/user/CourseDetail';
 import Courses from '@/pages/user/Courses';
 import ChangePassword from '@/pages/user/ChangePassword';
+import Wishlist from '@/pages/user/Wishlist';
+import Cart from '@/pages/user/Cart';
 
 const userRoutes = [
   {
@@ -26,6 +28,14 @@ const userRoutes = [
           {
             path: '',
             element: <Profile />,
+          },
+          {
+            path: 'wishlist',
+            element: <Wishlist />,
+          },
+          {
+            path: 'cart',
+            element: <Cart />,
           },
           {
             path: 'changePassword',

@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { useToast } from '@/hooks/use-toast';
 import ProfilePicture from '@/components/common/ProfilePicture';
@@ -11,11 +11,9 @@ import {
   changeProfilePicture,
   updateProfileData,
 } from '@/services/user/profileService';
-import { setCurrentUser } from '@/redux/slices/user/userSlice';
 
 const Profile = () => {
   const { toast } = useToast();
-  const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
 
   const { currentUser } = useSelector((state: RootState) => state.user);
@@ -24,12 +22,7 @@ const Profile = () => {
     const formData = new FormData();
     formData.append('file', file);
     try {
-      const response = await changeProfilePicture(formData);
-      if (!response.success) {
-        throw new Error('Failed, Try again');
-      }
-      const userData = response.data;
-      dispatch(setCurrentUser(userData));
+      await changeProfilePicture(formData);
       toast({
         variant: 'default',
         description: 'Profile picture updated',
@@ -45,13 +38,12 @@ const Profile = () => {
 
   const handleUpdateProfile = async (formData: ProfileSchema) => {
     try {
-      const response = await updateProfileData(formData);
-      dispatch(setCurrentUser(response.data));
-      if (response.success)
-        toast({
-          variant: 'default',
-          description: 'Profile updated',
-        });
+      await updateProfileData(formData);
+
+      toast({
+        variant: 'default',
+        description: 'Profile updated',
+      });
     } catch (error) {
       console.log(error);
       toast({

@@ -1,3 +1,5 @@
+import { IPopulatedCourseCommon } from './Course';
+
 export interface ISocialAccount {
   provider: 'Facebook' | 'Google' | 'X';
   socialToken: string;
@@ -11,6 +13,8 @@ export interface IUser {
   email?: string;
   password?: string;
   profilePicture: string;
+  cart?: IPopulatedCourseCommon[];
+  wishlist?: IPopulatedCourseCommon[];
   isBlocked?: boolean;
   isInstructor?: boolean;
   isAdmin?: boolean;

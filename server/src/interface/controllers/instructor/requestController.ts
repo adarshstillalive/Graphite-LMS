@@ -13,7 +13,7 @@ const instructorRequestUseCases = new InstructorRequestUseCases(
 
 const createRequest = async (req: Request, res: Response) => {
   try {
-    const userId = req.user?._id;
+    const userId = String(req.user?._id);
     if (!userId) {
       throw new Error('Server error');
     }
@@ -33,7 +33,7 @@ const createRequest = async (req: Request, res: Response) => {
 
 const getRequest = async (req: Request, res: Response) => {
   try {
-    const userId = req.user?._id;
+    const userId = String(req.user?._id);
     if (!userId) {
       throw new Error('DB error: User fetching failed');
     }

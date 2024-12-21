@@ -33,11 +33,30 @@ userRoute.post(
   userAuthMiddleware.authorization,
   profileController.updateUserProfilePicture,
 );
-
 userRoute.put(
   '/api/profile/changePassword',
   userAuthMiddleware.authorization,
   profileController.changePassword,
+);
+userRoute.post(
+  '/api/profile/wishlist',
+  userAuthMiddleware.authorization,
+  profileController.addToWishlist,
+);
+userRoute.delete(
+  '/api/profile/wishlist/:id',
+  userAuthMiddleware.authorization,
+  profileController.removeFromWishlist,
+);
+userRoute.post(
+  '/api/profile/cart',
+  userAuthMiddleware.authorization,
+  profileController.addToCart,
+);
+userRoute.delete(
+  '/api/profile/cart/:id',
+  userAuthMiddleware.authorization,
+  profileController.removeFromCart,
 );
 
 // Courses

@@ -8,15 +8,50 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { IPopulatedCourseCommon } from '@/interfaces/Course';
 import { inputStyle } from '@/interfaces/zodCourseFormSchema';
+import { RootState } from '@/redux/store';
 import { fetchCommonCourse } from '@/services/user/courseService';
+import { addToCart, removeFromCart } from '@/services/user/profileService';
 import { FileText, Play, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const CourseDetail = () => {
+  const navigate = useNavigate();
+  const { currentUser } = useSelector((state: RootState) => state.user);
   const { toast } = useToast();
   const { id } = useParams<{ id: string }>();
   const [course, setCourse] = useState<IPopulatedCourseCommon>();
+
+  const handleCart = async (courseId: string) => {
+    try {
+      if (!currentUser) {
+        navigate('/auth/login');
+      }
+      const isExist =
+        currentUser?.cart &&
+        currentUser?.cart.some((item) => item._id === courseId);
+      if (isExist) {
+        await removeFromCart(courseId);
+        toast({
+          variant: 'default',
+          description: 'Removed from cart',
+        });
+      } else {
+        await addToCart(courseId);
+        toast({
+          variant: 'default',
+          description: 'Added to cart',
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        variant: 'destructive',
+        description: 'Adding to cart failed, Try again',
+      });
+    }
+  };
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -99,8 +134,11 @@ const CourseDetail = () => {
                 <Button
                   variant={'outline'}
                   className={`${inputStyle} border-2 mb-2 bg-white`}
+                  onClick={() => handleCart(course._id)}
                 >
-                  Add to cart
+                  {currentUser?.cart?.some((item) => item._id === course._id)
+                    ? 'Remove from cart'
+                    : 'Add to cart'}
                 </Button>
                 <Button
                   variant={'outline'}

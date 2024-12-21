@@ -13,6 +13,8 @@ export interface IUser {
   email: string;
   password?: string;
   profilePicture?: string;
+  cart?: string[];
+  wishlist?: string[];
   isBlocked?: boolean;
   isInstructor?: boolean;
   isAdmin?: boolean;
@@ -30,6 +32,8 @@ export interface IMongoUser {
   email: string;
   password?: string;
   profilePicture?: string;
+  cart?: mongoose.Schema.Types.ObjectId[];
+  wishlist?: mongoose.Schema.Types.ObjectId[];
   isBlocked?: boolean;
   isInstructor?: boolean;
   isAdmin?: boolean;
@@ -60,6 +64,14 @@ const userSchema: Schema<IMongoUser> = new Schema(
     },
     profilePicture: {
       type: String,
+    },
+    cart: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: 'Course',
+    },
+    wishlist: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: 'Course',
     },
     isBlocked: {
       type: Boolean,
