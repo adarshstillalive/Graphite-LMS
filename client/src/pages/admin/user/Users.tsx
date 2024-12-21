@@ -86,6 +86,7 @@ const Users = () => {
             search={search}
             setSearch={setSearch}
             setSortHelper={setSortHelper}
+            placeholder="Enter user name"
           />
         </CardDescription>
       </CardHeader>

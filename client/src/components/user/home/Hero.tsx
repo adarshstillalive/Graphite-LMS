@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 const Hero = () => {
   return (
@@ -9,7 +10,9 @@ const Hero = () => {
           <p className="text-xl mb-6">
             Study any topic, anytime. Choose expert-led courses now.
           </p>
-          <Button size="lg">Explore Courses</Button>
+          <Link to="/courses">
+            <Button size="lg">Explore Courses</Button>
+          </Link>
         </div>
       </div>
     </section>

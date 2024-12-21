@@ -93,6 +93,7 @@ const InstructorList = () => {
             search={search}
             setSearch={setSearch}
             setSortHelper={setSortHelper}
+            placeholder="Enter instructor name"
           />
         </CardDescription>
       </CardHeader>

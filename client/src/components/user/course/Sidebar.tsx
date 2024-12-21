@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Accordion,
   AccordionContent,
@@ -7,26 +7,49 @@ import {
 } from '@/components/ui/accordion';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ISubCategory } from '@/services/admin/courseService';
+import { ICategory } from '@/services/admin/courseService';
 
 interface SidebarProps {
-  subcategories: ISubCategory[];
+  categories: ICategory[];
   setQueryString: (queryString: string) => void;
+  categoryId: string | null;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ subcategories, setQueryString }) => {
-  const [selectedSubcategories, setSelectedSubcategories] = useState<string[]>(
-    []
-  );
+const Sidebar: React.FC<SidebarProps> = ({
+  categories,
+  setQueryString,
+  categoryId,
+}) => {
+  const [categorySubcategories, setCategorySubcategories] = useState<{
+    [key: string]: string[];
+  }>({});
   const [selectedLevels, setSelectedLevels] = useState<string[]>([]);
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
 
   const levels = ['Beginner', 'Intermediate', 'Advanced'];
   const languages = ['English', 'Malayalam', 'Hindi'];
 
+  const selectedCategory = useMemo(
+    () => categories.find((cat) => cat._id === categoryId),
+    [categories, categoryId]
+  );
+
+  useEffect(() => {
+    if (categoryId && selectedCategory) {
+      setCategorySubcategories((prev) => {
+        const updated = { ...prev };
+        updated[categoryId] = selectedCategory.subCategory.map(
+          (sub) => sub._id!
+        );
+        return updated;
+      });
+    }
+  }, [categoryId, selectedCategory]);
+
   useEffect(() => {
     const queryParams: Record<string, string> = {};
 
+    const selectedSubcategories = Object.values(categorySubcategories).flat();
     if (selectedSubcategories.length > 0) {
       queryParams.subcategories = selectedSubcategories.join(',');
     }
@@ -42,43 +65,96 @@ const Sidebar: React.FC<SidebarProps> = ({ subcategories, setQueryString }) => {
     const queryString = new URLSearchParams(queryParams).toString();
     setQueryString(queryString);
   }, [
-    selectedSubcategories,
+    categorySubcategories,
     selectedLevels,
     selectedLanguages,
     setQueryString,
   ]);
 
+  const handleCategorySelection = (category: ICategory, isChecked: boolean) => {
+    setCategorySubcategories((prev) => {
+      const updated = { ...prev };
+      if (isChecked) {
+        updated[category._id!] = category.subCategory.map((sub) => sub._id!);
+      } else {
+        delete updated[category._id!];
+      }
+      return updated;
+    });
+  };
+
+  const handleSubcategorySelection = (
+    categoryId: string,
+    subcategoryId: string,
+    isChecked: boolean
+  ) => {
+    setCategorySubcategories((prev) => {
+      const updated = { ...prev };
+      if (isChecked) {
+        updated[categoryId] = [...(updated[categoryId] || []), subcategoryId];
+      } else {
+        updated[categoryId] = (updated[categoryId] || []).filter(
+          (id) => id !== subcategoryId
+        );
+      }
+      return updated;
+    });
+  };
+
   return (
     <aside className="w-80 p-6 border-r">
-      <Accordion type="single" collapsible className="w-full">
-        <AccordionItem value="subcategory">
+      <Accordion type="multiple" className="w-full">
+        <AccordionItem value="category">
           <AccordionTrigger className="py-4 text-xl font-semibold">
-            Subcategory
+            Category
           </AccordionTrigger>
           <AccordionContent>
             <div className="space-y-2">
-              {subcategories.map((scategory) => (
-                <div
-                  className="flex items-center space-x-2"
-                  key={scategory._id}
-                >
-                  <Checkbox
-                    id={scategory._id}
-                    checked={selectedSubcategories.includes(
-                      scategory._id || ''
-                    )}
-                    onCheckedChange={(checked) => {
-                      const newSelected = checked
-                        ? [...selectedSubcategories, scategory._id]
-                        : selectedSubcategories.filter(
-                            (id) => id !== scategory._id
-                          );
-                      setSelectedSubcategories(newSelected as string[]); // Ensure the array contains only strings
-                    }}
-                  />
-                  <Label className="font-normal" htmlFor={scategory._id}>
-                    {scategory.name}
-                  </Label>
+              {categories.map((category) => (
+                <div key={category._id} className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id={category._id}
+                      checked={!!categorySubcategories[category._id!]}
+                      onCheckedChange={(checked) =>
+                        handleCategorySelection(category, checked as boolean)
+                      }
+                    />
+                    <Label className="font-normal" htmlFor={category._id}>
+                      {category.name}
+                    </Label>
+                  </div>
+
+                  {category._id && category._id in categorySubcategories && (
+                    <div className="ml-6 space-y-2">
+                      {category.subCategory.map((subcategory) => (
+                        <div
+                          key={subcategory._id}
+                          className="flex items-center space-x-2"
+                        >
+                          <Checkbox
+                            id={subcategory._id}
+                            checked={categorySubcategories[
+                              category._id!
+                            ]?.includes(subcategory._id!)}
+                            onCheckedChange={(checked) =>
+                              handleSubcategorySelection(
+                                category._id!,
+                                subcategory._id!,
+                                checked as boolean
+                              )
+                            }
+                          />
+                          <Label
+                            className="font-normal"
+                            htmlFor={subcategory._id}
+                          >
+                            {subcategory.name}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -112,7 +188,7 @@ const Sidebar: React.FC<SidebarProps> = ({ subcategories, setQueryString }) => {
           </AccordionContent>
         </AccordionItem>
 
-        <AccordionItem value="rating">
+        <AccordionItem value="language">
           <AccordionTrigger className="py-4 text-xl font-semibold">
             Language
           </AccordionTrigger>

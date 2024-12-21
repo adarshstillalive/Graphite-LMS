@@ -62,6 +62,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ enableEditTab }) => {
             search={search}
             setSearch={setSearch}
             setSortHelper={setSortHelper}
+            placeholder="Enter category name"
           />
         </CardDescription>
       </CardHeader>

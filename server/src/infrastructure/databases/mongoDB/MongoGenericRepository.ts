@@ -195,7 +195,7 @@ class MongoGenericRepository<T> {
     filter: object = {},
     sort: SortType,
   ): Promise<PaginatedResult<T>> {
-    const skip = (page - 1) * limit;
+    // const skip = (page - 1) * limit;
     const data = await this.model
       .find({
         ...filter,
@@ -204,8 +204,7 @@ class MongoGenericRepository<T> {
         isPublished: true,
       })
       .select('-chapters.episodes.content')
-      .skip(skip)
-      .limit(limit)
+      .limit(limit * page)
       .sort(sort)
       .collation({ locale: 'en', strength: 2 })
       .populate('instructorId')

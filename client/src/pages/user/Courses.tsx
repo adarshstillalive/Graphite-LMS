@@ -1,9 +1,10 @@
 import SearchAndSort from '@/components/common/SearchAndSort';
+import { Button } from '@/components/ui/button';
 import CourseCardWide from '@/components/user/course/CourseCardWide';
 import Sidebar from '@/components/user/course/Sidebar';
 import { useToast } from '@/hooks/use-toast';
 import { IPopulatedCourseCommon } from '@/interfaces/Course';
-import { ICategory, ISubCategory } from '@/services/admin/courseService';
+import { ICategory } from '@/services/admin/courseService';
 import {
   fetchCategoriesFromApi,
   fetchCoursesForProductsPage,
@@ -13,7 +14,7 @@ import { useLocation } from 'react-router-dom';
 
 const Courses = () => {
   const { toast } = useToast();
-  const [subcategory, setSubcategory] = useState<ISubCategory[]>([]);
+  const [categories, setCategories] = useState<ICategory[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [queryString, setQueryString] = useState<string>();
@@ -27,30 +28,44 @@ const Courses = () => {
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const category = queryParams.get('Category');
+  const categoryId = queryParams.get('Category');
 
   useEffect(() => {
     const handler = setTimeout(async () => {
       try {
         const sort = { [sortHelper.field]: sortHelper.value };
-        const response1 = await fetchCoursesForProductsPage(
-          queryString,
-          sort,
-          search
-        );
+        if (categoryId) {
+          if (queryString) {
+            const response1 = await fetchCoursesForProductsPage(
+              queryString,
+              sort,
+              search,
+              currentPage
+            );
+            const result = response1.data;
+
+            setCourses(result.data);
+            setTotalPages(Math.ceil(result.total / 2));
+          }
+        } else {
+          const response1 = await fetchCoursesForProductsPage(
+            queryString,
+            sort,
+            search,
+            currentPage
+          );
+          const result = response1.data;
+
+          setCourses(result.data);
+          setTotalPages(Math.ceil(result.total / 2));
+        }
         const response2 = await fetchCategoriesFromApi();
 
-        const categoryData = response2.data.find(
-          (cat: ICategory) => cat._id === category
-        );
+        const categoryData = response2.data;
+
         if (categoryData) {
-          setSubcategory(categoryData.subCategory);
+          setCategories(categoryData);
         }
-
-        const result = response1.data;
-
-        setCourses(result.data);
-        setTotalPages(Math.ceil(result.total / 10));
       } catch (error) {
         console.log(error);
         toast({
@@ -63,7 +78,6 @@ const Courses = () => {
       clearTimeout(handler);
     };
   }, [
-    category,
     currentPage,
     queryString,
     search,
@@ -83,16 +97,30 @@ const Courses = () => {
           search={search}
           setSearch={setSearch}
           setSortHelper={setSortHelper}
+          placeholder="Enter course name"
         />
       </header>
 
       <div className="flex">
-        <Sidebar subcategories={subcategory} setQueryString={setQueryString} />
+        <Sidebar
+          categories={categories}
+          setQueryString={setQueryString}
+          categoryId={categoryId}
+        />
         <main className="flex-1 p-6">
           <div className="grid ">
             {courses.map((course: IPopulatedCourseCommon) => (
               <CourseCardWide key={course._id} course={course} />
             ))}
+          </div>
+          <div className="flex justify-center py-4">
+            <Button
+              variant={'outline'}
+              disabled={currentPage >= totalPages}
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
+              Load more
+            </Button>
           </div>
         </main>
       </div>

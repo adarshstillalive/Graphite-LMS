@@ -63,6 +63,7 @@ const CourseList: React.FC<CourseListProps> = ({ enableEditTab }) => {
             search={search}
             setSearch={setSearch}
             setSortHelper={setSortHelper}
+            placeholder="Enter course title"
           />
         </CardDescription>
       </CardHeader>

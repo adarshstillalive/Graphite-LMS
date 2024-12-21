@@ -21,12 +21,13 @@ export const fetchCoursesForHomePage = async (
 export const fetchCoursesForProductsPage = async (
   queryString1: string | undefined,
   sort: SortType,
-  filter: string
+  filter: string,
+  currentPage: number
 ): Promise<ApiResponse> => {
   const queryParams = new URLSearchParams();
-  // if (currentPage > 0) {
-  //   queryParams.append('page', currentPage.toString());
-  // }
+  if (currentPage > 0) {
+    queryParams.append('page', currentPage.toString());
+  }
 
   if (sort) {
     for (const key in sort) {

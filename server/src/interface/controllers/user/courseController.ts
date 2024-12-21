@@ -66,7 +66,7 @@ const fetchPaginatedCourseProductPage = async (req: Request, res: Response) => {
     const sort = req.query.sort as string;
     const [[field, order]] = Object.entries(sort);
     const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 10;
+    const limit = parseInt(req.query.limit as string) || 2;
     const model = CourseModel;
     const courseRepository = new MongoGenericRepository(model);
     const result =
