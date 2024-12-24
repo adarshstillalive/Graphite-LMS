@@ -6,6 +6,16 @@ import {
   createOrder,
 } from '../../../infrastructure/paypal/paypal.js';
 
+function generateOrderId() {
+  const timestamp = Date.now();
+
+  const randomString = Math.random().toString(36).substring(2, 8).toUpperCase();
+
+  const orderId = `ORD-${timestamp}-${randomString}`;
+
+  return orderId;
+}
+
 class UserOrderUseCases {
   constructor(private orderRepository: OrderRepository) {}
 
@@ -33,7 +43,7 @@ class UserOrderUseCases {
       const approvalUrl = await createOrder(items);
       return approvalUrl;
     } catch (error) {
-      console.error('Error in paypalCreateOrder:', error);
+      console.error('Error in paypalCreateOrder', error);
       throw error;
     }
   }
@@ -51,7 +61,7 @@ class UserOrderUseCases {
       if (!populatedUserData || !populatedUserData.cart) {
         throw new Error('Usecase Error: User data or cart is missing.');
       }
-
+      const orderId = generateOrderId();
       const products = populatedUserData.cart.map((item) => ({
         courseId: String(item._id),
         price: item.price,
@@ -59,6 +69,7 @@ class UserOrderUseCases {
       }));
 
       const order: IOrder = {
+        orderId,
         userId,
         courses: products,
         totalAmount: products.reduce((acc, curr) => acc + curr.price, 0),

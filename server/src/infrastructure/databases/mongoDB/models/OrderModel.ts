@@ -12,6 +12,7 @@ export interface IProduct {
 }
 
 export interface IOrder {
+  orderId: string;
   userId: string;
   courses: IProduct[];
   totalAmount: number;
@@ -26,7 +27,8 @@ export interface IOrder {
   updatedAt?: Date;
 }
 
-interface IMongoOrder extends Document {
+export interface IMongoOrder extends Document {
+  orderId: string;
   userId: mongoose.Types.ObjectId;
   courses: IMongoProduct[];
   totalAmount: number;
@@ -59,6 +61,10 @@ const productSchema: Schema<IMongoProduct> = new Schema({
 
 const orderSchema: Schema<IMongoOrder> = new Schema(
   {
+    orderId: {
+      type: String,
+      required: true,
+    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,

@@ -83,4 +83,10 @@ userRoute.get(
   orderController.capturePayment,
 );
 
+userRoute.get(
+  '/api/orders',
+  userAuthMiddleware.authorization,
+  orderController.getPaginatedUserOrders,
+);
+
 export default userRoute;
