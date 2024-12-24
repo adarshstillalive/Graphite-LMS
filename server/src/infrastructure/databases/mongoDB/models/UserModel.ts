@@ -1,8 +1,29 @@
 import mongoose, { Schema } from 'mongoose';
+import { IMongoCoursePopulated } from './CourseModel.js';
 
 export interface ISocialAccount {
   provider: 'Facebook' | 'Google' | 'X';
   createdAt?: Date;
+}
+
+export interface ICompletePopulatedUser {
+  _id: mongoose.Schema.Types.ObjectId;
+  firstName?: string;
+  lastName?: string;
+  instructorId?: string;
+  email: string;
+  password?: string;
+  profilePicture?: string;
+  cart?: IMongoCoursePopulated[];
+  wishlist?: IMongoCoursePopulated[];
+  purchasedCourses: IMongoCoursePopulated[];
+  isBlocked?: boolean;
+  isInstructor?: boolean;
+  isAdmin?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
+  socialAccounts?: ISocialAccount[];
+  isSocialAuthenticated?: boolean;
 }
 
 export interface IUser {
@@ -15,6 +36,7 @@ export interface IUser {
   profilePicture?: string;
   cart?: string[];
   wishlist?: string[];
+  purchasedCourses: string[];
   isBlocked?: boolean;
   isInstructor?: boolean;
   isAdmin?: boolean;
@@ -34,6 +56,7 @@ export interface IMongoUser {
   profilePicture?: string;
   cart?: mongoose.Schema.Types.ObjectId[];
   wishlist?: mongoose.Schema.Types.ObjectId[];
+  purchasedCourses: mongoose.Schema.Types.ObjectId[];
   isBlocked?: boolean;
   isInstructor?: boolean;
   isAdmin?: boolean;
@@ -70,6 +93,10 @@ const userSchema: Schema<IMongoUser> = new Schema(
       ref: 'Course',
     },
     wishlist: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: 'Course',
+    },
+    purchasedCourses: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: 'Course',
     },

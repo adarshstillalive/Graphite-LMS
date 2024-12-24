@@ -5,11 +5,13 @@ import { useNavigate } from 'react-router-dom';
 import { FaHeart } from 'react-icons/fa6';
 import {
   addToWishlist,
+  removeFromCart,
   removeFromWishlist,
 } from '@/services/user/profileService';
 import { useSelector } from 'react-redux';
 import { useToast } from '@/hooks/use-toast';
 import { RootState } from '@/redux/store';
+import { Button } from '@/components/ui/button';
 
 interface CourseCardProps {
   course: IPopulatedCourseCommon;
@@ -40,6 +42,22 @@ const CourseCardWide: React.FC<CourseCardProps> = ({ course }) => {
       toast({
         variant: 'destructive',
         description: 'Adding to wishlist failed, Try again.',
+      });
+    }
+  };
+
+  const handleCart = async (courseId: string) => {
+    try {
+      await removeFromCart(courseId);
+      toast({
+        variant: 'default',
+        description: 'Removed from cart',
+      });
+    } catch (error) {
+      console.log(error);
+      toast({
+        variant: 'destructive',
+        description: 'Removing from cart failed, Try again',
       });
     }
   };
@@ -80,8 +98,18 @@ const CourseCardWide: React.FC<CourseCardProps> = ({ course }) => {
                 course.instructorId.lastName}
             </p>
           </div>
-          <div className="flex flex-col pl-8 items-end">
-            <p className="font-semibold text-lg">₹{course.price.toFixed(2)}</p>
+          <div className="flex flex-col justify-between pl-8 items-end">
+            <p className="font-semibold py-4 text-lg">
+              ₹{course.price.toFixed(2)}
+            </p>
+            <Button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCart(course._id);
+              }}
+            >
+              Remove
+            </Button>
           </div>
         </div>
         <div className="flex items-center mt-2">

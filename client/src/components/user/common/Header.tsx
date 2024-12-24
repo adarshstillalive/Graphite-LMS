@@ -72,12 +72,12 @@ const Header = () => {
           {currentUser && role !== 'instructor' && (
             <Link to="/profile/cart">
               <Button
-                className=" md:flex rounded-full bg-gray-200 hover:bg-gray-300 p-5"
+                className="relative md:flex rounded-full bg-gray-200 hover:bg-gray-300 p-5"
                 variant="default"
               >
                 <IoCartSharp className="text-gray-800" />
                 {currentUser.cart && currentUser.cart?.length > 0 && (
-                  <span className="absolute top-0 right-0 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full">
+                  <span className="absolute top-0 right-0 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-black rounded-full">
                     {currentUser.cart.length}
                   </span>
                 )}

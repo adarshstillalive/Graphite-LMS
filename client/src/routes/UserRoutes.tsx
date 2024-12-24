@@ -7,6 +7,8 @@ import Courses from '@/pages/user/Courses';
 import ChangePassword from '@/pages/user/ChangePassword';
 import Wishlist from '@/pages/user/Wishlist';
 import Cart from '@/pages/user/Cart';
+import Checkout from '@/pages/user/Checkout';
+import Order from '@/pages/user/Order';
 
 const userRoutes = [
   {
@@ -38,8 +40,16 @@ const userRoutes = [
             element: <Cart />,
           },
           {
+            path: 'cart/checkout',
+            element: <Checkout />,
+          },
+          {
             path: 'changePassword',
             element: <ChangePassword />,
+          },
+          {
+            path: 'order',
+            element: <Order />,
           },
         ],
       },

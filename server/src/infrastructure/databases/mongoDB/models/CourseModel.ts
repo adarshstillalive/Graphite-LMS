@@ -1,4 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
+import { IInstructorPopulated } from '../../../../domain/entities/Instructor.js';
+import { ICategory } from '../../../../domain/entities/Category.js';
 
 export interface IMongoEpisode {
   id: string;
@@ -50,6 +52,31 @@ export interface IMongoCourse {
   createdAt?: Date;
   updatedAt?: Date;
   chapters?: IMongoChapter[];
+}
+
+export interface IMongoCoursePopulated {
+  instructorId: IInstructorPopulated;
+  title: string;
+  subtitle: string;
+  category: ICategory;
+  subcategory: mongoose.Schema.Types.ObjectId;
+  language: string;
+  level: string;
+  description: string;
+  mrp: number;
+  price: number;
+  thumbnail: string;
+  isApproved?: boolean;
+  isRejected?: boolean;
+  rejectedReason?: string;
+  isPublished?: boolean;
+  rating?: number;
+  welcomeMessage?: string;
+  courseCompletionMessage?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  chapters?: IMongoChapter[];
+  _id?: mongoose.Schema.Types.ObjectId;
 }
 
 export interface IMongoCourseCommon {

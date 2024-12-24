@@ -18,6 +18,7 @@ class User {
     public instructorId?: string,
     public cart?: string[],
     public wishlist?: string[],
+    public purchasedCourses?: string,
   ) {}
 }
 

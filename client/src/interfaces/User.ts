@@ -1,4 +1,4 @@
-import { IPopulatedCourseCommon } from './Course';
+import { IPopulatedCourse, IPopulatedCourseCommon } from './Course';
 
 export interface ISocialAccount {
   provider: 'Facebook' | 'Google' | 'X';
@@ -15,6 +15,7 @@ export interface IUser {
   profilePicture: string;
   cart?: IPopulatedCourseCommon[];
   wishlist?: IPopulatedCourseCommon[];
+  purchasedCourses?: IPopulatedCourse[];
   isBlocked?: boolean;
   isInstructor?: boolean;
   isAdmin?: boolean;

@@ -45,10 +45,13 @@ const CourseDetail = () => {
         });
       }
     } catch (error) {
+      const isExist =
+        currentUser?.cart &&
+        currentUser?.cart.some((item) => item._id === courseId);
       console.log(error);
       toast({
         variant: 'destructive',
-        description: 'Adding to cart failed, Try again',
+        description: `${isExist ? 'Removal from ' : 'Adding to '}cart failed, Try again`,
       });
     }
   };

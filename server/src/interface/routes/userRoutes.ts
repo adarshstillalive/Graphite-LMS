@@ -4,6 +4,7 @@ import tokenController from '../controllers/token/tokenController.js';
 import courseController from '../controllers/user/courseController.js';
 import userAuthMiddleware from '../../infrastructure/middleware/userAuthMiddleware.js';
 import profileController from '../controllers/user/profileController.js';
+import orderController from '../controllers/user/orderController.js';
 
 const userRoute = express.Router();
 
@@ -68,5 +69,18 @@ userRoute.get(
 );
 userRoute.get('/api/categories', courseController.fetchCategories);
 userRoute.get('/api/course/:id', courseController.fetchCourseById);
+
+// Order
+
+userRoute.post(
+  '/api/order/paypal',
+  userAuthMiddleware.authorization,
+  orderController.paypalCreateOrder,
+);
+userRoute.get(
+  '/api/capturePayment/:orderId',
+  userAuthMiddleware.authorization,
+  orderController.capturePayment,
+);
 
 export default userRoute;
