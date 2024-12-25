@@ -20,6 +20,9 @@ export const CourseCardHome: React.FC<CourseCardProps> = ({ course }) => {
   const { toast } = useToast();
   const { currentUser } = useSelector((state: RootState) => state.user);
 
+  const isPurchased =
+    currentUser?.purchasedCourses?.some((c) => c._id === course._id) || false;
+
   const handleWishlistToggle = async (courseId: string) => {
     try {
       if (!currentUser) {
@@ -54,18 +57,20 @@ export const CourseCardHome: React.FC<CourseCardProps> = ({ course }) => {
           alt={course.title}
           className="h-full w-full object-cover transition-transform duration-300 hover:scale-110"
         />
-        <button
-          className="absolute top-2 right-2 p-2 bg-black bg-opacity-50 rounded-full hover:bg-opacity-70 transition"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleWishlistToggle(course._id);
-          }}
-          aria-label="Add to Favorites"
-        >
-          <FaHeart
-            className={`text-2xl ${currentUser?.wishlist?.some((item) => item._id === course._id) ? 'fill-red-500' : 'fill-white'}`}
-          />
-        </button>
+        {!isPurchased && (
+          <button
+            className="absolute top-2 right-2 p-2 bg-black bg-opacity-50 rounded-full hover:bg-opacity-70 transition"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleWishlistToggle(course._id);
+            }}
+            aria-label="Add to Favorites"
+          >
+            <FaHeart
+              className={`text-2xl ${currentUser?.wishlist?.some((item) => item._id === course._id) ? 'fill-red-500' : 'fill-white'}`}
+            />
+          </button>
+        )}
       </div>
 
       <div className="py-2">
@@ -99,9 +104,11 @@ export const CourseCardHome: React.FC<CourseCardProps> = ({ course }) => {
         </div>
 
         <div className="flex justify-between items-center">
-          <span className="text-lg font-semibold text-primary">
-            ₹{course.price.toFixed(2)}
-          </span>
+          {!isPurchased && (
+            <span className="text-lg font-semibold text-primary">
+              ₹{course.price.toFixed(2)}
+            </span>
+          )}
           <div className="flex items-center space-x-1 text-gray-500 dark:text-gray-400">
             <Layers className="h-4 w-4" />
             <span className="text-xs">

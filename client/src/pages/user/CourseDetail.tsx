@@ -14,13 +14,16 @@ import { addToCart, removeFromCart } from '@/services/user/profileService';
 import { FileText, Play, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-const CourseDetail = () => {
+interface CourseDetailProps {
+  id: string;
+}
+
+const CourseDetail: React.FC<CourseDetailProps> = ({ id }) => {
   const navigate = useNavigate();
   const { currentUser } = useSelector((state: RootState) => state.user);
   const { toast } = useToast();
-  const { id } = useParams<{ id: string }>();
   const [course, setCourse] = useState<IPopulatedCourseCommon>();
 
   const handleCart = async (courseId: string) => {

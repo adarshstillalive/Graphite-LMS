@@ -59,6 +59,11 @@ userRoute.delete(
   userAuthMiddleware.authorization,
   profileController.removeFromCart,
 );
+userRoute.get(
+  '/api/profile/courses',
+  userAuthMiddleware.authorization,
+  profileController.fetchPurchasedCourses,
+);
 
 // Courses
 

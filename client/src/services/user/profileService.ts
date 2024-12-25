@@ -78,3 +78,8 @@ export const removeFromCart = async (
   );
   return response.data;
 };
+
+export const fetchPurchasedCourses = async (): Promise<ApiResponse> => {
+  const response = await userAxiosInstance.get(`/api/profile/courses`);
+  return response.data;
+};

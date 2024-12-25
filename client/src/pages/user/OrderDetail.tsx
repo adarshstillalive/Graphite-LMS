@@ -2,12 +2,13 @@ import { useToast } from '@/hooks/use-toast';
 import { IOrder } from '@/interfaces/Order';
 import { fetchOrderDetailsApi } from '@/services/user/orderService';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const OrderDetail: React.FC = () => {
   const { toast } = useToast();
   const { orderId } = useParams();
   const [order, setOrder] = useState<IOrder>();
+  const navigate = useNavigate();
 
   const formatDate = (date: Date | undefined) =>
     date ? new Date(date).toLocaleString() : 'N/A';
@@ -76,6 +77,9 @@ const OrderDetail: React.FC = () => {
               <div
                 key={index}
                 className="flex items-start space-x-4 border rounded-sm p-4 hover:shadow transition cursor-pointer"
+                onClick={() =>
+                  navigate(`/courses/courseDetail/${product.courseId._id}`)
+                }
               >
                 <img
                   src={product.courseId.thumbnail}

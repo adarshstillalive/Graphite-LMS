@@ -1,8 +1,11 @@
-import { ObjectId } from 'mongoose';
 import CourseRepository from '../../../domain/repositories/user/CourseRepository.js';
+import UserProfileRepository from '../../../domain/repositories/user/UserProfileRepository.js';
 
 class UserCourseUseCases {
-  constructor(private courseRepository: CourseRepository) {}
+  constructor(
+    private courseRepository: CourseRepository,
+    private userProfileRepository: UserProfileRepository,
+  ) {}
 
   async fetchCategories() {
     try {
@@ -17,19 +20,30 @@ class UserCourseUseCases {
 
   async fetchCourseById(
     courseId: string,
-    purchasedCourses: Array<string | ObjectId> | undefined,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    userId: any | undefined = undefined,
   ) {
     try {
-      const isPurchased = purchasedCourses?.some(
-        (course) => String(course) === courseId,
-      );
+      if (userId) {
+        const userData = await this.userProfileRepository.fetchUserById(
+          String(userId),
+        );
+        if (userData && userData.purchasedCourses) {
+          const isPurchased = userData.purchasedCourses.some(
+            (course) => String(course._id) === courseId,
+          );
 
-      if (isPurchased) {
-        return await this.courseRepository.fetchPurchasedCourseById(courseId);
+          if (isPurchased) {
+            return await this.courseRepository.fetchPurchasedCourseById(
+              courseId,
+            );
+          }
+        }
       }
 
       return await this.courseRepository.fetchCourseById(courseId);
-    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       console.error('Usecase Error: Fetching course', error);
       throw new Error('Error fetching course: ' + (error || 'Unknown error'));
     }

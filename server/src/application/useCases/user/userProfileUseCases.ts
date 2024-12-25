@@ -135,6 +135,17 @@ class UserProfileUseCases {
       throw new Error(error);
     }
   }
+
+  async fetchPurchasedCourses(userId: string) {
+    try {
+      return await this.userProfileRepository.fetchPurchasedCourses(userId);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Usecase: Error in removing course from cart', error);
+
+      throw new Error(error);
+    }
+  }
 }
 
 export default UserProfileUseCases;

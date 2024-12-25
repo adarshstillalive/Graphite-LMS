@@ -54,9 +54,17 @@ export const fetchCategoriesFromApi = async (): Promise<ApiResponse> => {
 };
 
 export const fetchCommonCourse = async (
-  courseId: string
+  courseId: string,
+  userId: string | undefined = undefined
 ): Promise<ApiResponse> => {
-  const response = await userAxiosInstance.get(`/api/course/${courseId}`);
+  const queryParams = new URLSearchParams();
+  if (userId) {
+    queryParams.append('userId', userId.toString());
+  }
+  const queryString = queryParams.toString();
+  const response = await userAxiosInstance.get(
+    `/api/course/${courseId}?${queryString}`
+  );
   return response.data;
 };
 

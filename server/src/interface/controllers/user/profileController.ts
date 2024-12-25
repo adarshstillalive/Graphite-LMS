@@ -155,6 +155,20 @@ const removeFromCart = async (req: Request, res: Response) => {
   }
 };
 
+const fetchPurchasedCourses = async (req: Request, res: Response) => {
+  try {
+    const userId = String(req.user?._id);
+    if (!userId) {
+      throw new Error('Server error');
+    }
+    const courses = await userProfileUseCases.fetchPurchasedCourses(userId);
+    res.status(200).json(createResponse(true, 'Courses fetched', courses));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(400).json(createResponse(false, error?.message));
+  }
+};
+
 export default {
   updateProfileData,
   updateUserProfilePicture,
@@ -163,4 +177,5 @@ export default {
   removeFromWishlist,
   addToCart,
   removeFromCart,
+  fetchPurchasedCourses,
 };

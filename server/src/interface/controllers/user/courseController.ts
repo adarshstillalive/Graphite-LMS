@@ -5,9 +5,14 @@ import { createResponse } from '../../../utils/createResponse.js';
 import UserCourseUseCases from '../../../application/useCases/user/userCourseUseCases.js';
 import MongoCourseRepository from '../../../infrastructure/databases/mongoDB/user/MongoCourseRepository.js';
 import { SortOrder } from 'mongoose';
+import MongoUserProfileRepository from '../../../infrastructure/databases/mongoDB/user/MongoUserProfileRepository.js';
 
 const courseRepository = new MongoCourseRepository();
-const userCourseUseCases = new UserCourseUseCases(courseRepository);
+const userProfileRepository = new MongoUserProfileRepository();
+const userCourseUseCases = new UserCourseUseCases(
+  courseRepository,
+  userProfileRepository,
+);
 
 const fetchPaginatedCourse = async (req: Request, res: Response) => {
   try {
@@ -123,12 +128,9 @@ const fetchCategories = async (req: Request, res: Response) => {
 const fetchCourseById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const purchasedCourses = req.user?.purchasedCourses;
+    const { userId } = req.query;
 
-    const course = await userCourseUseCases.fetchCourseById(
-      id,
-      purchasedCourses,
-    );
+    const course = await userCourseUseCases.fetchCourseById(id, userId);
 
     res
       .status(200)

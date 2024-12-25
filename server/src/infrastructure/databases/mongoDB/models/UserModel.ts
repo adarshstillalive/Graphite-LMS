@@ -1,5 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import { IMongoCoursePopulated } from './CourseModel.js';
+import { ICourse } from '../../../../domain/entities/Course.js';
 
 export interface ISocialAccount {
   provider: 'Facebook' | 'Google' | 'X';
@@ -57,6 +58,26 @@ export interface IMongoUser {
   cart?: mongoose.Schema.Types.ObjectId[];
   wishlist?: mongoose.Schema.Types.ObjectId[];
   purchasedCourses: mongoose.Schema.Types.ObjectId[];
+  isBlocked?: boolean;
+  isInstructor?: boolean;
+  isAdmin?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
+  socialAccounts?: ISocialAccount[];
+  isSocialAuthenticated?: boolean;
+}
+
+export interface IMongoUserPopulated {
+  _id: mongoose.Schema.Types.ObjectId;
+  firstName?: string;
+  lastName?: string;
+  instructorId?: string;
+  email: string;
+  password?: string;
+  profilePicture?: string;
+  cart?: ICourse[];
+  wishlist?: ICourse[];
+  purchasedCourses: ICourse[];
   isBlocked?: boolean;
   isInstructor?: boolean;
   isAdmin?: boolean;

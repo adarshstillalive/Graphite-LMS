@@ -1,5 +1,6 @@
 import { IUserProfileUpdationFormData } from '../../../../application/useCases/instructor/instructorProfileUseCases.js';
 import UserProfileRepository from '../../../../domain/repositories/user/UserProfileRepository.js';
+import CourseModel, { IMongoCourse } from '../models/CourseModel.js';
 import UserModel, { IMongoUser } from '../models/UserModel.js';
 
 class MongoUserProfileRepository implements UserProfileRepository {
@@ -7,7 +8,8 @@ class MongoUserProfileRepository implements UserProfileRepository {
     try {
       const user = await UserModel.findById(userId)
         .populate('wishlist')
-        .populate('cart');
+        .populate('cart')
+        .populate('purchasedCourses');
       if (!user) {
         throw new Error('user not found');
       }
@@ -142,6 +144,27 @@ class MongoUserProfileRepository implements UserProfileRepository {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log('Mongo Error: Removal from cart', error);
+
+      throw new Error(error);
+    }
+  }
+
+  async fetchPurchasedCourses(userId: string): Promise<IMongoCourse[]> {
+    try {
+      const user = await UserModel.findById(userId);
+      if (!user) {
+        throw new Error('Mongo Error: Fetching courses');
+      }
+      const { purchasedCourses } = user;
+      const courses = await CourseModel.find({
+        _id: { $in: purchasedCourses },
+      })
+        .populate('category')
+        .populate('instructorId');
+      return courses;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Mongo Error: Fetching courses', error);
 
       throw new Error(error);
     }

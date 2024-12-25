@@ -22,7 +22,8 @@ class MongoUserRepository implements UserRepository {
     try {
       const userData = await UserModel.findOne({ email })
         .populate('wishlist')
-        .populate('cart');
+        .populate('cart')
+        .populate('purchasedCourses');
       if (!userData) {
         throw new Error('Database error');
       }
