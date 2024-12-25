@@ -68,7 +68,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
           <div className="flex items-center space-x-1 text-gray-500 dark:text-gray-400">
             <Layers className="h-4 w-4" />
             <span className="text-xs">
-              {course.chapters?.length || 0} Chapters
+              {course.chapters?.length || 0} Chapter(s)
             </span>
           </div>
         </div>

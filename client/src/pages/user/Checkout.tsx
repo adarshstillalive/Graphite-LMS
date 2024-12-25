@@ -51,15 +51,23 @@ const Checkout: React.FC = () => {
 
     try {
       await capturePayment(data.orderID);
-      navigate('/profile/cart');
+      navigate('/profile/orders');
     } catch (error) {
       console.log(error);
+      toast({
+        variant: 'destructive',
+        description: 'Payment error, Try again.',
+      });
     }
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onError = (error: any) => {
     console.log(error);
+    toast({
+      variant: 'destructive',
+      description: 'Payment error, Try again',
+    });
   };
   const handleCheckout = async () => {
     if (!paymentMethod) {

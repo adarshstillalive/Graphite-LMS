@@ -1,4 +1,7 @@
-import { IOrder } from '../../../infrastructure/databases/mongoDB/models/OrderModel.js';
+import {
+  IMongoOrder,
+  IOrder,
+} from '../../../infrastructure/databases/mongoDB/models/OrderModel.js';
 import { IMongoUser } from '../../../infrastructure/databases/mongoDB/models/UserModel.js';
 
 interface OrderRepository {
@@ -9,6 +12,7 @@ interface OrderRepository {
     coursesId: string[],
     userId: string,
   ): Promise<IMongoUser>;
+  fetchOrderById(userId: string, orderId: string): Promise<IMongoOrder>;
 }
 
 export default OrderRepository;

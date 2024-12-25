@@ -9,6 +9,8 @@ import Wishlist from '@/pages/user/Wishlist';
 import Cart from '@/pages/user/Cart';
 import Checkout from '@/pages/user/Checkout';
 import Order from '@/pages/user/Order';
+import InstructorProfile from '@/pages/user/InstructorProfile';
+import OrderDetail from '@/pages/user/OrderDetail';
 
 const userRoutes = [
   {
@@ -48,8 +50,12 @@ const userRoutes = [
             element: <ChangePassword />,
           },
           {
-            path: 'order',
+            path: 'orders',
             element: <Order />,
+          },
+          {
+            path: 'orders/orderDetail/:orderId',
+            element: <OrderDetail />,
           },
         ],
       },
@@ -60,6 +66,10 @@ const userRoutes = [
       {
         path: 'courses/courseDetail/:id',
         element: <CourseDetail />,
+      },
+      {
+        path: 'courses/courseDetail/instructorProfile/:instructorId',
+        element: <InstructorProfile />,
       },
     ],
   },

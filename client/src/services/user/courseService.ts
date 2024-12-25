@@ -59,3 +59,12 @@ export const fetchCommonCourse = async (
   const response = await userAxiosInstance.get(`/api/course/${courseId}`);
   return response.data;
 };
+
+export const fetchInstructor = async (
+  instructorId: string
+): Promise<ApiResponse> => {
+  const response = await userAxiosInstance.get(
+    `/api/course/instructorProfile/${instructorId}`
+  );
+  return response.data;
+};

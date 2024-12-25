@@ -36,3 +36,10 @@ export const fetchOrdersApi = async (
   const response = await userAxiosInstance.get(`/api/orders?${queryString}`);
   return response.data;
 };
+
+export const fetchOrderDetailsApi = async (
+  orderId: string
+): Promise<ApiResponse> => {
+  const response = await userAxiosInstance.get(`/api/order/${orderId}`);
+  return response.data;
+};

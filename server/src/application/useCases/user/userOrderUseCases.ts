@@ -61,7 +61,7 @@ class UserOrderUseCases {
       if (!populatedUserData || !populatedUserData.cart) {
         throw new Error('Usecase Error: User data or cart is missing.');
       }
-      const orderId = generateOrderId();
+      const generatedOrderId = generateOrderId();
       const products = populatedUserData.cart.map((item) => ({
         courseId: String(item._id),
         price: item.price,
@@ -69,7 +69,7 @@ class UserOrderUseCases {
       }));
 
       const order: IOrder = {
-        orderId,
+        orderId: generatedOrderId,
         userId,
         courses: products,
         totalAmount: products.reduce((acc, curr) => acc + curr.price, 0),
@@ -90,6 +90,15 @@ class UserOrderUseCases {
     } catch (error) {
       console.error('Usecase Error: Capturing payment', error);
       throw new Error('An error occurred while processing the payment.');
+    }
+  }
+
+  async fetchOrderById(userId: string, orderId: string) {
+    try {
+      return await this.orderRepository.fetchOrderById(userId, orderId);
+    } catch (error) {
+      console.error('Usecase Error: Fetching order details', error);
+      throw new Error('An error occurred while fwtching the order.');
     }
   }
 }

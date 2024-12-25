@@ -20,6 +20,7 @@ import { IOrder } from '@/interfaces/Order';
 import { fetchOrdersApi } from '@/services/user/orderService';
 import { useEffect, useState } from 'react';
 import { FaFilter } from 'react-icons/fa6';
+import { Link } from 'react-router-dom';
 
 const Order = () => {
   const { toast } = useToast();
@@ -51,7 +52,7 @@ const Order = () => {
   }, [currentPage, sortHelper.field, sortHelper.value, toast]);
 
   const onSelectOrder = (orderId: string) => {
-    console.log('Selected Order:', orderId);
+    nav;
   };
 
   return (
@@ -130,13 +131,11 @@ const Order = () => {
                     </Badge>
                   </TableCell>
                   <TableCell className="text-center">
-                    <Button
-                      size="sm"
-                      variant="default"
-                      onClick={() => order._id && onSelectOrder(order._id)}
-                    >
-                      View Details
-                    </Button>
+                    <Link to={`/profile/orders/orderDetail/${order._id}`}>
+                      <Button size="sm" variant="default">
+                        View Details
+                      </Button>
+                    </Link>
                   </TableCell>
                 </TableRow>
               ))}

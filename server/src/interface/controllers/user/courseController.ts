@@ -123,7 +123,12 @@ const fetchCategories = async (req: Request, res: Response) => {
 const fetchCourseById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const course = await userCourseUseCases.fetchCourseById(id);
+    const purchasedCourses = req.user?.purchasedCourses;
+
+    const course = await userCourseUseCases.fetchCourseById(
+      id,
+      purchasedCourses,
+    );
 
     res
       .status(200)
@@ -144,9 +149,37 @@ const fetchCourseById = async (req: Request, res: Response) => {
   }
 };
 
+const fetchInstructor = async (req: Request, res: Response) => {
+  try {
+    const { instructorId } = req.params;
+    const instructorData =
+      await userCourseUseCases.fetchInstructor(instructorId);
+
+    res
+      .status(200)
+      .json(
+        createResponse(true, 'fetching instructor success', instructorData),
+      );
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res
+      .status(400)
+      .json(
+        createResponse(
+          false,
+          'Controller Error: fetching instructor',
+          {},
+          error?.message,
+        ),
+      );
+  }
+};
+
 export default {
   fetchPaginatedCourse,
   fetchPaginatedCourseProductPage,
   fetchCategories,
   fetchCourseById,
+  fetchInstructor,
 };

@@ -1,5 +1,5 @@
 import OrderRepository from '../../../../domain/repositories/user/OrderRepository.js';
-import OrderModel, { IOrder } from '../models/OrderModel.js';
+import OrderModel, { IMongoOrder, IOrder } from '../models/OrderModel.js';
 import UserModel, { IMongoUser } from '../models/UserModel.js';
 
 class MongoOrderRepository implements OrderRepository {
@@ -62,6 +62,23 @@ class MongoOrderRepository implements OrderRepository {
     } catch (error) {
       console.error('Mongo Error in order creation:', error);
       throw new Error('DB Error: Order creation failed');
+    }
+  }
+
+  async fetchOrderById(userId: string, orderId: string): Promise<IMongoOrder> {
+    try {
+      const orderData = await OrderModel.findOne({
+        userId,
+        _id: orderId,
+      }).populate('courses.courseId');
+      if (!orderData) {
+        throw new Error('DB Error: Order not found');
+      }
+
+      return orderData;
+    } catch (error) {
+      console.error('Mongo Error in order data fetching:', error);
+      throw new Error('DB Error: Order fetching failed');
     }
   }
 }

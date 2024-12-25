@@ -38,7 +38,7 @@ const items = [
   },
   {
     title: 'Orders',
-    url: '/profile/order',
+    url: '/profile/orders',
     icon: Logs,
   },
   {

@@ -14,7 +14,7 @@ import { addToCart, removeFromCart } from '@/services/user/profileService';
 import { FileText, Play, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 const CourseDetail = () => {
   const navigate = useNavigate();
@@ -102,9 +102,13 @@ const CourseDetail = () => {
               </div>
               <p>
                 Created by{' '}
-                <span className="font-semibold">
-                  {course.instructorId.firstName}
-                </span>
+                <Link
+                  to={`/courses/courseDetail/instructorProfile/${course.instructorId._id}`}
+                >
+                  <span className="font-semibold">
+                    {course.instructorId.firstName}
+                  </span>
+                </Link>
               </p>
               <p>
                 <span className="font-light">

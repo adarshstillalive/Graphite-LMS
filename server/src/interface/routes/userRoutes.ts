@@ -69,6 +69,10 @@ userRoute.get(
 );
 userRoute.get('/api/categories', courseController.fetchCategories);
 userRoute.get('/api/course/:id', courseController.fetchCourseById);
+userRoute.get(
+  '/api/course/instructorProfile/:instructorId',
+  courseController.fetchInstructor,
+);
 
 // Order
 
@@ -82,11 +86,15 @@ userRoute.get(
   userAuthMiddleware.authorization,
   orderController.capturePayment,
 );
-
 userRoute.get(
   '/api/orders',
   userAuthMiddleware.authorization,
   orderController.getPaginatedUserOrders,
+);
+userRoute.get(
+  '/api/order/:orderId',
+  userAuthMiddleware.authorization,
+  orderController.fetchOrderById,
 );
 
 export default userRoute;

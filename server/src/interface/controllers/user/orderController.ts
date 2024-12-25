@@ -84,4 +84,31 @@ const getPaginatedUserOrders = async (req: Request, res: Response) => {
   }
 };
 
-export default { paypalCreateOrder, capturePayment, getPaginatedUserOrders };
+const fetchOrderById = async (req: Request, res: Response) => {
+  try {
+    const userId = String(req.user?._id);
+    if (!userId) {
+      throw new Error('Server error');
+    }
+    const { orderId } = req.params;
+
+    const orderDetails = await orderRepository.fetchOrderById(userId, orderId);
+    res
+      .status(200)
+      .json(createResponse(true, 'Order fetched successfully', orderDetails));
+  } catch (error) {
+    console.log(error);
+    res
+      .status(400)
+      .json(
+        createResponse(false, 'Controller Error: Orders fetching', {}, error),
+      );
+  }
+};
+
+export default {
+  paypalCreateOrder,
+  capturePayment,
+  getPaginatedUserOrders,
+  fetchOrderById,
+};

@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import InstructorCourseUseCases from '../../../../application/useCases/instructor/instructorCourseUseCases.js';
+import { IMongoCourse } from './CourseModel.js';
 
 export interface SocialAccounts {
   provider: string;
@@ -14,7 +14,7 @@ export interface IMongoInstructor {
   additionalInfo?: string[];
   bio?: string;
   socialAccounts?: SocialAccounts[];
-  courses?: InstructorCourseUseCases[];
+  courses?: IMongoCourse[];
   rating?: number;
   isBlocked?: boolean;
   createdAt?: Date;
