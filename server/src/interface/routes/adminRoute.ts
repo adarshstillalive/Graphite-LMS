@@ -116,6 +116,12 @@ adminRoute.get(
   orderController.fetchReturnRequests,
 );
 
+adminRoute.get(
+  '/api/orders',
+  userAuthMiddleware.authorization,
+  orderController.fetchOrders,
+);
+
 adminRoute.patch(
   '/api/order/return/:requestId/:orderId/:userId/:status',
   userAuthMiddleware.authorization,

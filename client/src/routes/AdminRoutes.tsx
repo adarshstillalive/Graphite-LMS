@@ -12,6 +12,8 @@ import Profile from '@/pages/admin/instructor/Profile';
 import UserProfile from '@/pages/admin/user/UserProfile';
 import ReturnRequest from '@/pages/admin/user/ReturnRequest';
 import ReturnRequestDetail from '@/pages/admin/user/ReturnRequestDetail';
+import Order from '@/pages/admin/order/Order';
+import OrderDetail from '@/pages/admin/order/OrderDetail';
 
 const adminRoutes = [
   {
@@ -62,6 +64,14 @@ const adminRoutes = [
       {
         path: 'courses/courseDetail',
         element: <CourseDetail />,
+      },
+      {
+        path: 'orders',
+        element: <Order />,
+      },
+      {
+        path: 'orders/orderDetail',
+        element: <OrderDetail />,
       },
       {
         path: 'return',

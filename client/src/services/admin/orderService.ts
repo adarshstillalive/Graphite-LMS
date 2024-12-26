@@ -33,6 +33,32 @@ export const fetchReturnRequests = async (
   return response.data;
 };
 
+export const fetchOrders = async (
+  currentPage: number = 0,
+  sort: SortType,
+  filter: string
+): Promise<ApiResponse> => {
+  const queryParams = new URLSearchParams();
+  if (currentPage > 0) {
+    queryParams.append('page', currentPage.toString());
+  }
+
+  if (sort) {
+    for (const key in sort) {
+      queryParams.append(`sort[${key}]`, sort[key].toString());
+    }
+  }
+
+  if (filter) {
+    const query = { firstName: { $regex: filter, $options: 'i' } };
+    queryParams.append('filter', JSON.stringify(query));
+  }
+
+  const queryString = queryParams.toString();
+  const response = await adminAxiosInstance.get(`/api/orders?${queryString}`);
+  return response.data;
+};
+
 export const hangleReturnRequest = async (
   requestId: string,
   orderId: string,
