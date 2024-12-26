@@ -106,9 +106,36 @@ const fetchOrderById = async (req: Request, res: Response) => {
   }
 };
 
+const returnCourse = async (req: Request, res: Response) => {
+  try {
+    const { formData } = req.body;
+    console.log(formData);
+
+    const orderData = await userOrderUseCases.returnCourse(formData);
+
+    res
+      .status(200)
+      .json(createResponse(true, 'Return request submitted', orderData));
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res
+      .status(400)
+      .json(
+        createResponse(
+          false,
+          'Controller Error: Request submission failed',
+          {},
+          error?.message,
+        ),
+      );
+  }
+};
+
 export default {
   paypalCreateOrder,
   capturePayment,
   getPaginatedUserOrders,
   fetchOrderById,
+  returnCourse,
 };

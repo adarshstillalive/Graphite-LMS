@@ -6,6 +6,14 @@ import {
   createOrder,
 } from '../../../infrastructure/paypal/paypal.js';
 
+export interface IRequestData {
+  orderId: string;
+  userId: string;
+  itemId: string;
+  price: string;
+  reason: string;
+}
+
 function generateOrderId() {
   const timestamp = Date.now();
 
@@ -86,6 +94,8 @@ class UserOrderUseCases {
         userId,
       );
 
+      await this.orderRepository.initializeCourseProgress(userId, courseIds);
+
       return userData;
     } catch (error) {
       console.error('Usecase Error: Capturing payment', error);
@@ -99,6 +109,17 @@ class UserOrderUseCases {
     } catch (error) {
       console.error('Usecase Error: Fetching order details', error);
       throw new Error('An error occurred while fwtching the order.');
+    }
+  }
+
+  async returnCourse(formData: IRequestData) {
+    try {
+      return await this.orderRepository.returnCourse(formData);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Usecase Error: Fetching instructor data', error);
+
+      throw new Error(error);
     }
   }
 }

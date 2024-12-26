@@ -64,6 +64,16 @@ userRoute.get(
   userAuthMiddleware.authorization,
   profileController.fetchPurchasedCourses,
 );
+userRoute.patch(
+  '/api/profile/courses/progress/:courseId/:chapterId/:episodeId/:progress',
+  userAuthMiddleware.authorization,
+  profileController.updateCourseProgress,
+);
+userRoute.get(
+  '/api/profile/wallet',
+  userAuthMiddleware.authorization,
+  profileController.fetchWallet,
+);
 
 // Courses
 
@@ -78,7 +88,6 @@ userRoute.get(
   '/api/course/instructorProfile/:instructorId',
   courseController.fetchInstructor,
 );
-
 // Order
 
 userRoute.post(
@@ -100,6 +109,12 @@ userRoute.get(
   '/api/order/:orderId',
   userAuthMiddleware.authorization,
   orderController.fetchOrderById,
+);
+
+userRoute.post(
+  '/api/order/return',
+  userAuthMiddleware.authorization,
+  orderController.returnCourse,
 );
 
 export default userRoute;

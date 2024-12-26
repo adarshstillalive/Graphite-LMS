@@ -5,6 +5,7 @@ import userAuthMiddleware from '../../infrastructure/middleware/userAuthMiddlewa
 import tokenControllerAdmin from '../controllers/token/tokenControllerAdmin.js';
 import userController from '../controllers/admin/userController.js';
 import courseController from '../controllers/admin/courseController.js';
+import orderController from '../controllers/admin/orderController.js';
 
 const adminRoute = express.Router();
 
@@ -105,6 +106,20 @@ adminRoute.patch(
   '/api/courses/requests/reject/:id',
   userAuthMiddleware.authorization,
   courseController.rejectCourseRequest,
+);
+
+// Order
+
+adminRoute.get(
+  '/api/order/return',
+  userAuthMiddleware.authorization,
+  orderController.fetchReturnRequests,
+);
+
+adminRoute.patch(
+  '/api/order/return/:requestId/:orderId/:userId/:status',
+  userAuthMiddleware.authorization,
+  orderController.handleReturnRequest,
 );
 
 export default adminRoute;

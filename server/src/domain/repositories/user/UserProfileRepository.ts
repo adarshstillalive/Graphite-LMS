@@ -1,6 +1,8 @@
 import { IUserProfileUpdationFormData } from '../../../application/useCases/instructor/instructorProfileUseCases.js';
 import { IMongoCourse } from '../../../infrastructure/databases/mongoDB/models/CourseModel.js';
+import { IMongoCourseProgress } from '../../../infrastructure/databases/mongoDB/models/CourseProgress.js';
 import { IMongoUser } from '../../../infrastructure/databases/mongoDB/models/UserModel.js';
+import { IMongoWallet } from '../../../infrastructure/databases/mongoDB/models/Wallet.js';
 
 interface UserProfileRepository {
   fetchUserById(userId: string): Promise<IMongoUser>;
@@ -15,6 +17,14 @@ interface UserProfileRepository {
   addToCart(userId: string, courseId: string): Promise<void>;
   removeFromCart(userId: string, courseId: string): Promise<void>;
   fetchPurchasedCourses(userId: string): Promise<IMongoCourse[]>;
+  updateCourseProgress(
+    userId: string,
+    courseId: string,
+    chapterId: string,
+    episodeId: string,
+    progress: number,
+  ): Promise<IMongoCourseProgress>;
+  fetchWallet(userId: string): Promise<IMongoWallet>;
 }
 
 export default UserProfileRepository;

@@ -1,7 +1,11 @@
 import { IUserProfileUpdationFormData } from '../../../../application/useCases/instructor/instructorProfileUseCases.js';
 import UserProfileRepository from '../../../../domain/repositories/user/UserProfileRepository.js';
 import CourseModel, { IMongoCourse } from '../models/CourseModel.js';
+import CourseProgressModel, {
+  IMongoCourseProgress,
+} from '../models/CourseProgress.js';
 import UserModel, { IMongoUser } from '../models/UserModel.js';
+import WalletModel, { IMongoWallet } from '../models/Wallet.js';
 
 class MongoUserProfileRepository implements UserProfileRepository {
   async fetchUserById(userId: string): Promise<IMongoUser> {
@@ -167,6 +171,58 @@ class MongoUserProfileRepository implements UserProfileRepository {
       console.log('Mongo Error: Fetching courses', error);
 
       throw new Error(error);
+    }
+  }
+
+  async updateCourseProgress(
+    userId: string,
+    courseId: string,
+    chapterId: string,
+    episodeId: string,
+    progress: number,
+  ): Promise<IMongoCourseProgress> {
+    try {
+      const result = await CourseProgressModel.findOneAndUpdate(
+        {
+          userId,
+          courseId,
+          'chapters.chapterId': chapterId,
+          'chapters.episodes.episodeId': episodeId,
+        },
+        {
+          $set: {
+            'chapters.$[chapter].episodes.$[episode].progress': progress,
+          },
+        },
+        {
+          arrayFilters: [
+            { 'chapter.chapterId': chapterId },
+            { 'episode.episodeId': episodeId },
+          ],
+          new: true,
+        },
+      );
+
+      if (!result) {
+        throw new Error('Mongo error: Updating progress');
+      }
+      return result;
+    } catch (error) {
+      console.error('Error updating progress:', error);
+      throw new Error('Mongo error: Updating progress');
+    }
+  }
+
+  async fetchWallet(userId: string): Promise<IMongoWallet> {
+    try {
+      const result = await WalletModel.findOne({ userId });
+      if (!result) {
+        throw new Error('Mongo error: Fetching wallet');
+      }
+      return result;
+    } catch (error) {
+      console.error('Error Fetching wallet', error);
+      throw new Error('Mongo error: Fetching wallet');
     }
   }
 }

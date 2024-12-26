@@ -169,6 +169,45 @@ const fetchPurchasedCourses = async (req: Request, res: Response) => {
   }
 };
 
+const updateCourseProgress = async (req: Request, res: Response) => {
+  try {
+    const { courseId, chapterId, episodeId, progress } = req.params;
+    const userId = String(req.user?._id);
+    if (!userId) {
+      throw new Error('Server error');
+    }
+    const progressData = await userProfileUseCases.updateCourseProgress(
+      userId,
+      courseId,
+      chapterId,
+      episodeId,
+      Number(progress),
+    );
+    res
+      .status(200)
+      .json(createResponse(true, 'Progress updated', progressData));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(400).json(createResponse(false, error?.message));
+  }
+};
+
+const fetchWallet = async (req: Request, res: Response) => {
+  try {
+    const userId = String(req.user?._id);
+    if (!userId) {
+      throw new Error('Server error');
+    }
+    const wallet = await userProfileUseCases.fetchWallet(userId);
+    res
+      .status(200)
+      .json(createResponse(true, 'Wallet data fetching successfull', wallet));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(400).json(createResponse(false, error?.message));
+  }
+};
+
 export default {
   updateProfileData,
   updateUserProfilePicture,
@@ -178,4 +217,6 @@ export default {
   addToCart,
   removeFromCart,
   fetchPurchasedCourses,
+  updateCourseProgress,
+  fetchWallet,
 };

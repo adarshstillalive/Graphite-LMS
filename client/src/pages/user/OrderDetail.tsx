@@ -1,14 +1,32 @@
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { IOrder } from '@/interfaces/Order';
-import { fetchOrderDetailsApi } from '@/services/user/orderService';
+import { RootState } from '@/redux/store';
+import {
+  fetchOrderDetailsApi,
+  returnCourseApi,
+} from '@/services/user/orderService';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const OrderDetail: React.FC = () => {
   const { toast } = useToast();
   const { orderId } = useParams();
   const [order, setOrder] = useState<IOrder>();
+  const [returnReason, setReturnReason] = useState('');
   const navigate = useNavigate();
+  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+  const { currentUser } = useSelector((state: RootState) => state.user);
 
   const formatDate = (date: Date | undefined) =>
     date ? new Date(date).toLocaleString() : 'N/A';
@@ -35,6 +53,40 @@ const OrderDetail: React.FC = () => {
     };
     fetchOrderDetails();
   }, []);
+
+  const handleReturnSubmit = async (courseId: string, price: string) => {
+    if (!returnReason.trim() || !orderId || !currentUser?._id) {
+      toast({
+        variant: 'destructive',
+        description: 'Please provide a reason for returning.',
+      });
+      return;
+    }
+    const formData = {
+      orderId: orderId,
+      userId: currentUser?._id,
+      itemId: courseId,
+      price,
+      reason: returnReason,
+    };
+
+    try {
+      const response = await returnCourseApi(formData);
+      toast({
+        variant: 'default',
+        description: 'Course returned successfully!',
+      });
+      setReturnReason('');
+      setSelectedCourseId(null);
+      setOrder(response.data);
+    } catch (error) {
+      console.log(error);
+      toast({
+        variant: 'destructive',
+        description: 'Failed to process the return. Try again.',
+      });
+    }
+  };
 
   return (
     order && (
@@ -94,8 +146,53 @@ const OrderDetail: React.FC = () => {
                     <strong>Price:</strong> ₹{product.price.toFixed(2)}
                   </p>
                   <p>
-                    <strong>Returned:</strong> {product.returned ? 'Yes' : 'No'}
+                    <strong>Returned:</strong> {product.returned}
                   </p>
+                </div>
+                <div className="ml-auto">
+                  {!product.returned && (
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline">Return</Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Return Course</DialogTitle>
+                          <DialogDescription>
+                            Please provide a reason for returning this course.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                          <textarea
+                            className="w-full border rounded-md p-2"
+                            rows={4}
+                            placeholder="Enter the reason for return..."
+                            value={returnReason}
+                            onChange={(e) => setReturnReason(e.target.value)}
+                          />
+                          <div className="flex justify-end space-x-4">
+                            <DialogClose asChild>
+                              <Button variant="outline">Cancel</Button>
+                            </DialogClose>
+                            <DialogClose asChild>
+                              <Button
+                                variant="default"
+                                onClick={() => {
+                                  setSelectedCourseId(product.courseId._id);
+                                  handleReturnSubmit(
+                                    product.courseId._id,
+                                    product.price
+                                  );
+                                }}
+                              >
+                                Submit
+                              </Button>
+                            </DialogClose>
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  )}
                 </div>
               </div>
             ))}
@@ -114,21 +211,6 @@ const OrderDetail: React.FC = () => {
             {order.cancellingReason && (
               <p>
                 <strong>Cancelling Reason:</strong> {order.cancellingReason}
-              </p>
-            )}
-          </div>
-        )}
-
-        {/* Return Details */}
-        {order.returnedDate && (
-          <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-2xl font-semibold mb-4">Return Details</h2>
-            <p>
-              <strong>Returned Date:</strong> {formatDate(order.returnedDate)}
-            </p>
-            {order.returningReason && (
-              <p>
-                <strong>Returning Reason:</strong> {order.returningReason}
               </p>
             )}
           </div>

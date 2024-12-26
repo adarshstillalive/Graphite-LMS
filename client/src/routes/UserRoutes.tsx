@@ -12,6 +12,7 @@ import InstructorProfile from '@/pages/user/InstructorProfile';
 import OrderDetail from '@/pages/user/OrderDetail';
 import CoursePage from '@/pages/user/CoursePage';
 import PurchasedCourses from '@/pages/user/PurchasedCourses';
+import Wallet from '@/pages/user/Wallet';
 
 const userRoutes = [
   {
@@ -61,6 +62,10 @@ const userRoutes = [
           {
             path: 'courses',
             element: <PurchasedCourses />,
+          },
+          {
+            path: 'wallet',
+            element: <Wallet />,
           },
         ],
       },

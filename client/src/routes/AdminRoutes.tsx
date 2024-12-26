@@ -10,6 +10,8 @@ import Instructor from '@/pages/admin/instructor/Instructor';
 import CourseDetail from '@/pages/admin/course/CourseDetail';
 import Profile from '@/pages/admin/instructor/Profile';
 import UserProfile from '@/pages/admin/user/UserProfile';
+import ReturnRequest from '@/pages/admin/user/ReturnRequest';
+import ReturnRequestDetail from '@/pages/admin/user/ReturnRequestDetail';
 
 const adminRoutes = [
   {
@@ -60,6 +62,14 @@ const adminRoutes = [
       {
         path: 'courses/courseDetail',
         element: <CourseDetail />,
+      },
+      {
+        path: 'return',
+        element: <ReturnRequest />,
+      },
+      {
+        path: 'return/requestDetail',
+        element: <ReturnRequestDetail />,
       },
       {
         path: 'communication',

@@ -16,6 +16,7 @@ import {
 import { Link, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setLogout } from '@/redux/slices/admin/adminSlice';
+import { IoReturnDownBackSharp } from 'react-icons/io5';
 
 const Sidebar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -31,6 +32,7 @@ const Sidebar = () => {
       to: '/admin/instructors',
     },
     { icon: FaBook, label: 'Courses', to: '/admin/courses' },
+    { icon: IoReturnDownBackSharp, label: 'Return', to: '/admin/return' },
     { icon: FaComments, label: 'Communication', to: '/admin/communication' },
     { icon: FaMoneyBillWave, label: 'Revenue', to: '/admin/revenue' },
     { icon: MdSettings, label: 'Settings', to: '/admin/settings' },

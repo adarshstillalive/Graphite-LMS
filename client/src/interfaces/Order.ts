@@ -3,7 +3,9 @@ import { ICourse } from './Course';
 export interface IProduct {
   courseId: ICourse;
   price: number;
-  returned: boolean;
+  returned: string;
+  returnedDate?: Date;
+  returningReason?: string;
 }
 
 export interface IOrder {
@@ -16,8 +18,6 @@ export interface IOrder {
   paymentMethod: string;
   cancelledDate?: Date;
   cancellingReason?: string;
-  returnedDate?: Date;
-  returningReason?: string;
   createdAt?: Date;
   updatedAt?: Date;
   _id?: string;

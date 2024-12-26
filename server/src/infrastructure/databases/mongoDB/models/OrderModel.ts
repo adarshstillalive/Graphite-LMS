@@ -3,12 +3,16 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface IMongoProduct {
   courseId: mongoose.Types.ObjectId;
   price: number;
-  returned: boolean;
+  returned: string;
+  returnedDate?: Date;
+  returningReason?: string;
 }
 export interface IProduct {
   courseId: string;
   price: number;
-  returned: boolean;
+  returned: string;
+  returnedDate?: Date;
+  returningReason?: string;
 }
 
 export interface IOrder {
@@ -21,8 +25,6 @@ export interface IOrder {
   paymentMethod: string;
   cancelledDate?: Date;
   cancellingReason?: string;
-  returnedDate?: Date;
-  returningReason?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -37,8 +39,6 @@ export interface IMongoOrder extends Document {
   paymentMethod: string;
   cancelledDate?: Date;
   cancellingReason?: string;
-  returnedDate?: Date;
-  returningReason?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -54,8 +54,14 @@ const productSchema: Schema<IMongoProduct> = new Schema({
     required: true,
   },
   returned: {
-    type: Boolean,
-    default: false,
+    type: String,
+    enum: ['Approved', 'Rejected', 'Pending'],
+  },
+  returnedDate: {
+    type: Date,
+  },
+  returningReason: {
+    type: String,
   },
 });
 
@@ -92,12 +98,6 @@ const orderSchema: Schema<IMongoOrder> = new Schema(
       type: Date,
     },
     cancellingReason: {
-      type: String,
-    },
-    returnedDate: {
-      type: Date,
-    },
-    returningReason: {
       type: String,
     },
   },

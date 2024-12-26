@@ -83,3 +83,20 @@ export const fetchPurchasedCourses = async (): Promise<ApiResponse> => {
   const response = await userAxiosInstance.get(`/api/profile/courses`);
   return response.data;
 };
+
+export const updateCourseProgress = async (
+  courseId: string,
+  chapterId: string,
+  episodeId: string,
+  progress: number
+): Promise<ApiResponse> => {
+  const response = await userAxiosInstance.patch(
+    `/api/profile/courses/progress/${courseId}/${chapterId}/${episodeId}/${progress}`
+  );
+  return response.data;
+};
+
+export const fetchWallet = async (): Promise<ApiResponse> => {
+  const response = await userAxiosInstance.get('/api/profile/wallet');
+  return response.data;
+};

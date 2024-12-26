@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+
 export interface UploadState {
   chapterId: string;
   episodeId: string;
@@ -13,6 +15,15 @@ export interface IEpisode {
   content: string | { content: string } | null;
 }
 
+export interface IMongoEpisode {
+  id: string;
+  title: string;
+  type: string;
+  description?: string;
+  content: string | { content: string } | null;
+  _id: mongoose.Schema.Types.ObjectId;
+}
+
 export interface IEditEpisode {
   id: string;
   title: string;
@@ -26,6 +37,14 @@ export interface IChapter {
   title: string;
   description?: string;
   episodes: IEpisode[];
+}
+
+export interface IMongoChapter {
+  id: string;
+  title: string;
+  description?: string;
+  episodes: IMongoEpisode[];
+  _id: mongoose.Schema.Types.ObjectId;
 }
 
 export interface IEditChapter {

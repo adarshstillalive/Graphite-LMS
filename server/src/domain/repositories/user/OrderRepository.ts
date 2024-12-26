@@ -1,3 +1,4 @@
+import { IRequestData } from '../../../application/useCases/user/userOrderUseCases.js';
 import {
   IMongoOrder,
   IOrder,
@@ -12,7 +13,9 @@ interface OrderRepository {
     coursesId: string[],
     userId: string,
   ): Promise<IMongoUser>;
+  initializeCourseProgress(userId: string, courseIds: string[]): Promise<void>;
   fetchOrderById(userId: string, orderId: string): Promise<IMongoOrder>;
+  returnCourse(formData: IRequestData): Promise<IMongoOrder>;
 }
 
 export default OrderRepository;

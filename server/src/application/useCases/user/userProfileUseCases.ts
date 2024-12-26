@@ -146,6 +146,40 @@ class UserProfileUseCases {
       throw new Error(error);
     }
   }
+
+  async updateCourseProgress(
+    userId: string,
+    courseId: string,
+    chapterId: string,
+    episodeId: string,
+    progress: number,
+  ) {
+    try {
+      return await this.userProfileRepository.updateCourseProgress(
+        userId,
+        courseId,
+        chapterId,
+        episodeId,
+        progress,
+      );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Usecase: Error in updating progress', error);
+
+      throw new Error(error);
+    }
+  }
+
+  async fetchWallet(userId: string) {
+    try {
+      return await this.userProfileRepository.fetchWallet(userId);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Usecase: Error in fetching wallet', error);
+
+      throw new Error(error);
+    }
+  }
 }
 
 export default UserProfileUseCases;
