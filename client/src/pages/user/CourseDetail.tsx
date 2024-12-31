@@ -153,6 +153,10 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ id }) => {
                 <Button
                   variant={'outline'}
                   className={`${inputStyle} border-2 mb-2 bg-white`}
+                  onClick={() => {
+                    handleCart(course._id);
+                    navigate('/profile/cart');
+                  }}
                 >
                   Buy now
                 </Button>

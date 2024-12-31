@@ -23,8 +23,12 @@ interface UserProfileRepository {
     chapterId: string,
     episodeId: string,
     progress: number,
-  ): Promise<IMongoCourseProgress>;
+  ): Promise<void>;
   fetchWallet(userId: string): Promise<IMongoWallet>;
+  fetchProgress(
+    userId: string,
+    courseId: string,
+  ): Promise<IMongoCourseProgress>;
 }
 
 export default UserProfileRepository;

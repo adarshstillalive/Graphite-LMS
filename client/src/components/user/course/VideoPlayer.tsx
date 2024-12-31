@@ -1,24 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ReactPlayer from 'react-player';
 
 interface VideoPlayerProps {
   content: string;
-  updateProgress: (progress: number) => void;
+  onEnd: () => void;
 }
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({
-  content,
-  updateProgress,
-}) => {
-  const [progress, setProgress] = useState(0);
-
-  const handleProgress = (state: { played: number }) => {
-    const playedPercentage = state.played * 100; // Convert to percentage
-    setProgress(playedPercentage);
-    // console.log(`Progress: ${playedPercentage.toFixed(2)}%`);
-    updateProgress(playedPercentage);
-  };
-
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ content, onEnd }) => {
   return (
     <div
       className="player-wrapper"
@@ -31,9 +19,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         width="100%"
         height="100%"
         controls
-        onProgress={handleProgress}
+        onEnded={onEnd}
       />
-      <p>Progress: {progress.toFixed(2)}%</p>
     </div>
   );
 };

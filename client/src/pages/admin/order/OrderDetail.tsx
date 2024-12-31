@@ -64,7 +64,11 @@ const OrderDetail = () => {
                   <strong>Price:</strong> ₹{product.price.toFixed(2)}
                 </p>
                 <p>
-                  <strong>Returned:</strong> {product.returned}
+                  <strong>Returned:</strong>{' '}
+                  {product.returned === 'Pending' ||
+                  product.returned === 'Approved'
+                    ? product.returned
+                    : 'NIL'}
                 </p>
               </div>
             </div>

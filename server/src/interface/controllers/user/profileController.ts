@@ -208,6 +208,25 @@ const fetchWallet = async (req: Request, res: Response) => {
   }
 };
 
+const fetchProgress = async (req: Request, res: Response) => {
+  try {
+    const userId = String(req.user?._id);
+    const { courseId } = req.params;
+    if (!userId) {
+      throw new Error('Server error');
+    }
+    const progress = await userProfileUseCases.fetchProgress(userId, courseId);
+    res
+      .status(200)
+      .json(
+        createResponse(true, 'Progress data fetching successfull', progress),
+      );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(400).json(createResponse(false, error?.message));
+  }
+};
+
 export default {
   updateProfileData,
   updateUserProfilePicture,
@@ -219,4 +238,5 @@ export default {
   fetchPurchasedCourses,
   updateCourseProgress,
   fetchWallet,
+  fetchProgress,
 };

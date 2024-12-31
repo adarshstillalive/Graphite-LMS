@@ -73,7 +73,6 @@ class UserOrderUseCases {
       const products = populatedUserData.cart.map((item) => ({
         courseId: String(item._id),
         price: item.price,
-        returned: false,
       }));
 
       const order: IOrder = {

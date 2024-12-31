@@ -3,14 +3,14 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface IMongoProduct {
   courseId: mongoose.Types.ObjectId;
   price: number;
-  returned: string;
+  returned?: string;
   returnedDate?: Date;
   returningReason?: string;
 }
 export interface IProduct {
   courseId: string;
   price: number;
-  returned: string;
+  returned?: string;
   returnedDate?: Date;
   returningReason?: string;
 }

@@ -1,14 +1,19 @@
 import BreadCrumbs from '@/components/common/BreadCrumbs';
-import { Progress } from '@/components/ui/progress';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import ChapterEpisodeSelector from '@/components/user/course/ChapterEpisodeDropdown';
 import TextContent from '@/components/user/course/TextContent';
 import VideoPlayer from '@/components/user/course/VideoPlayer';
 import { useToast } from '@/hooks/use-toast';
 import { IChapter, IEpisode, IPopulatedCourse } from '@/interfaces/Course';
+import { ICourseProgress } from '@/interfaces/Progress';
 import { RootState } from '@/redux/store';
 import { fetchCommonCourse } from '@/services/user/courseService';
-import { updateCourseProgress } from '@/services/user/profileService';
+import {
+  fetchProgressApi,
+  updateCourseProgress,
+} from '@/services/user/profileService';
 import { Clock, FileText, PlayCircle } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -25,8 +30,8 @@ const CourseDetailPurchased: React.FC<CourseDetailPurchasedProps> = ({
   const { currentUser } = useSelector((state: RootState) => state.user);
   const [selectedChapter, setSelectedChapter] = useState<IChapter | null>(null);
   const [selectedEpisode, setSelectedEpisode] = useState<IEpisode | null>(null);
-  const [progressData, setProgressData] = useState(0);
-  console.log(progressData);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [progress, setProgress] = useState<ICourseProgress>();
 
   const handleEpisodeSelect = (chapterId: string, episodeId: string) => {
     const chapter =
@@ -37,6 +42,19 @@ const CourseDetailPurchased: React.FC<CourseDetailPurchasedProps> = ({
         chapter.episodes.find((e: IEpisode) => e.id === episodeId) || null;
       setSelectedEpisode(episode);
     }
+  };
+
+  const getEpisodeProgress = (episodeId: string | undefined) => {
+    if (!progress || !selectedChapter || !episodeId) return 0;
+
+    const chapterProgress = progress.chapters.find(
+      (chapter) => chapter.chapterId === selectedChapter._id
+    );
+    const episodeProgress = chapterProgress?.episodes.find(
+      (episode) => episode.episodeId === episodeId
+    );
+
+    return episodeProgress?.progress || 0;
   };
 
   useEffect(() => {
@@ -63,49 +81,53 @@ const CourseDetailPurchased: React.FC<CourseDetailPurchasedProps> = ({
     fetchCourse();
   }, [id, currentUser?._id, toast]);
 
+  useEffect(() => {
+    const fetchProgress = async () => {
+      try {
+        if (!course?._id) return;
+        const response = await fetchProgressApi(course?._id);
+
+        setProgress(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchProgress();
+  }, [course?._id]);
+
+  useEffect(() => {
+    if (selectedEpisode?._id) {
+      const currentProgress = getEpisodeProgress(selectedEpisode._id);
+
+      setIsCompleted(currentProgress === 100);
+    }
+  }, [selectedEpisode, progress]);
+
   if (!course) {
     return <div>Loading course details...</div>;
   }
 
-  const updateProgress = async (progress: number) => {
+  const updateProgress = async (progress: number = 100) => {
     try {
-      if (course._id && selectedChapter && selectedEpisode) {
+      if (course._id && selectedChapter?._id && selectedEpisode?._id) {
         const response = await updateCourseProgress(
           course._id,
           selectedChapter._id,
           selectedEpisode._id,
           progress
         );
-        const totalPro = calculateTotalProgress(response.data.chapters);
-
-        setProgressData(totalPro);
+        setProgress(response.data);
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  function calculateTotalProgress(chapters) {
-    let totalEpisodes = 0;
-    let percentage = 0;
-
-    chapters.forEach((chapter) => {
-      chapter.episodes.forEach((episode) => {
-        totalEpisodes++;
-        percentage += episode.progress;
-      });
-    });
-
-    return totalEpisodes > 0
-      ? Math.round((percentage * totalEpisodes) / 100)
-      : 0;
-  }
-
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       <BreadCrumbs />
       <div className="container mx-auto p-4">
-        <Progress style={{ width: `${progressData}%` }} className="bg-black" />
+        {/* <Progress style={{ width: `${progressData}%` }} className="bg-black" /> */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2">
             <div className="mb-6">
@@ -116,7 +138,7 @@ const CourseDetailPurchased: React.FC<CourseDetailPurchasedProps> = ({
                       ? selectedEpisode.content
                       : ''
                   }
-                  updateProgress={updateProgress}
+                  onEnd={updateProgress}
                 />
               ) : (
                 selectedEpisode && <TextContent episode={selectedEpisode} />
@@ -131,11 +153,29 @@ const CourseDetailPurchased: React.FC<CourseDetailPurchasedProps> = ({
                   <Clock className="mr-1 h-4 w-4" />
                   <span className="mr-4">Duration: N/A</span>
                   {selectedEpisode.type === 'video' ? (
-                    <PlayCircle className="mr-1 h-4 w-4" />
+                    <>
+                      <PlayCircle className="mr-1 h-4 w-4" />
+                      <span>Type: {selectedEpisode.type}</span>
+                    </>
                   ) : (
-                    <FileText className="mr-1 h-4 w-4" />
+                    <>
+                      <FileText className="mr-1 h-4 w-4" />
+                      <span>Type: {selectedEpisode.type}</span>
+                      <Checkbox
+                        id="progress"
+                        className="rounded-full ml-4"
+                        checked={isCompleted}
+                        onCheckedChange={(checked) => {
+                          if (checked === 'indeterminate') return;
+                          setIsCompleted(checked);
+                          updateProgress(checked ? 100 : 0); // Update server progress
+                        }}
+                      />
+                      <Label htmlFor="progress" className="ml-1">
+                        Mark as completed
+                      </Label>
+                    </>
                   )}
-                  <span>Type: {selectedEpisode.type}</span>
                 </div>
               </div>
             )}

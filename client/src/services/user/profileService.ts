@@ -100,3 +100,12 @@ export const fetchWallet = async (): Promise<ApiResponse> => {
   const response = await userAxiosInstance.get('/api/profile/wallet');
   return response.data;
 };
+
+export const fetchProgressApi = async (
+  courseId: string
+): Promise<ApiResponse> => {
+  const response = await userAxiosInstance.get(
+    `/api/profile/progress/${courseId}`
+  );
+  return response.data;
+};

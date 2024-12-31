@@ -180,7 +180,7 @@ class MongoUserProfileRepository implements UserProfileRepository {
     chapterId: string,
     episodeId: string,
     progress: number,
-  ): Promise<IMongoCourseProgress> {
+  ): Promise<void> {
     try {
       const result = await CourseProgressModel.findOneAndUpdate(
         {
@@ -206,7 +206,6 @@ class MongoUserProfileRepository implements UserProfileRepository {
       if (!result) {
         throw new Error('Mongo error: Updating progress');
       }
-      return result;
     } catch (error) {
       console.error('Error updating progress:', error);
       throw new Error('Mongo error: Updating progress');
@@ -223,6 +222,22 @@ class MongoUserProfileRepository implements UserProfileRepository {
     } catch (error) {
       console.error('Error Fetching wallet', error);
       throw new Error('Mongo error: Fetching wallet');
+    }
+  }
+
+  async fetchProgress(
+    userId: string,
+    courseId: string,
+  ): Promise<IMongoCourseProgress> {
+    try {
+      const result = await CourseProgressModel.findOne({ userId, courseId });
+      if (!result) {
+        throw new Error('Mongo error: Fetching progress');
+      }
+      return result;
+    } catch (error) {
+      console.error('Error Fetching progress', error);
+      throw new Error('Mongo error: Fetching progress');
     }
   }
 }

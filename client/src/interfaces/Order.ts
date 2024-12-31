@@ -4,7 +4,7 @@ import { IUser } from './User';
 export interface IProduct {
   courseId: ICourse;
   price: number;
-  returned: string;
+  returned?: string;
   returnedDate?: Date;
   returningReason?: string;
 }

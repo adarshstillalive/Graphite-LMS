@@ -25,7 +25,6 @@ const OrderDetail: React.FC = () => {
   const [order, setOrder] = useState<IOrder>();
   const [returnReason, setReturnReason] = useState('');
   const navigate = useNavigate();
-  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const { currentUser } = useSelector((state: RootState) => state.user);
 
   const formatDate = (date: Date | undefined) =>
@@ -74,16 +73,15 @@ const OrderDetail: React.FC = () => {
       const response = await returnCourseApi(formData);
       toast({
         variant: 'default',
-        description: 'Course returned successfully!',
+        description: 'Return request submitted successfully!',
       });
       setReturnReason('');
-      setSelectedCourseId(null);
       setOrder(response.data);
     } catch (error) {
       console.log(error);
       toast({
         variant: 'destructive',
-        description: 'Failed to process the return. Try again.',
+        description: 'Failed to process the request. Try again.',
       });
     }
   };
@@ -150,12 +148,17 @@ const OrderDetail: React.FC = () => {
                   </p>
                 </div>
                 <div className="ml-auto">
-                  {!product.returned && (
+                  {
                     <Dialog>
                       <DialogTrigger asChild>
-                        <Button variant="outline">Return</Button>
+                        <Button
+                          onClick={(e) => e.stopPropagation()}
+                          variant="outline"
+                        >
+                          Return
+                        </Button>
                       </DialogTrigger>
-                      <DialogContent>
+                      <DialogContent onClick={(e) => e.stopPropagation()}>
                         <DialogHeader>
                           <DialogTitle>Return Course</DialogTitle>
                           <DialogDescription>
@@ -168,7 +171,9 @@ const OrderDetail: React.FC = () => {
                             rows={4}
                             placeholder="Enter the reason for return..."
                             value={returnReason}
-                            onChange={(e) => setReturnReason(e.target.value)}
+                            onChange={(e) => {
+                              setReturnReason(e.target.value);
+                            }}
                           />
                           <div className="flex justify-end space-x-4">
                             <DialogClose asChild>
@@ -178,11 +183,14 @@ const OrderDetail: React.FC = () => {
                               <Button
                                 variant="default"
                                 onClick={() => {
-                                  setSelectedCourseId(product.courseId._id);
-                                  handleReturnSubmit(
-                                    product.courseId._id,
-                                    product.price
-                                  );
+                                  if (product.courseId._id && product.price) {
+                                    handleReturnSubmit(
+                                      product.courseId._id,
+                                      product.price.toString()
+                                    );
+                                  } else {
+                                    console.error('Course ID is undefined.');
+                                  }
                                 }}
                               >
                                 Submit
@@ -192,7 +200,7 @@ const OrderDetail: React.FC = () => {
                         </div>
                       </DialogContent>
                     </Dialog>
-                  )}
+                  }
                 </div>
               </div>
             ))}

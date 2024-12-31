@@ -74,6 +74,11 @@ userRoute.get(
   userAuthMiddleware.authorization,
   profileController.fetchWallet,
 );
+userRoute.get(
+  '/api/profile/progress/:courseId',
+  userAuthMiddleware.authorization,
+  profileController.fetchProgress,
+);
 
 // Courses
 

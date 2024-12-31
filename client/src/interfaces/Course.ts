@@ -7,6 +7,7 @@ export interface IEpisode {
   type: string;
   description?: string;
   content: string | { content: string } | null;
+  _id?: string;
 }
 
 export interface IEpisodeCommon {
@@ -21,6 +22,7 @@ export interface IChapter {
   title: string;
   description?: string;
   episodes: IEpisode[];
+  _id?: string;
 }
 
 export interface IChapterCommon {

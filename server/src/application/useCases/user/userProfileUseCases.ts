@@ -155,13 +155,14 @@ class UserProfileUseCases {
     progress: number,
   ) {
     try {
-      return await this.userProfileRepository.updateCourseProgress(
+      await this.userProfileRepository.updateCourseProgress(
         userId,
         courseId,
         chapterId,
         episodeId,
         progress,
       );
+      return this.userProfileRepository.fetchProgress(userId, courseId);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log('Usecase: Error in updating progress', error);
@@ -176,6 +177,17 @@ class UserProfileUseCases {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log('Usecase: Error in fetching wallet', error);
+
+      throw new Error(error);
+    }
+  }
+
+  async fetchProgress(userId: string, courseId: string) {
+    try {
+      return await this.userProfileRepository.fetchProgress(userId, courseId);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Usecase: Error in fetching progress', error);
 
       throw new Error(error);
     }

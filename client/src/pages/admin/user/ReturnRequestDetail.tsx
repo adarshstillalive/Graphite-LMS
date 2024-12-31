@@ -28,7 +28,7 @@ const ReturnRequestDetail = () => {
         variant: 'default',
         description: `Request successfully ${status === 'approve' ? 'approved' : 'rejected'}.`,
       });
-      navigate('/return-requests'); // Navigate back to the list
+      navigate('/admin/return');
     } catch (error) {
       console.log(error);
 
