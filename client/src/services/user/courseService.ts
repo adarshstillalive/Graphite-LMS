@@ -12,6 +12,13 @@ interface Review {
   review: string;
 }
 
+interface InstructorReview {
+  userId: string;
+  instructorId: string;
+  rating: number;
+  review: string;
+}
+
 export const fetchCoursesForHomePage = async (
   currentPage: number = 0
 ): Promise<ApiResponse> => {
@@ -119,6 +126,48 @@ export const fetchReviews = async (
 
 export const addReview = async (review: Review): Promise<ApiResponse> => {
   const response = await userAxiosInstance.put(`/api/course/reviews`, {
+    review,
+  });
+  return response.data;
+};
+
+export const fetchInstructorReviewsWithUser = async (
+  userId: string,
+  instructorId: string,
+  currentPage: number
+): Promise<ApiResponse> => {
+  const queryParams = new URLSearchParams();
+  if (currentPage > 0) {
+    queryParams.append('page', currentPage.toString());
+  }
+
+  const queryString = queryParams.toString();
+  const response = await userAxiosInstance.get(
+    `/api/instructor/${instructorId}/reviews/${userId}?${queryString}`
+  );
+  return response.data;
+};
+
+export const fetchInstructorReviews = async (
+  instructorId: string,
+  currentPage: number
+): Promise<ApiResponse> => {
+  const queryParams = new URLSearchParams();
+  if (currentPage > 0) {
+    queryParams.append('page', currentPage.toString());
+  }
+
+  const queryString = queryParams.toString();
+  const response = await userAxiosInstance.get(
+    `/api/instructor/${instructorId}/reviews?${queryString}`
+  );
+  return response.data;
+};
+
+export const addInstructorReview = async (
+  review: InstructorReview
+): Promise<ApiResponse> => {
+  const response = await userAxiosInstance.put(`/api/instructor/reviews`, {
     review,
   });
   return response.data;

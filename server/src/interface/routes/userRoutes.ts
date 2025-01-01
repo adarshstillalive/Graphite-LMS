@@ -104,6 +104,20 @@ userRoute.put(
   userAuthMiddleware.authorization,
   courseController.addOrUpdateReview,
 );
+userRoute.get(
+  '/api/instructor/:instructorId/reviews/:userId',
+  userAuthMiddleware.authorization,
+  courseController.fetchInstructorReviewsWithUser,
+);
+userRoute.get(
+  '/api/instructor/:instructorId/reviews',
+  courseController.fetchInstructorReviews,
+);
+userRoute.put(
+  '/api/instructor/reviews',
+  userAuthMiddleware.authorization,
+  courseController.addOrUpdateInstructorReview,
+);
 // Order
 
 userRoute.post(

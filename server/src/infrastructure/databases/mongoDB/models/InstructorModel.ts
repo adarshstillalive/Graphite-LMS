@@ -16,6 +16,7 @@ export interface IMongoInstructor {
   socialAccounts?: SocialAccounts[];
   courses?: IMongoCourse[];
   rating?: number;
+  reviews?: mongoose.Schema.Types.ObjectId[];
   isBlocked?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
@@ -73,6 +74,9 @@ const instructorSchema: Schema<IMongoInstructor> = new Schema(
     rating: {
       type: Number,
       default: 0,
+    },
+    reviews: {
+      type: [mongoose.Schema.Types.ObjectId],
     },
     isBlocked: {
       type: Boolean,

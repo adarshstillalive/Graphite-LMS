@@ -15,6 +15,7 @@ export interface IInstructor {
   socialAccounts: SocialAccounts[];
   courses?: InstructorCourse[];
   rating?: number;
+  reviews?: string[];
   isBlocked?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
@@ -31,6 +32,7 @@ export interface IInstructorPopulated {
   socialAccounts?: SocialAccounts[];
   courses?: InstructorCourse[];
   rating?: number;
+  reviews?: string[];
   isBlocked?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
@@ -48,6 +50,7 @@ class Instructor implements IInstructorPopulated {
     public socialAccounts?: SocialAccounts[],
     public courses?: InstructorCourse[],
     public rating?: number,
+    public reviews?: string[],
     public isBlocked?: boolean,
     public createdAt?: Date,
     public updatedAt?: Date,

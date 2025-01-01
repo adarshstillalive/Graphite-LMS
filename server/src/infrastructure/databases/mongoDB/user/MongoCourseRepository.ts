@@ -1,4 +1,7 @@
-import { Review } from '../../../../application/useCases/user/userCourseUseCases.js';
+import {
+  InstructorReview,
+  Review,
+} from '../../../../application/useCases/user/userCourseUseCases.js';
 import { ICategory } from '../../../../domain/entities/Category.js';
 import CourseRepository from '../../../../domain/repositories/user/CourseRepository.js';
 import CategoryModel from '../models/CategoryModel.js';
@@ -9,6 +12,7 @@ import CourseModel, {
 import InstructorModel, {
   IMongoInstructor,
 } from '../models/InstructorModel.js';
+import InstructorReviewModel from '../models/InstructorReviewModel.js';
 import ReviewModel from '../models/ReviewModel.js';
 
 class MongoCourseRepository implements CourseRepository {
@@ -126,6 +130,52 @@ class MongoCourseRepository implements CourseRepository {
 
       course.rating = averageRating;
       await course.save();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Mongo Error: Updating review', error);
+      throw new Error(error);
+    }
+  }
+
+  async addOrUpdateInstructorReview(
+    reviewData: InstructorReview,
+  ): Promise<void> {
+    try {
+      const { userId, instructorId, rating, review } = reviewData;
+      const reviewStatus = await InstructorReviewModel.updateOne(
+        { userId, instructorId },
+        { $set: { rating, review } },
+        { upsert: true },
+      );
+
+      if (reviewStatus.upsertedCount <= 0 && reviewStatus.modifiedCount <= 0) {
+        throw new Error('Mongo Error: Updating review');
+      }
+
+      const instructor = await InstructorModel.findById(instructorId);
+      if (!instructor) {
+        throw new Error('Course not found');
+      }
+
+      if (reviewStatus.upsertedCount > 0 && reviewStatus.upsertedId) {
+        // Ensure reviews is initialized
+        if (!instructor.reviews) {
+          instructor.reviews = [];
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const newReviewId: any = reviewStatus.upsertedId;
+        instructor.reviews.push(newReviewId);
+      }
+
+      // Calculate new average rating
+      const allReviews = await InstructorReviewModel.find({ instructorId });
+      const averageRating =
+        allReviews.reduce((sum, rev) => sum + rev.rating, 0) /
+        allReviews.length;
+
+      instructor.rating = averageRating;
+      await instructor.save();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log('Mongo Error: Updating review', error);

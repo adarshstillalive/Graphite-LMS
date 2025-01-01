@@ -33,19 +33,31 @@ const Profile = () => {
                 <p className="text-gray-700">{instructor.bio || 'Empty'}</p>
               </div>
 
-              {instructor.expertise && instructor.expertise.length > 0 && (
-                <div>
-                  <h3 className="text-xl font-semibold mb-2">Expertise</h3>
-                  <ul className="list-disc list-inside text-gray-700">
-                    {instructor.expertise.map((item: string, index: number) => (
-                      <li key={index}>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Expertise */}
+                {instructor.expertise && instructor.expertise.length > 0 ? (
+                  <div>
+                    <h3 className="text-xl font-semibold mb-2">Expertise</h3>
+                    <ul className="list-disc list-inside text-gray-700">
+                      {instructor.expertise.map(
+                        (item: string, index: number) => (
+                          <li key={index}>{item}</li>
+                        )
+                      )}
+                    </ul>
+                  </div>
+                ) : (
+                  <div>
+                    <h3 className="text-xl font-semibold mb-2">Expertise</h3>
+                    <p className="text-gray-500">
+                      No expertise information available.
+                    </p>
+                  </div>
+                )}
 
-              {instructor.qualifications &&
-                instructor.qualifications.length > 0 && (
+                {/* Education */}
+                {instructor.qualifications &&
+                instructor.qualifications.length > 0 ? (
                   <div>
                     <h3 className="text-xl font-semibold mb-2">Education</h3>
                     <ul className="list-disc list-inside text-gray-700">
@@ -56,10 +68,18 @@ const Profile = () => {
                       )}
                     </ul>
                   </div>
+                ) : (
+                  <div>
+                    <h3 className="text-xl font-semibold mb-2">Education</h3>
+                    <p className="text-gray-500">
+                      No education information available.
+                    </p>
+                  </div>
                 )}
 
-              {instructor.socialAccounts &&
-                instructor.socialAccounts.length > 0 && (
+                {/* Social Links */}
+                {instructor.socialAccounts &&
+                instructor.socialAccounts.length > 0 ? (
                   <div>
                     <h3 className="text-xl font-semibold mb-2">Social Links</h3>
                     <ul className="space-y-2">
@@ -72,7 +92,7 @@ const Profile = () => {
                               rel="noopener noreferrer"
                               className="text-blue-600 hover:underline flex items-center"
                             >
-                              <span className="font-medium mr-2">
+                              <span className="font-medium mr-2 text-black">
                                 {account.provider}:
                               </span>
                               {account.link}
@@ -82,12 +102,18 @@ const Profile = () => {
                       )}
                     </ul>
                   </div>
+                ) : (
+                  <div>
+                    <h3 className="text-xl font-semibold mb-2">Social Links</h3>
+                    <p className="text-gray-500">No social links available.</p>
+                  </div>
                 )}
+              </div>
             </div>
           </div>
 
           <div className="flex flex-col items-center space-y-4">
-            <Avatar className="w-64 h-64 border-gray-800 border-8">
+            <Avatar className="w-32 h-32 lg:w-64 lg:h-64 border-gray-800 border-8">
               <AvatarImage
                 src={instructor.profilePicture}
                 alt={instructor.userId.firstName}
@@ -96,22 +122,16 @@ const Profile = () => {
             </Avatar>
           </div>
         </div>
-
-        {instructor.courses && instructor.courses.length > 0 && (
-          <div className="w-full">
-            <h3 className="text-2xl font-semibold mb-4">Courses</h3>
-            <div className="w-full overflow-x-auto">
-              <div className="flex space-x-4 pb-4">
-                {instructor.courses.map((course: CourseObj) => (
-                  <div key={course.courseId._id} className="flex-shrink-0">
-                    <CourseCard course={course.courseId} />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
       </div>
+      {instructor.courses && instructor.courses.length > 0 && (
+        <div className="space-y-6 w-full">
+          <div className="container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mx-auto p-4">
+            {instructor.courses.map((course: CourseObj) => (
+              <CourseCard course={course.courseId} />
+            ))}
+          </div>
+        </div>
+      )}
     </>
   );
 };

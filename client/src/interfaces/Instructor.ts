@@ -25,6 +25,7 @@ export interface IInstructor {
   socialAccounts?: SocialAccounts[];
   courses?: InstructorCourse[];
   rating?: number;
+  reviews?: string[];
   isBlocked?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
@@ -41,6 +42,7 @@ export interface IInstructorPopulated {
   socialAccounts?: SocialAccounts[];
   courses?: InstructorCourse[];
   rating?: number;
+  reviews?: string[];
   isBlocked?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
@@ -57,6 +59,7 @@ export interface IInstructorPopulatedCourse {
   socialAccounts?: SocialAccounts[];
   courses?: InstructorCoursePopulated[];
   rating?: number;
+  reviews?: string[];
   isBlocked?: boolean;
   createdAt?: Date;
   updatedAt?: Date;

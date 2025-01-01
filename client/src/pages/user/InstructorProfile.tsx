@@ -10,11 +10,17 @@ import { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { fetchInstructor } from '@/services/user/courseService';
 import { CourseCardInstructor } from '@/components/user/course/CourseCardInstructor';
+import InstructorReviewSectionPurchased from '@/components/user/course/InstructorReviewSectionPurchased';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import InstructorReviewSection from '@/components/user/course/InstructorReviewSection';
 
 const InstructorProfile = () => {
   const { toast } = useToast();
   const { instructorId } = useParams();
   const [instructor, setInstructor] = useState<IInstructorPopulatedCourse>();
+  const { currentUser } = useSelector((state: RootState) => state.user);
+  const [isEligibleToReview, setIsEligibleToReview] = useState(false);
 
   useEffect(() => {
     const fetchInstructorData = async () => {
@@ -35,6 +41,19 @@ const InstructorProfile = () => {
     };
     fetchInstructorData();
   }, []);
+
+  useEffect(() => {
+    if (instructor?.courses && currentUser) {
+      const isPurchased = instructor.courses.some(
+        (course) =>
+          currentUser.purchasedCourses &&
+          currentUser.purchasedCourses.some(
+            (purchased) => purchased._id === course.courseId._id
+          )
+      );
+      setIsEligibleToReview(isPurchased);
+    }
+  }, [instructor, currentUser]);
 
   return (
     instructor && (
@@ -57,22 +76,31 @@ const InstructorProfile = () => {
                   <h3 className="text-xl font-semibold mb-2">About</h3>
                   <p className="text-gray-700">{instructor.bio || 'Empty'}</p>
                 </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* Expertise */}
+                  {instructor.expertise && instructor.expertise.length > 0 ? (
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">Expertise</h3>
+                      <ul className="list-disc list-inside text-gray-700">
+                        {instructor.expertise.map(
+                          (item: string, index: number) => (
+                            <li key={index}>{item}</li>
+                          )
+                        )}
+                      </ul>
+                    </div>
+                  ) : (
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">Expertise</h3>
+                      <p className="text-gray-500">
+                        No expertise information available.
+                      </p>
+                    </div>
+                  )}
 
-                {instructor.expertise && instructor.expertise.length > 0 && (
-                  <div>
-                    <h3 className="text-xl font-semibold mb-2">Expertise</h3>
-                    <ul className="list-disc list-inside text-gray-700">
-                      {instructor.expertise.map(
-                        (item: string, index: number) => (
-                          <li key={index}>{item}</li>
-                        )
-                      )}
-                    </ul>
-                  </div>
-                )}
-
-                {instructor.qualifications &&
-                  instructor.qualifications.length > 0 && (
+                  {/* Education */}
+                  {instructor.qualifications &&
+                  instructor.qualifications.length > 0 ? (
                     <div>
                       <h3 className="text-xl font-semibold mb-2">Education</h3>
                       <ul className="list-disc list-inside text-gray-700">
@@ -83,10 +111,18 @@ const InstructorProfile = () => {
                         )}
                       </ul>
                     </div>
+                  ) : (
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">Education</h3>
+                      <p className="text-gray-500">
+                        No education information available.
+                      </p>
+                    </div>
                   )}
 
-                {instructor.socialAccounts &&
-                  instructor.socialAccounts.length > 0 && (
+                  {/* Social Links */}
+                  {instructor.socialAccounts &&
+                  instructor.socialAccounts.length > 0 ? (
                     <div>
                       <h3 className="text-xl font-semibold mb-2">
                         Social Links
@@ -101,7 +137,7 @@ const InstructorProfile = () => {
                                 rel="noopener noreferrer"
                                 className="text-blue-600 hover:underline flex items-center"
                               >
-                                <span className="font-medium mr-2">
+                                <span className="font-medium mr-2 text-black">
                                   {account.provider}:
                                 </span>
                                 {account.link}
@@ -111,7 +147,17 @@ const InstructorProfile = () => {
                         )}
                       </ul>
                     </div>
+                  ) : (
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2">
+                        Social Links
+                      </h3>
+                      <p className="text-gray-500">
+                        No social links available.
+                      </p>
+                    </div>
                   )}
+                </div>
               </div>
             </div>
 
@@ -152,6 +198,16 @@ const InstructorProfile = () => {
             </div>
           )}
         </div>
+        {instructor._id &&
+          currentUser?._id &&
+          (isEligibleToReview ? (
+            <InstructorReviewSectionPurchased
+              instructorId={instructor._id}
+              userId={currentUser._id}
+            />
+          ) : (
+            <InstructorReviewSection instructorId={instructor._id} />
+          ))}
       </>
     )
   );

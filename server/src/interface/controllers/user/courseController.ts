@@ -7,6 +7,7 @@ import MongoCourseRepository from '../../../infrastructure/databases/mongoDB/use
 import { SortOrder } from 'mongoose';
 import MongoUserProfileRepository from '../../../infrastructure/databases/mongoDB/user/MongoUserProfileRepository.js';
 import ReviewModel from '../../../infrastructure/databases/mongoDB/models/ReviewModel.js';
+import InstructorReviewModel from '../../../infrastructure/databases/mongoDB/models/InstructorReviewModel.js';
 
 const courseRepository = new MongoCourseRepository();
 const userProfileRepository = new MongoUserProfileRepository();
@@ -266,6 +267,94 @@ const fetchReviews = async (req: Request, res: Response) => {
   }
 };
 
+const fetchInstructorReviewsWithUser = async (req: Request, res: Response) => {
+  try {
+    const { instructorId, userId } = req.params;
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 2;
+    const model = InstructorReviewModel;
+    const instructorReviewRepository = new MongoGenericRepository(model);
+
+    const result =
+      await instructorReviewRepository.getInstructorReviewsWithUser(
+        userId,
+        instructorId,
+        page,
+        limit,
+      );
+
+    res
+      .status(200)
+      .json(createResponse(true, 'Fetching reviews successfull', result));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res
+      .status(400)
+      .json(
+        createResponse(
+          false,
+          'Controller Error: fetching reviews',
+          {},
+          error?.message,
+        ),
+      );
+  }
+};
+
+const addOrUpdateInstructorReview = async (req: Request, res: Response) => {
+  try {
+    const { review } = req.body;
+
+    await courseRepository.addOrUpdateInstructorReview(review);
+
+    res.status(200).json(createResponse(true, 'Review action successfull'));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res
+      .status(400)
+      .json(
+        createResponse(
+          false,
+          'Controller Error: Review action',
+          {},
+          error?.message,
+        ),
+      );
+  }
+};
+
+const fetchInstructorReviews = async (req: Request, res: Response) => {
+  try {
+    const { instructorId } = req.params;
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 2;
+    const model = InstructorReviewModel;
+    const instructorReviewRepository = new MongoGenericRepository(model);
+
+    const result = await instructorReviewRepository.getInstructorReviews(
+      instructorId,
+      page,
+      limit,
+    );
+
+    res
+      .status(200)
+      .json(createResponse(true, 'Fetching reviews successfull', result));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res
+      .status(400)
+      .json(
+        createResponse(
+          false,
+          'Controller Error: fetching reviews',
+          {},
+          error?.message,
+        ),
+      );
+  }
+};
+
 export default {
   fetchPaginatedCourse,
   fetchPaginatedCourseProductPage,
@@ -275,4 +364,7 @@ export default {
   fetchReviewsWithUser,
   addOrUpdateReview,
   fetchReviews,
+  fetchInstructorReviewsWithUser,
+  addOrUpdateInstructorReview,
+  fetchInstructorReviews,
 };

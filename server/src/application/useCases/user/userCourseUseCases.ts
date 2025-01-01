@@ -8,6 +8,13 @@ export interface Review {
   review: string;
 }
 
+export interface InstructorReview {
+  userId: string;
+  instructorId: string;
+  rating: number;
+  review: string;
+}
+
 class UserCourseUseCases {
   constructor(
     private courseRepository: CourseRepository,
@@ -72,7 +79,18 @@ class UserCourseUseCases {
       await this.courseRepository.addOrUpdateReview(reviewData);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      console.log('Usecase Error: Fetching instructor data', error);
+      console.log('Usecase Error: Fetching reviews', error);
+
+      throw new Error(error);
+    }
+  }
+
+  async addOrUpdateInstructorReview(reviewData: InstructorReview) {
+    try {
+      await this.courseRepository.addOrUpdateInstructorReview(reviewData);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Usecase Error: Fetching instructor reviews', error);
 
       throw new Error(error);
     }
