@@ -47,6 +47,7 @@ export interface IMongoCourse {
   rejectedReason?: string;
   isPublished?: boolean;
   rating?: number;
+  reviews?: mongoose.Schema.Types.ObjectId[];
   welcomeMessage?: string;
   courseCompletionMessage?: string;
   createdAt?: Date;
@@ -71,6 +72,7 @@ export interface IMongoCoursePopulated {
   rejectedReason?: string;
   isPublished?: boolean;
   rating?: number;
+  reviews?: mongoose.Schema.Types.ObjectId[];
   welcomeMessage?: string;
   courseCompletionMessage?: string;
   createdAt?: Date;
@@ -96,6 +98,7 @@ export interface IMongoCourseCommon {
   rejectedReason?: string;
   isPublished?: boolean;
   rating?: number;
+  reviews?: mongoose.Schema.Types.ObjectId[];
   welcomeMessage?: string;
   courseCompletionMessage?: string;
   createdAt?: Date;
@@ -170,6 +173,9 @@ const CourseSchema: Schema<IMongoCourse> = new Schema(
     rating: {
       type: Number,
       default: 0,
+    },
+    reviews: {
+      type: [mongoose.Schema.Types.ObjectId],
     },
     welcomeMessage: {
       type: String,

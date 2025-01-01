@@ -1,6 +1,13 @@
 import CourseRepository from '../../../domain/repositories/user/CourseRepository.js';
 import UserProfileRepository from '../../../domain/repositories/user/UserProfileRepository.js';
 
+export interface Review {
+  userId: string;
+  courseId: string;
+  rating: number;
+  review: string;
+}
+
 class UserCourseUseCases {
   constructor(
     private courseRepository: CourseRepository,
@@ -52,6 +59,17 @@ class UserCourseUseCases {
   async fetchInstructor(instructorId: string) {
     try {
       return await this.courseRepository.fetchInstructor(instructorId);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Usecase Error: Fetching instructor data', error);
+
+      throw new Error(error);
+    }
+  }
+
+  async addOrUpdateReview(reviewData: Review) {
+    try {
+      await this.courseRepository.addOrUpdateReview(reviewData);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log('Usecase Error: Fetching instructor data', error);

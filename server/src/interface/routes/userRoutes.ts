@@ -93,6 +93,17 @@ userRoute.get(
   '/api/course/instructorProfile/:instructorId',
   courseController.fetchInstructor,
 );
+userRoute.get(
+  '/api/course/:courseId/reviews/:userId',
+  userAuthMiddleware.authorization,
+  courseController.fetchReviewsWithUser,
+);
+userRoute.get('/api/course/:courseId/reviews', courseController.fetchReviews);
+userRoute.put(
+  '/api/course/reviews',
+  userAuthMiddleware.authorization,
+  courseController.addOrUpdateReview,
+);
 // Order
 
 userRoute.post(

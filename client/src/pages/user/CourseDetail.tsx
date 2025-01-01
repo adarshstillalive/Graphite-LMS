@@ -5,6 +5,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
+import ReviewSection from '@/components/user/course/ReviewSection';
 import { useToast } from '@/hooks/use-toast';
 import { IPopulatedCourseCommon } from '@/interfaces/Course';
 import { inputStyle } from '@/interfaces/zodCourseFormSchema';
@@ -100,7 +101,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ id }) => {
                   ))}
                 </div>
                 <span className="text-lg font-bold mr-4">
-                  {course.rating} rating
+                  {course.reviews?.length} rating(s)
                 </span>
               </div>
               <p>
@@ -203,6 +204,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ id }) => {
             </div>
           </div>
         </div>
+        <ReviewSection courseId={course._id} />
       </div>
     )
   );

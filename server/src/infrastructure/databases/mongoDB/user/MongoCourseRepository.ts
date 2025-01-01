@@ -1,3 +1,4 @@
+import { Review } from '../../../../application/useCases/user/userCourseUseCases.js';
 import { ICategory } from '../../../../domain/entities/Category.js';
 import CourseRepository from '../../../../domain/repositories/user/CourseRepository.js';
 import CategoryModel from '../models/CategoryModel.js';
@@ -8,6 +9,7 @@ import CourseModel, {
 import InstructorModel, {
   IMongoInstructor,
 } from '../models/InstructorModel.js';
+import ReviewModel from '../models/ReviewModel.js';
 
 class MongoCourseRepository implements CourseRepository {
   async fetchCategories(): Promise<ICategory[]> {
@@ -83,6 +85,50 @@ class MongoCourseRepository implements CourseRepository {
     } catch (error: any) {
       console.log('Mongo Error: fetching course', error);
 
+      throw new Error(error);
+    }
+  }
+
+  async addOrUpdateReview(reviewData: Review): Promise<void> {
+    try {
+      const { userId, courseId, rating, review } = reviewData;
+      const reviewStatus = await ReviewModel.updateOne(
+        { userId, courseId },
+        { $set: { rating, review } },
+        { upsert: true },
+      );
+
+      if (reviewStatus.upsertedCount <= 0 && reviewStatus.modifiedCount <= 0) {
+        throw new Error('Mongo Error: Updating review');
+      }
+
+      const course = await CourseModel.findById(courseId);
+      if (!course) {
+        throw new Error('Course not found');
+      }
+
+      if (reviewStatus.upsertedCount > 0 && reviewStatus.upsertedId) {
+        // Ensure reviews is initialized
+        if (!course.reviews) {
+          course.reviews = [];
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const newReviewId: any = reviewStatus.upsertedId;
+        course.reviews.push(newReviewId);
+      }
+
+      // Calculate new average rating
+      const allReviews = await ReviewModel.find({ courseId });
+      const averageRating =
+        allReviews.reduce((sum, rev) => sum + rev.rating, 0) /
+        allReviews.length;
+
+      course.rating = averageRating;
+      await course.save();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Mongo Error: Updating review', error);
       throw new Error(error);
     }
   }

@@ -1,3 +1,4 @@
+import { Review } from '../../../application/useCases/user/userCourseUseCases.js';
 import {
   IMongoCourse,
   IMongoCourseCommon,
@@ -10,6 +11,7 @@ interface CourseRepository {
   fetchCourseById(courseId: string): Promise<IMongoCourseCommon>;
   fetchPurchasedCourseById(courseId: string): Promise<IMongoCourse>;
   fetchInstructor(instructorId: string): Promise<IMongoInstructor>;
+  addOrUpdateReview(review: Review): Promise<void>;
 }
 
 export default CourseRepository;

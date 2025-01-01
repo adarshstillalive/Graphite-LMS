@@ -1,6 +1,6 @@
 import React from 'react';
 import { IPopulatedCourseCommon } from '@/interfaces/Course';
-import { MdStarOutline } from 'react-icons/md';
+import { MdStar, MdStarOutline } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { FaHeart } from 'react-icons/fa6';
 import {
@@ -117,16 +117,13 @@ const CourseCardWide: React.FC<CourseCardProps> = ({ course }) => {
             {course.rating && course.rating.toFixed(1)}
           </span>
           <div className="flex items-center mr-4">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <MdStarOutline
-                key={star}
-                className={`h-5 w-5 ${
-                  star <= Math.round(course.rating || 0)
-                    ? 'text-yellow-400 fill-current'
-                    : 'text-gray-400'
-                }`}
-              />
-            ))}
+            {[1, 2, 3, 4, 5].map((star) =>
+              star <= Math.round(course.rating || 0) ? (
+                <MdStar key={star} className="h-5 w-5 fill-yellow-400" />
+              ) : (
+                <MdStarOutline key={star} className="h-5 w-5 text-gray-400" />
+              )
+            )}
           </div>
         </div>
         <p className="text-sm font-light">

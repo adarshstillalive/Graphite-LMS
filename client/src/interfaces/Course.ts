@@ -49,6 +49,7 @@ export interface ICourse {
   rejectedReason?: string;
   isPublished?: boolean;
   rating?: number;
+  reviews?: string[];
   welcomeMessage?: string;
   courseCompletionMessage?: string;
   createdAt?: Date;
@@ -74,6 +75,7 @@ export interface IPopulatedCourse {
   rejectedReason?: string;
   isPublished?: boolean;
   rating?: number;
+  reviews?: string[];
   welcomeMessage?: string;
   courseCompletionMessage?: string;
   createdAt?: Date;
@@ -99,6 +101,7 @@ export interface IPopulatedCourseCommon {
   rejectedReason?: string;
   isPublished?: boolean;
   rating?: number;
+  reviews?: string[];
   welcomeMessage?: string;
   courseCompletionMessage?: string;
   createdAt?: Date;

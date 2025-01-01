@@ -5,6 +5,13 @@ type SortType = {
   [key: string]: number;
 };
 
+interface Review {
+  userId: string;
+  courseId: string;
+  rating: number;
+  review: string;
+}
+
 export const fetchCoursesForHomePage = async (
   currentPage: number = 0
 ): Promise<ApiResponse> => {
@@ -74,5 +81,45 @@ export const fetchInstructor = async (
   const response = await userAxiosInstance.get(
     `/api/course/instructorProfile/${instructorId}`
   );
+  return response.data;
+};
+
+export const fetchReviewsWithUser = async (
+  userId: string,
+  courseId: string,
+  currentPage: number
+): Promise<ApiResponse> => {
+  const queryParams = new URLSearchParams();
+  if (currentPage > 0) {
+    queryParams.append('page', currentPage.toString());
+  }
+
+  const queryString = queryParams.toString();
+  const response = await userAxiosInstance.get(
+    `/api/course/${courseId}/reviews/${userId}?${queryString}`
+  );
+  return response.data;
+};
+
+export const fetchReviews = async (
+  courseId: string,
+  currentPage: number
+): Promise<ApiResponse> => {
+  const queryParams = new URLSearchParams();
+  if (currentPage > 0) {
+    queryParams.append('page', currentPage.toString());
+  }
+
+  const queryString = queryParams.toString();
+  const response = await userAxiosInstance.get(
+    `/api/course/${courseId}/reviews?${queryString}`
+  );
+  return response.data;
+};
+
+export const addReview = async (review: Review): Promise<ApiResponse> => {
+  const response = await userAxiosInstance.put(`/api/course/reviews`, {
+    review,
+  });
   return response.data;
 };

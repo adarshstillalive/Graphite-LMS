@@ -353,6 +353,68 @@ class MongoGenericRepository<T> {
       limit,
     };
   }
+  async getReviewsWithUser(
+    userId: string,
+    courseId: string,
+    page: number,
+    limit: number,
+  ): Promise<PaginatedResult<T>> {
+    const userReview = await this.model
+      .findOne({ userId, courseId })
+      .populate('userId');
+
+    const skip = (page - 1) * limit;
+
+    const data = await this.model
+      .find({
+        courseId,
+        userId: { $ne: userId },
+      })
+      .skip(skip)
+      .limit(limit)
+      .populate('userId');
+
+    const total = await this.model.countDocuments({
+      courseId,
+      userId: { $ne: userId },
+    });
+
+    const extra = { userReview: userReview || null };
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      extra,
+    };
+  }
+  async getReviews(
+    courseId: string,
+    page: number,
+    limit: number,
+  ): Promise<PaginatedResult<T>> {
+    const skip = (page - 1) * limit;
+
+    const data = await this.model
+      .find({
+        courseId,
+      })
+      .skip(skip)
+      .limit(limit)
+      .populate('userId');
+
+    const total = await this.model.countDocuments({
+      courseId,
+    });
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+    };
+  }
 }
 
 export default MongoGenericRepository;

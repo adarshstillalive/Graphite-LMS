@@ -71,6 +71,7 @@ export interface ICourse {
   rejectedReason?: string;
   isPublished?: boolean;
   rating?: number;
+  reviews?: string[];
   welcomeMessage?: string;
   courseCompletionMessage?: string;
   createdAt?: Date;
@@ -110,6 +111,7 @@ class Course implements ICourse {
     public isApproved?: boolean,
     public isPublished?: boolean,
     public rating?: number,
+    public reviews?: string[],
     public welcomeMessage?: string,
     public courseCompletionMessage?: string,
     public chapters?: IChapter[],

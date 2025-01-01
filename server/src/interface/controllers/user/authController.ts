@@ -24,11 +24,7 @@ const userAuthUseCases = new UserAuthUseCases(
 );
 
 const generateAndAddToken = new GenerateAndAddTokens(refreshTokenRepository);
-const googleAuth = new GoogleAuth(
-  userRepository,
-  userAuthRepository,
-  userAuthUseCases,
-);
+const googleAuth = new GoogleAuth(userRepository, userAuthRepository);
 
 const requestOtp = async (req: Request, res: Response) => {
   const { email } = req.body;

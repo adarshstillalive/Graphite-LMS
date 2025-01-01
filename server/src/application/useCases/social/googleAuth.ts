@@ -1,14 +1,14 @@
+import User from '../../../domain/entities/User.js';
+import UserAuth from '../../../domain/entities/UserAuth.js';
 import UserAuthRepository from '../../../domain/repositories/UserAuthRepository.js';
 import UserRepository from '../../../domain/repositories/UserRepository.js';
 import { ISocialAccount } from '../../../infrastructure/databases/mongoDB/models/UserModel.js';
 import { signin } from '../../../utils/googleSignin.js';
-import UserAuthUseCases from '../user/userAuthUseCases.js';
 
 class GoogleAuth {
   constructor(
     private userRepository: UserRepository,
     private userAuthRepository: UserAuthRepository,
-    private userAuthUseCases: UserAuthUseCases,
   ) {}
 
   async execute(credential: string) {
@@ -19,12 +19,25 @@ class GoogleAuth {
       if (!userAuth) {
         const firstName = name?.split(' ')[0] || '';
         const lastName = name?.split(' ')[1] || '';
-        const user = await this.userAuthUseCases.createUserInDbGoogle(
-          email,
+        const userAuth = new UserAuth(firstName, lastName, email, '');
+        await this.userAuthRepository.create(userAuth);
+        const socialAccounts: ISocialAccount[] = [
+          {
+            provider: 'Google',
+            createdAt: new Date(),
+          },
+        ];
+        const isSocialAuthenticated = true;
+        const user = new User(
           firstName,
           lastName,
+          email,
           '',
+          socialAccounts,
+          isSocialAuthenticated,
         );
+
+        await this.userRepository.create(user);
         return { user, email };
       } else {
         const socialAccount: ISocialAccount = {

@@ -2,13 +2,18 @@ import UserRepository from '../../../domain/repositories/UserRepository.js';
 
 import User from '../../../domain/entities/User.js';
 import UserModel, { ISocialAccount } from './models/UserModel.js';
+import WalletModel from './models/Wallet.js';
 
 class MongoUserRepository implements UserRepository {
   async create(user: User): Promise<User> {
     try {
       const newUser = new UserModel(user);
-      await newUser.save();
-      return newUser.toObject();
+      const savedUser = await newUser.save();
+      console.log('hit');
+
+      await WalletModel.create({ userId: savedUser._id });
+
+      return savedUser.toObject();
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

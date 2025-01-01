@@ -4,6 +4,7 @@ import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import ChapterEpisodeSelector from '@/components/user/course/ChapterEpisodeDropdown';
+import ReviewSectionPurchased from '@/components/user/course/ReviewSectionPurchased';
 import TextContent from '@/components/user/course/TextContent';
 import VideoPlayer from '@/components/user/course/VideoPlayer';
 import { useToast } from '@/hooks/use-toast';
@@ -239,6 +240,12 @@ const CourseDetailPurchased: React.FC<CourseDetailPurchasedProps> = ({
                 selectedEpisodeId={selectedEpisode?.id}
               />
             </ScrollArea>
+            {currentUser?._id && course._id && (
+              <ReviewSectionPurchased
+                userId={currentUser?._id}
+                courseId={course._id}
+              />
+            )}
           </div>
         </div>
       </div>
