@@ -1,4 +1,5 @@
 import OrderRepository from '../../../domain/repositories/user/OrderRepository.js';
+import UserProfileRepository from '../../../domain/repositories/user/UserProfileRepository.js';
 import { IOrder } from '../../../infrastructure/databases/mongoDB/models/OrderModel.js';
 import {
   capturePayment,
@@ -25,7 +26,10 @@ function generateOrderId() {
 }
 
 class UserOrderUseCases {
-  constructor(private orderRepository: OrderRepository) {}
+  constructor(
+    private orderRepository: OrderRepository,
+    private userProfileRepository: UserProfileRepository,
+  ) {}
 
   async paypalCreateOrder(userId: string) {
     try {
@@ -98,6 +102,47 @@ class UserOrderUseCases {
       return userData;
     } catch (error) {
       console.error('Usecase Error: Capturing payment', error);
+      throw new Error('An error occurred while processing the payment.');
+    }
+  }
+
+  async walletCreateOrder(userId: string) {
+    try {
+      const populatedUserData =
+        await this.orderRepository.orderCreationData(userId);
+
+      if (!populatedUserData || !populatedUserData.cart) {
+        throw new Error('Usecase Error: User data or cart is missing.');
+      }
+      const generatedOrderId = generateOrderId();
+      const products = populatedUserData.cart.map((item) => ({
+        courseId: String(item._id),
+        price: item.price,
+      }));
+      const totalAmount = products.reduce((acc, curr) => acc + curr.price, 0);
+      const order: IOrder = {
+        orderId: generatedOrderId,
+        userId,
+        courses: products,
+        totalAmount,
+        orderStatus: 'Order Completed',
+        paymentMethod: 'Wallet',
+      };
+      await this.userProfileRepository.debitWallet(userId, totalAmount);
+      await this.orderRepository.createOrder(order);
+
+      const courseIds = populatedUserData.cart.map((item) => String(item._id));
+
+      const userData = await this.orderRepository.updateUserWithOrderDetails(
+        courseIds,
+        userId,
+      );
+
+      await this.orderRepository.initializeCourseProgress(userId, courseIds);
+
+      return userData;
+    } catch (error) {
+      console.error('Usecase Error: Wallet payment', error);
       throw new Error('An error occurred while processing the payment.');
     }
   }

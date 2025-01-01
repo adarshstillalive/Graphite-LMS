@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Select,
   SelectContent,
@@ -11,16 +11,22 @@ import { useToast } from '@/hooks/use-toast';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { inputStyle } from '@/interfaces/zodCourseFormSchema';
-import { capturePayment, paypalOrder } from '@/services/user/orderService';
+import {
+  capturePayment,
+  paypalOrder,
+  walletOrder,
+} from '@/services/user/orderService';
 import { PayPalButtons } from '@paypal/react-paypal-js';
 import { useNavigate } from 'react-router-dom';
+import { fetchWallet } from '@/services/user/profileService';
+import { IWallet } from '@/interfaces/Wallet';
 
 const Checkout: React.FC = () => {
   const [paymentMethod, setPaymentMethod] = useState<string>('');
   const { toast } = useToast();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state: RootState) => state.user);
-
+  const [wallet, setWallet] = useState<IWallet>();
   const subtotal =
     (currentUser &&
       currentUser.cart &&
@@ -79,11 +85,16 @@ const Checkout: React.FC = () => {
     }
 
     try {
-      if (paymentMethod === 'paypal') {
-        // const response = await paypalRedirect();
+      if (paymentMethod === 'wallet') {
+        await walletOrder();
+        navigate('/profile/orders');
       }
     } catch (error) {
       console.log(error);
+      toast({
+        variant: 'destructive',
+        description: 'Payment error, Try again.',
+      });
     }
 
     toast({
@@ -91,6 +102,22 @@ const Checkout: React.FC = () => {
     });
     // Implement actual payment processing logic here
   };
+
+  useEffect(() => {
+    const fetchWalletData = async () => {
+      try {
+        const response = await fetchWallet();
+        setWallet(response.data);
+      } catch (error) {
+        console.log(error);
+        toast({
+          variant: 'destructive',
+          description: 'Loading failed, Refresh the page',
+        });
+      }
+    };
+    fetchWalletData();
+  }, []);
 
   return (
     currentUser &&
@@ -140,8 +167,12 @@ const Checkout: React.FC = () => {
                     <SelectItem className={inputStyle} value="paypal">
                       PayPal
                     </SelectItem>
-                    <SelectItem className={inputStyle} value="wallet">
-                      Wallet (Balance: ₹170)
+                    <SelectItem
+                      className={inputStyle}
+                      disabled={wallet && wallet.balance < subtotal}
+                      value="wallet"
+                    >
+                      Wallet (Balance: ₹{wallet?.balance.toFixed(2) || 0})
                     </SelectItem>
                   </SelectContent>
                 </Select>

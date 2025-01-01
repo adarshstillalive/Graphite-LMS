@@ -25,6 +25,7 @@ interface UserProfileRepository {
     progress: number,
   ): Promise<void>;
   fetchWallet(userId: string): Promise<IMongoWallet>;
+  debitWallet(userId: string, amount: number): Promise<void>;
   fetchProgress(
     userId: string,
     courseId: string,

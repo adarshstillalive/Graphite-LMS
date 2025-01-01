@@ -14,6 +14,7 @@ import InstructorReviewSectionPurchased from '@/components/user/course/Instructo
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import InstructorReviewSection from '@/components/user/course/InstructorReviewSection';
+import { Star } from 'lucide-react';
 
 const InstructorProfile = () => {
   const { toast } = useToast();
@@ -69,6 +70,23 @@ const InstructorProfile = () => {
                     instructor.userId.lastName}
                 </h1>
                 <p className="text-gray-600">{instructor.userId.email}</p>
+              </div>
+              <div className="flex items-center mb-4">
+                <div className="flex items-center mr-4">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      className={`h-5 w-5 ${
+                        star <= Math.round(instructor.rating || 0)
+                          ? 'text-yellow-400 fill-current'
+                          : 'text-gray-400'
+                      }`}
+                    />
+                  ))}
+                </div>
+                <span className="text-lg font-bold mr-4">
+                  {instructor.reviews?.length} rating(s)
+                </span>
               </div>
 
               <div className="space-y-6">

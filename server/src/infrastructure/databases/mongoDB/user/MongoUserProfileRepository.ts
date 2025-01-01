@@ -261,6 +261,40 @@ class MongoUserProfileRepository implements UserProfileRepository {
     }
   }
 
+  async debitWallet(userId: string, amount: number): Promise<void> {
+    try {
+      const wallet = await WalletModel.findOne({ userId });
+      if (!wallet) {
+        throw new Error('Wallet not found for the user');
+      }
+
+      if (wallet.balance < amount) {
+        throw new Error('Insufficient funds');
+      }
+
+      const transaction = {
+        type: 'Debit',
+        amount,
+        date: new Date(),
+      };
+
+      const result = await WalletModel.updateOne(
+        { userId },
+        {
+          $inc: { balance: -amount },
+          $push: { transaction },
+        },
+      );
+
+      if (result.modifiedCount === 0) {
+        throw new Error('Failed to debit wallet');
+      }
+    } catch (error) {
+      console.error('Error debiting wallet:', error);
+      throw new Error('Error processing wallet debit');
+    }
+  }
+
   async fetchProgress(
     userId: string,
     courseId: string,

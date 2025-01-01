@@ -130,6 +130,11 @@ userRoute.get(
   userAuthMiddleware.authorization,
   orderController.capturePayment,
 );
+userRoute.post(
+  '/api/order/wallet',
+  userAuthMiddleware.authorization,
+  orderController.walletCreateOrder,
+);
 userRoute.get(
   '/api/orders',
   userAuthMiddleware.authorization,

@@ -18,6 +18,11 @@ export const paypalOrder = async (): Promise<ApiResponse> => {
   return response.data;
 };
 
+export const walletOrder = async (): Promise<ApiResponse> => {
+  const response = await userAxiosInstance.post('/api/order/wallet');
+  return response.data;
+};
+
 export const capturePayment = async (orderId: string): Promise<ApiResponse> => {
   const response = await userAxiosInstance.get(
     `/api/capturePayment/${orderId}`
