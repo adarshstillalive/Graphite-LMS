@@ -26,9 +26,19 @@ const OrderDetail: React.FC = () => {
   const [returnReason, setReturnReason] = useState('');
   const navigate = useNavigate();
   const { currentUser } = useSelector((state: RootState) => state.user);
+  const [isReturnPossible, setIsReturnPossible] = useState(true);
 
   const formatDate = (date: Date | undefined) =>
     date ? new Date(date).toLocaleString() : 'N/A';
+
+  useEffect(() => {
+    if (order?.createdAt) {
+      const createdAtDate = new Date(order.createdAt).getTime();
+      const sevenDaysInMillis = 7 * 24 * 60 * 60 * 1000;
+
+      setIsReturnPossible(Date.now() - createdAtDate <= sevenDaysInMillis);
+    }
+  }, [order]);
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -143,12 +153,9 @@ const OrderDetail: React.FC = () => {
                   <p>
                     <strong>Price:</strong> ₹{product.price.toFixed(2)}
                   </p>
-                  <p>
-                    <strong>Returned:</strong> {product.returned}
-                  </p>
                 </div>
                 <div className="ml-auto">
-                  {
+                  {isReturnPossible && (
                     <Dialog>
                       <DialogTrigger asChild>
                         <Button
@@ -200,14 +207,13 @@ const OrderDetail: React.FC = () => {
                         </div>
                       </DialogContent>
                     </Dialog>
-                  }
+                  )}
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Cancellation Details */}
         {order.cancelledDate && (
           <div className="bg-white shadow rounded-lg p-6">
             <h2 className="text-2xl font-semibold mb-4">

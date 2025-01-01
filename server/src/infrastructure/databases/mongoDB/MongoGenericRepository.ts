@@ -26,7 +26,10 @@ class MongoGenericRepository<T> {
       .sort(sort)
       .collation({ locale: 'en', strength: 2 });
 
-    const total = await this.model.countDocuments(filter);
+    const total = await this.model.countDocuments({
+      ...filter,
+      isAdmin: false,
+    });
     return {
       data,
       total,
@@ -102,7 +105,11 @@ class MongoGenericRepository<T> {
       .populate('instructorId')
       .populate('category');
 
-    const total = await this.model.countDocuments(filter);
+    const total = await this.model.countDocuments({
+      ...filter,
+      isApproved: false,
+      isRejected: false,
+    });
     return {
       data,
       total,
@@ -127,7 +134,10 @@ class MongoGenericRepository<T> {
       .populate('instructorId')
       .populate('category');
 
-    const total = await this.model.countDocuments(filter);
+    const total = await this.model.countDocuments({
+      ...filter,
+      isRejected: true,
+    });
     return {
       data,
       total,
@@ -152,7 +162,11 @@ class MongoGenericRepository<T> {
       .populate('instructorId')
       .populate('category');
 
-    const total = await this.model.countDocuments(filter);
+    const total = await this.model.countDocuments({
+      ...filter,
+      isApproved: true,
+      isRejected: false,
+    });
     return {
       data,
       total,
@@ -181,7 +195,12 @@ class MongoGenericRepository<T> {
       .populate('instructorId')
       .populate('category');
 
-    const total = await this.model.countDocuments(filter);
+    const total = await this.model.countDocuments({
+      ...filter,
+      isApproved: true,
+      isRejected: false,
+      isPublished: true,
+    });
     return {
       data,
       total,
@@ -210,7 +229,12 @@ class MongoGenericRepository<T> {
       .populate('instructorId')
       .populate('category');
 
-    const total = await this.model.countDocuments(filter);
+    const total = await this.model.countDocuments({
+      ...filter,
+      isApproved: true,
+      isRejected: false,
+      isPublished: true,
+    });
     return {
       data,
       total,
@@ -238,7 +262,10 @@ class MongoGenericRepository<T> {
         model: 'Course',
       });
 
-    const total = await this.model.countDocuments(filter);
+    const total = await this.model.countDocuments({
+      ...filter,
+      userId: userId,
+    });
     return {
       data,
       total,
@@ -265,7 +292,10 @@ class MongoGenericRepository<T> {
       .populate('userId')
       .populate('itemId');
 
-    const total = await this.model.countDocuments(filter);
+    const total = await this.model.countDocuments({
+      ...filter,
+      isApproved: false,
+    });
     return {
       data,
       total,
@@ -286,6 +316,31 @@ class MongoGenericRepository<T> {
         ...filter,
       })
       .limit(limit * page)
+      .sort(sort)
+      .populate('courses.courseId')
+      .populate('userId');
+
+    const total = await this.model.countDocuments(filter);
+    return {
+      data,
+      total,
+      page,
+      limit,
+    };
+  }
+  async getPaginatedAllOrdersAdmin(
+    page: number,
+    limit: number,
+    filter: object = {},
+    sort: SortType,
+  ): Promise<PaginatedResult<T>> {
+    const skip = (page - 1) * limit;
+    const data = await this.model
+      .find({
+        ...filter,
+      })
+      .limit(limit * page)
+      .skip(skip)
       .sort(sort)
       .populate('courses.courseId')
       .populate('userId');

@@ -182,7 +182,17 @@ class MongoUserProfileRepository implements UserProfileRepository {
     progress: number,
   ): Promise<void> {
     try {
-      const result = await CourseProgressModel.findOneAndUpdate(
+      const progressData = await CourseProgressModel.findOne({
+        userId,
+        courseId,
+      });
+
+      if (!progressData) {
+        throw new Error('Progress data not found in the database.');
+      }
+
+      // Update the specific episode's progress
+      const result = await CourseProgressModel.updateOne(
         {
           userId,
           courseId,
@@ -199,16 +209,42 @@ class MongoUserProfileRepository implements UserProfileRepository {
             { 'chapter.chapterId': chapterId },
             { 'episode.episodeId': episodeId },
           ],
-          new: true,
         },
       );
 
-      if (!result) {
-        throw new Error('Mongo error: Updating progress');
+      if (result.modifiedCount === 0) {
+        throw new Error('Failed to update the episode progress.');
       }
+
+      // Recalculate total progress
+      let totalProgress = 0;
+      let totalEpisodes = 0;
+
+      // Fetch the updated data to ensure the calculation is based on the latest values
+      const updatedProgressData = await CourseProgressModel.findOne({
+        userId,
+        courseId,
+      });
+
+      if (!updatedProgressData) {
+        throw new Error('Failed to fetch updated progress data.');
+      }
+
+      for (const chapter of updatedProgressData.chapters) {
+        for (const episode of chapter.episodes) {
+          totalProgress += episode.progress || 0;
+          totalEpisodes += 1;
+        }
+      }
+
+      // Calculate the average progress as a percentage
+      updatedProgressData.totalProgress =
+        totalEpisodes > 0 ? totalProgress / totalEpisodes : 0;
+
+      await updatedProgressData.save();
     } catch (error) {
       console.error('Error updating progress:', error);
-      throw new Error('Mongo error: Updating progress');
+      throw new Error('Failed to update course progress.');
     }
   }
 

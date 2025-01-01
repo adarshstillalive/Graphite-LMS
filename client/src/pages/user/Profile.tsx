@@ -56,7 +56,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6 py-8">
+    <div className="flex flex-col gap-6">
       <div className="flex flex-col lg:flex-row gap-6 items-center lg:items-start">
         {currentUser && (
           <ProfileDetails

@@ -1,6 +1,7 @@
 import BreadCrumbs from '@/components/common/BreadCrumbs';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
+import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import ChapterEpisodeSelector from '@/components/user/course/ChapterEpisodeDropdown';
 import TextContent from '@/components/user/course/TextContent';
@@ -127,7 +128,6 @@ const CourseDetailPurchased: React.FC<CourseDetailPurchasedProps> = ({
     <div className="min-h-screen bg-gray-100 p-4">
       <BreadCrumbs />
       <div className="container mx-auto p-4">
-        {/* <Progress style={{ width: `${progressData}%` }} className="bg-black" /> */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2">
             <div className="mb-6">
@@ -214,11 +214,26 @@ const CourseDetailPurchased: React.FC<CourseDetailPurchasedProps> = ({
           </div>
           <div className="bg-white rounded-md shadow-sm">
             <div className="p-4 border-b border-gray-200">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="font-medium">Progress:</span>
+                <div className="relative w-full h-4 overflow-hidden">
+                  <Progress
+                    value={progress?.totalProgress}
+                    className="h-full bg-gray-500"
+                  />
+                </div>
+                <span className="ml-2 text-sm font-medium">
+                  {progress?.totalProgress !== undefined
+                    ? progress?.totalProgress.toFixed(2) + '%'
+                    : '0%'}
+                </span>
+              </div>
               <h2 className="text-xl font-semibold">Course Content</h2>
             </div>
-            <ScrollArea className="h-[600px]">
+
+            <ScrollArea className="h-[600px] p-2">
               <ChapterEpisodeSelector
-                chapters={course.chapters || []}
+                chapters={course?.chapters || []}
                 onSelect={handleEpisodeSelect}
                 selectedChapterId={selectedChapter?.id}
                 selectedEpisodeId={selectedEpisode?.id}

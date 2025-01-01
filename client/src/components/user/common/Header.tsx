@@ -144,9 +144,11 @@ const Header = () => {
                     </div>
                   </>
                 ) : (
-                  <Button className="w-full rounded-none" variant="default">
-                    <Link to={'/auth/login'}>Login</Link>
-                  </Button>
+                  <Link to={'/auth/login'}>
+                    <Button className="w-full rounded-none" variant="default">
+                      Login
+                    </Button>
+                  </Link>
                 )}
               </div>
             </div>

@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import CourseCardWide from '@/components/user/course/CourseCardWide';
 import Sidebar from '@/components/user/course/Sidebar';
 import { useToast } from '@/hooks/use-toast';
-import { IPopulatedCourseCommon } from '@/interfaces/Course';
+import { IPopulatedCourse } from '@/interfaces/Course';
 import { ICategory } from '@/services/admin/courseService';
 import {
   fetchCategoriesFromApi,
@@ -24,7 +24,7 @@ const Courses = () => {
     value: -1,
   });
 
-  const [courses, setCourses] = useState<IPopulatedCourseCommon[]>([]);
+  const [courses, setCourses] = useState<IPopulatedCourse[]>([]);
 
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -87,9 +87,9 @@ const Courses = () => {
   ]);
 
   return (
-    <div className="min-h-screen px-16">
-      <header className="bg-white flex shadow-sm">
-        <div className="max-w-7xl mx-auto py-4 px-6">
+    <div className="min-h-screen">
+      <header className="bg-white flex shadow-sm px-12">
+        <div className="max-w-7xl mx-auto py-4 ">
           <h1 className="text-3xl font-semibold text-gray-900">All Courses</h1>
         </div>
         <SearchAndSort
@@ -109,7 +109,7 @@ const Courses = () => {
         />
         <main className="flex-1 p-6">
           <div className="grid ">
-            {courses.map((course: IPopulatedCourseCommon) => (
+            {courses.map((course: IPopulatedCourse) => (
               <CourseCardWide key={course._id} course={course} />
             ))}
           </div>

@@ -52,7 +52,7 @@ const fetchOrders = async (req: Request, res: Response) => {
     const model = OrderModel;
     const orderRepository = new MongoGenericRepository(model);
 
-    const result = await orderRepository.getPaginatedAllOrders(
+    const result = await orderRepository.getPaginatedAllOrdersAdmin(
       page,
       limit,
       filter,

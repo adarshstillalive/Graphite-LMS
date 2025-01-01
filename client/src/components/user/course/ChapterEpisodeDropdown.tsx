@@ -31,7 +31,7 @@ const ChapterEpisodeSelector: React.FC<ChapterEpisodeSelectorProps> = ({
         <AccordionItem key={chapter.id} value={chapter.id}>
           <AccordionTrigger className="px-4 py-3 text-base font-medium hover:bg-gray-50">
             <div className="flex items-center">
-              <span className="mr-2">Section {index + 1}:</span>
+              <span className="mr-2">Chapter {index + 1}:</span>
               {chapter.title}
             </div>
           </AccordionTrigger>
