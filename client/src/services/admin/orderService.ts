@@ -70,3 +70,8 @@ export const hangleReturnRequest = async (
   );
   return response.data;
 };
+
+export const fetchListingCounts = async (): Promise<ApiResponse> => {
+  const response = await adminAxiosInstance.get('/api/listingCounts');
+  return response.data;
+};

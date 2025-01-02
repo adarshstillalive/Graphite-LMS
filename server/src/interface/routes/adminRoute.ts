@@ -128,4 +128,10 @@ adminRoute.patch(
   orderController.handleReturnRequest,
 );
 
+adminRoute.get(
+  '/api/listingCounts',
+  userAuthMiddleware.authorization,
+  orderController.fetchListingCounts,
+);
+
 export default adminRoute;

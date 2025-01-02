@@ -4,6 +4,9 @@ import OrderModel from '../models/OrderModel.js';
 import ReturnModel from '../models/ReturnRequest.js';
 import UserModel from '../models/UserModel.js';
 import WalletModel from '../models/Wallet.js';
+import { Counts } from '../../../../application/useCases/admin/order/adminOrderUseCase.js';
+import CourseModel from '../models/CourseModel.js';
+import InstructorModel from '../models/InstructorModel.js';
 
 class MongoOrderRepository implements OrderRepository {
   async approveReturnRequest(
@@ -69,6 +72,27 @@ class MongoOrderRepository implements OrderRepository {
       throw new Error('Failed to approve return request.');
     } finally {
       session.endSession();
+    }
+  }
+
+  async fetchListingCounts(): Promise<Counts> {
+    try {
+      const [courses, users, instructors, orders] = await Promise.all([
+        CourseModel.countDocuments({ isPublished: true }),
+        UserModel.countDocuments({ isAdmin: false }),
+        InstructorModel.countDocuments(),
+        OrderModel.countDocuments(),
+      ]);
+
+      return {
+        courses,
+        users,
+        instructors,
+        orders,
+      };
+    } catch (error) {
+      console.log(error);
+      throw new Error('Mongo Error: Fetching listing counts');
     }
   }
 }

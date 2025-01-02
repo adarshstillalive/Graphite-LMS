@@ -3,6 +3,7 @@ import requestController from '../controllers/instructor/requestController.js';
 import profileController from '../controllers/instructor/profileController.js';
 import userAuthMiddleware from '../../infrastructure/middleware/userAuthMiddleware.js';
 import courseController from '../controllers/instructor/courseController.js';
+import orderController from '../controllers/instructor/orderController.js';
 const instructorRoute = express.Router();
 
 instructorRoute.post(
@@ -97,6 +98,14 @@ instructorRoute.get(
   '/api/categories',
   userAuthMiddleware.authorization,
   courseController.fetchCategories,
+);
+
+// Order
+
+instructorRoute.get(
+  '/api/orders',
+  userAuthMiddleware.authorization,
+  orderController.fetchInstructorOrders,
 );
 
 export default instructorRoute;

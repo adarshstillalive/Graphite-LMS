@@ -9,7 +9,6 @@ class MongoUserRepository implements UserRepository {
     try {
       const newUser = new UserModel(user);
       const savedUser = await newUser.save();
-      console.log('hit');
 
       await WalletModel.create({ userId: savedUser._id });
 

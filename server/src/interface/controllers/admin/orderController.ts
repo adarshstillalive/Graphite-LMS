@@ -88,8 +88,24 @@ const handleReturnRequest = async (req: Request, res: Response) => {
   }
 };
 
+const fetchListingCounts = async (req: Request, res: Response) => {
+  try {
+    const counts = await adminOrderUseCase.fetchListingCounts();
+
+    res
+      .status(200)
+      .json(
+        createResponse(true, 'Fetching listing counts successfull', counts),
+      );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(400).json(createResponse(false, error?.message));
+  }
+};
+
 export default {
   fetchReturnRequests,
   fetchOrders,
   handleReturnRequest,
+  fetchListingCounts,
 };
