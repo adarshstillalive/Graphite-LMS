@@ -12,6 +12,7 @@ class Order {
     public cancellingReason?: string,
     public returnedDate?: Date,
     public returningReason?: string,
+    public isInstructorPaymentCompleted?: boolean,
     public createdAt?: Date,
     public updatedAt?: Date,
   ) {}

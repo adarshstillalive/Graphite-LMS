@@ -25,6 +25,7 @@ export interface IOrder {
   paymentMethod: string;
   cancelledDate?: Date;
   cancellingReason?: string;
+  isInstructorPaymentCompleted?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -39,8 +40,10 @@ export interface IMongoOrder extends Document {
   paymentMethod: string;
   cancelledDate?: Date;
   cancellingReason?: string;
+  isInstructorPaymentCompleted?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
+  _id: mongoose.Schema.Types.ObjectId;
 }
 
 const productSchema: Schema<IMongoProduct> = new Schema({
@@ -99,6 +102,10 @@ const orderSchema: Schema<IMongoOrder> = new Schema(
     },
     cancellingReason: {
       type: String,
+    },
+    isInstructorPaymentCompleted: {
+      type: Boolean,
+      default: false,
     },
   },
   {

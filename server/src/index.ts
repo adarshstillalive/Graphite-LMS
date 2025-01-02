@@ -10,6 +10,7 @@ import prisma from './infrastructure/orm/prismaClient.js';
 import fileUpload from 'express-fileupload';
 import userResponseMiddleware from './infrastructure/middleware/userResponseMiddleware.js';
 import userAuthMiddleware from './infrastructure/middleware/userAuthMiddleware.js';
+// import './infrastructure/jobs/instructorPayment.js';
 dotenv.config();
 
 mongoose

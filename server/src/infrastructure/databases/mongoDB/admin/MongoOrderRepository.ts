@@ -28,7 +28,7 @@ class MongoOrderRepository implements OrderRepository {
       if (!order) {
         throw new Error('Order not found for the given ID.');
       }
-
+      order.totalAmount -= requestStatus.price;
       const course = order.courses.find(
         (course) =>
           course.courseId.toString() === requestStatus.itemId.toString(),

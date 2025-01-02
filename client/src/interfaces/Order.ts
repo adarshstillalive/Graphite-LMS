@@ -19,6 +19,7 @@ export interface IOrder {
   paymentMethod: string;
   cancelledDate?: Date;
   cancellingReason?: string;
+  isInstructorPaymentCompleted?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
   _id?: string;
@@ -34,6 +35,7 @@ export interface IPopulatedOrder {
   paymentMethod: string;
   cancelledDate?: Date;
   cancellingReason?: string;
+  isInstructorPaymentCompleted?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
   _id?: string;
