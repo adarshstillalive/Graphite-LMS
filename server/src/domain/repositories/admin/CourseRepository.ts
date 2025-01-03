@@ -7,6 +7,7 @@ interface CourseRepository {
   approveCourse(id: string): Promise<void>;
   rejectCourse(id: string, reason: string): Promise<void>;
   fetchCourseById(id: string): Promise<IMongoCourse>;
+  fetchTopCourses(): Promise<IMongoCourse[]>;
 }
 
 export default CourseRepository;

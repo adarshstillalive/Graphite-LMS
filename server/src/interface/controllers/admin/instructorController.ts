@@ -90,9 +90,26 @@ const instructorAction = async (req: Request, res: Response) => {
   }
 };
 
+const fetchTopInstructors = async (req: Request, res: Response) => {
+  try {
+    const instructors = await instructorAccessManagement.fetchTopInstructors();
+    res
+      .status(200)
+      .json(
+        createResponse(true, 'Fetching instructors successfull', instructors),
+      );
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json(createResponse(false, 'Error fetching instructors', error));
+  }
+};
+
 export default {
   getInstructorRequests,
   approveInstructorRequest,
   paginatedInstructorsList,
   instructorAction,
+  fetchTopInstructors,
 };

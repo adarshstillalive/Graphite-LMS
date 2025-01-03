@@ -58,3 +58,10 @@ export const handleBlock = async (
   );
   return response.data;
 };
+
+export const fetchTopInstructors = async (): Promise<ApiResponse> => {
+  const response = await adminAxiosInstance.get(
+    `/api/instructors/topInstructors`
+  );
+  return response.data;
+};

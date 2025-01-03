@@ -75,3 +75,12 @@ export const fetchListingCounts = async (): Promise<ApiResponse> => {
   const response = await adminAxiosInstance.get('/api/listingCounts');
   return response.data;
 };
+
+export const fetchOrdersForChartLine = async (
+  filter: string
+): Promise<ApiResponse> => {
+  const response = await adminAxiosInstance.get(
+    `/api/orders/chartLine?filter=${filter}`
+  );
+  return response.data;
+};

@@ -44,6 +44,18 @@ class InstructorAccessManagement {
       throw new Error(error);
     }
   }
+
+  async fetchTopInstructors() {
+    try {
+      return await this.adminInstructorRepository.fetchTopInstructors();
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Error in fetching instructors', error);
+
+      throw new Error(error);
+    }
+  }
 }
 
 export default InstructorAccessManagement;

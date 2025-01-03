@@ -35,6 +35,17 @@ class CourseUseCase {
       throw new Error(error);
     }
   }
+
+  async fetchTopCourses() {
+    try {
+      return await this.courseRepository.fetchTopCourses();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Usecase:Error in fetching courses', error);
+
+      throw new Error(error);
+    }
+  }
 }
 
 export default CourseUseCase;

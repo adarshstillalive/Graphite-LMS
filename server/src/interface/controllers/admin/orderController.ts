@@ -103,9 +103,25 @@ const fetchListingCounts = async (req: Request, res: Response) => {
   }
 };
 
+const fetchOrdersForChartLine = async (req: Request, res: Response) => {
+  try {
+    const filter = String(req.query.filter) || 'month';
+
+    const orders = await adminOrderUseCase.fetchOrdersForChartLine(filter);
+
+    res
+      .status(200)
+      .json(createResponse(true, 'Fetching orders successfull', orders));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(400).json(createResponse(false, error?.message));
+  }
+};
+
 export default {
   fetchReturnRequests,
   fetchOrders,
   handleReturnRequest,
   fetchListingCounts,
+  fetchOrdersForChartLine,
 };

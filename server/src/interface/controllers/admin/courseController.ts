@@ -233,6 +233,23 @@ const rejectCourseRequest = async (req: Request, res: Response) => {
   }
 };
 
+const fetchTopCourses = async (req: Request, res: Response) => {
+  try {
+    const courses = await courseUseCase.fetchTopCourses();
+
+    res
+      .status(200)
+      .json(createResponse(true, 'Fetching top courses successfull', courses));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res
+      .status(400)
+      .json(
+        createResponse(false, 'Fetching courses failed', {}, error?.message),
+      );
+  }
+};
+
 export default {
   fetchCourseById,
   paginatedAllCourses,
@@ -243,4 +260,5 @@ export default {
   paginatedRejectedCourseRequests,
   approveCourseRequest,
   rejectCourseRequest,
+  fetchTopCourses,
 };

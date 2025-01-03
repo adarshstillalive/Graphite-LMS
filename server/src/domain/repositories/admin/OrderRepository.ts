@@ -1,4 +1,9 @@
-import { Counts } from '../../../application/useCases/admin/order/adminOrderUseCase.js';
+import {
+  ChartLineData,
+  Counts,
+  GroupCondition,
+  MatchCondition,
+} from '../../../application/useCases/admin/order/adminOrderUseCase.js';
 
 interface OrderRepository {
   approveReturnRequest(
@@ -7,6 +12,11 @@ interface OrderRepository {
     userId: string,
   ): Promise<void>;
   fetchListingCounts(): Promise<Counts>;
+  fetchOrdersForChartLine(
+    matchCondition: MatchCondition,
+    groupCondition: GroupCondition,
+    limit: number,
+  ): Promise<ChartLineData[]>;
 }
 
 export default OrderRepository;

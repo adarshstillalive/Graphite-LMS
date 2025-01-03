@@ -4,7 +4,12 @@ import OrderModel from '../models/OrderModel.js';
 import ReturnModel from '../models/ReturnRequest.js';
 import UserModel from '../models/UserModel.js';
 import WalletModel from '../models/Wallet.js';
-import { Counts } from '../../../../application/useCases/admin/order/adminOrderUseCase.js';
+import {
+  ChartLineData,
+  Counts,
+  GroupCondition,
+  MatchCondition,
+} from '../../../../application/useCases/admin/order/adminOrderUseCase.js';
 import CourseModel from '../models/CourseModel.js';
 import InstructorModel from '../models/InstructorModel.js';
 
@@ -90,6 +95,31 @@ class MongoOrderRepository implements OrderRepository {
         instructors,
         orders,
       };
+    } catch (error) {
+      console.log(error);
+      throw new Error('Mongo Error: Fetching listing counts');
+    }
+  }
+
+  async fetchOrdersForChartLine(
+    matchCondition: MatchCondition,
+    groupCondition: GroupCondition,
+    limit: number,
+  ): Promise<ChartLineData[]> {
+    try {
+      const orders = await OrderModel.aggregate([
+        { $match: matchCondition },
+        { $group: groupCondition },
+        { $sort: { _id: 1 } },
+        { $limit: limit },
+      ]);
+
+      const chartData = orders.map((order) => ({
+        label: order._id,
+        value: order.totalOrders,
+      }));
+
+      return chartData;
     } catch (error) {
       console.log(error);
       throw new Error('Mongo Error: Fetching listing counts');

@@ -22,6 +22,12 @@ adminRoute.get(
   instructorController.paginatedInstructorsList,
 );
 
+adminRoute.get(
+  '/api/instructors/topInstructors',
+  userAuthMiddleware.authorization,
+  instructorController.fetchTopInstructors,
+);
+
 adminRoute.patch(
   '/api/instructors/:id',
   userAuthMiddleware.authorization,
@@ -64,6 +70,12 @@ adminRoute.get(
   '/api/courses',
   userAuthMiddleware.authorization,
   courseController.paginatedAllCourses,
+);
+
+adminRoute.get(
+  '/api/courses/topCourses',
+  userAuthMiddleware.authorization,
+  courseController.fetchTopCourses,
 );
 
 adminRoute.get(
@@ -132,6 +144,12 @@ adminRoute.get(
   '/api/listingCounts',
   userAuthMiddleware.authorization,
   orderController.fetchListingCounts,
+);
+
+adminRoute.get(
+  '/api/orders/chartLine',
+  userAuthMiddleware.authorization,
+  orderController.fetchOrdersForChartLine,
 );
 
 export default adminRoute;

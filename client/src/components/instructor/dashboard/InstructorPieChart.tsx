@@ -35,7 +35,7 @@ const InstructorPieChart: React.FC<IInstructorPieChartProps> = ({ orders }) => {
   useEffect(() => {
     const transformedData = [
       {
-        category: 'Total Orders',
+        category: 'Payments Pending',
         visitors: orders.filter(
           (order: IDashboardOrder) => !order.isInstructorPaymentCompleted
         ).length,

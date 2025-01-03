@@ -19,6 +19,7 @@ import {
 import { Clock, FileText, PlayCircle } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 interface CourseDetailPurchasedProps {
   id: string;
@@ -27,6 +28,7 @@ interface CourseDetailPurchasedProps {
 const CourseDetailPurchased: React.FC<CourseDetailPurchasedProps> = ({
   id,
 }) => {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [course, setCourse] = useState<IPopulatedCourse>();
   const { currentUser } = useSelector((state: RootState) => state.user);
@@ -207,6 +209,36 @@ const CourseDetailPurchased: React.FC<CourseDetailPurchasedProps> = ({
                   </ul>
                 </div>
               </div>
+
+              {/* New Instructor Section */}
+              <section className="mt-8">
+                <h2 className="text-2xl font-bold mb-4">Instructor Profile</h2>
+                <div
+                  className="flex items-center bg-gray-50 p-6 rounded-md cursor-pointer"
+                  onClick={() =>
+                    navigate(
+                      `/courses/courseDetail/instructorProfile/${course.instructorId._id}`
+                    )
+                  }
+                >
+                  <img
+                    src={course.instructorId.profilePicture}
+                    alt={course.instructorId.firstName}
+                    className="w-16 h-16 rounded-full object-cover mr-4"
+                  />
+                  <div>
+                    <h3 className="text-xl font-semibold">
+                      {course.instructorId.firstName +
+                        ' ' +
+                        course.instructorId.lastName}
+                    </h3>
+                    {/* <p className="text-gray-600 text-sm">
+                      
+                    </p> */}
+                  </div>
+                </div>
+              </section>
+
               <section className="mt-8">
                 <h2 className="text-2xl font-bold mb-4">Course Description</h2>
                 <p className="text-gray-700">{course.description}</p>

@@ -104,6 +104,22 @@ class MongoAdminInstructorRepository implements AdminInstructorRepository {
       throw new Error(error.message || 'Instructor action failed');
     }
   }
+
+  async fetchTopInstructors(): Promise<IMongoInstructor[]> {
+    try {
+      const instructorData = await InstructorModel.find()
+        .sort({ rating: -1 })
+        .limit(10)
+        .populate('userId');
+
+      return instructorData;
+    } catch (error) {
+      console.error('Error fetching top instructors:', error);
+
+      // Preserve the original stack trace for debugging
+      throw new Error('Failed to fetch instructors');
+    }
+  }
 }
 
 export default MongoAdminInstructorRepository;

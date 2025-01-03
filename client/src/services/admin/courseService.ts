@@ -176,3 +176,8 @@ export const fetchCourseApi = async (
   const response = await adminAxiosInstance.get(`/api/course/${courseId}`);
   return response.data;
 };
+
+export const fetchTopCourses = async (): Promise<ApiResponse> => {
+  const response = await adminAxiosInstance.get(`/api/courses/topCourses`);
+  return response.data;
+};

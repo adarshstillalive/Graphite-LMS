@@ -5,6 +5,7 @@ interface AdminInstructorRepository {
   fetchInstructorRequests(): Promise<InstructorRequest[]>;
   approveRequest(id: string, userId: string): Promise<void>;
   instructorAction(id: string): Promise<IMongoInstructor>;
+  fetchTopInstructors(): Promise<IMongoInstructor[]>;
 }
 
 export default AdminInstructorRepository;
