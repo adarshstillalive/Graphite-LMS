@@ -1,11 +1,15 @@
+import mongoose from 'mongoose';
 import { IUserProfileUpdationFormData } from '../../../../application/useCases/instructor/instructorProfileUseCases.js';
+import { InitialChatData } from '../../../../application/useCases/user/userProfileUseCases.js';
 import UserProfileRepository from '../../../../domain/repositories/user/UserProfileRepository.js';
+import ChatModel from '../models/ChatModel.js';
 import CourseModel, { IMongoCourse } from '../models/CourseModel.js';
 import CourseProgressModel, {
   IMongoCourseProgress,
 } from '../models/CourseProgress.js';
 import UserModel, { IMongoUser } from '../models/UserModel.js';
 import WalletModel, { IMongoWallet } from '../models/Wallet.js';
+import MessageModel, { IMongoMessage } from '../models/MessageModel.js';
 
 class MongoUserProfileRepository implements UserProfileRepository {
   async fetchUserById(userId: string): Promise<IMongoUser> {
@@ -308,6 +312,103 @@ class MongoUserProfileRepository implements UserProfileRepository {
     } catch (error) {
       console.error('Error Fetching progress', error);
       throw new Error('Mongo error: Fetching progress');
+    }
+  }
+
+  async fetchInitialChatData(userId: string): Promise<InitialChatData> {
+    try {
+      const instructors = await UserModel.aggregate([
+        {
+          $match: { _id: new mongoose.Types.ObjectId(userId) },
+        },
+        {
+          $lookup: {
+            from: 'courses',
+            localField: 'purchasedCourses',
+            foreignField: '_id',
+            as: 'purchased',
+          },
+        },
+        {
+          $unwind: '$purchased',
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'purchased.instructorId',
+            foreignField: '_id',
+            as: 'instructorUserDetails',
+          },
+        },
+        {
+          $unwind: '$instructorUserDetails',
+        },
+        {
+          $lookup: {
+            from: 'instructors',
+            localField: 'instructorUserDetails.instructorId',
+            foreignField: '_id',
+            as: 'userDetails',
+          },
+        },
+        {
+          $unwind: '$userDetails',
+        },
+        {
+          $project: {
+            _id: '$instructorUserDetails._id',
+            firstName: '$instructorUserDetails.firstName',
+            lastName: '$instructorUserDetails.lastName',
+            profilePicture: '$instructorUserDetails.profilePicture',
+            instructorId: '$userDetails',
+          },
+        },
+      ]);
+
+      const chatList = await ChatModel.find({ userId }).populate({
+        path: 'instructorId',
+        populate: { path: 'userId' },
+      });
+
+      const uniqueInstructors = new Map<string, (typeof instructors)[0]>();
+
+      instructors.forEach((instructor) => {
+        if (!uniqueInstructors.has(instructor._id.toString())) {
+          uniqueInstructors.set(instructor._id.toString(), instructor);
+        }
+      });
+
+      const result: InitialChatData = {
+        instructors: Array.from(uniqueInstructors.values()),
+        chatList,
+      };
+
+      return result;
+    } catch (error) {
+      console.error('Error Fetching initial chat data', error);
+      throw new Error('Mongo error: Fetching initial chat data');
+    }
+  }
+
+  async setInstructorChat(userId: string, instructorId: string): Promise<void> {
+    try {
+      const chat = await ChatModel.findOne({ userId, instructorId });
+      if (!chat) {
+        await ChatModel.create({ userId, instructorId });
+      }
+    } catch (error) {
+      console.error('Error setting chat', error);
+      throw new Error('Mongo error: Setting chat');
+    }
+  }
+
+  async fetchUserChat(chatId: string): Promise<IMongoMessage[]> {
+    try {
+      const chat = await MessageModel.find({ chatId });
+      return chat;
+    } catch (error) {
+      console.error('Error setting chat', error);
+      throw new Error('Mongo error: Setting chat');
     }
   }
 }

@@ -8,7 +8,7 @@ const instructorPaymentUseCase = new InstructorPaymentUseCase(
 );
 
 cron.schedule('* * * * *', async () => {
-  console.log('Running instructor payment processing job...');
+  // console.log('Running instructor payment processing job...');
   try {
     const orders = await instructorPaymentUseCase.fetchValidOrders();
     console.log(`Found ${orders.length} valid orders for processing.`);

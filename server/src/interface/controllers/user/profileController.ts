@@ -227,6 +227,50 @@ const fetchProgress = async (req: Request, res: Response) => {
   }
 };
 
+const fetchInitialChatData = async (req: Request, res: Response) => {
+  try {
+    const userId = String(req.user?._id);
+    if (!userId) {
+      throw new Error('Server error');
+    }
+    const result = await userProfileUseCases.fetchInitialChatData(userId);
+    res
+      .status(200)
+      .json(createResponse(true, 'Initial data fetching successfull', result));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(400).json(createResponse(false, error?.message));
+  }
+};
+
+const setInstructorChat = async (req: Request, res: Response) => {
+  try {
+    const userId = String(req.user?._id);
+    if (!userId) {
+      throw new Error('Server error');
+    }
+    const { instructorId } = req.body;
+    await userProfileUseCases.setInstructorChat(userId, instructorId);
+    res.status(200).json(createResponse(true, 'Chat creation successfull'));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(400).json(createResponse(false, error?.message));
+  }
+};
+
+const fetchUserChat = async (req: Request, res: Response) => {
+  try {
+    const { chatId } = req.params;
+    const messages = await userProfileUseCases.fetchUserChat(chatId);
+    res
+      .status(200)
+      .json(createResponse(true, 'Message fetching successfull', messages));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(400).json(createResponse(false, error?.message));
+  }
+};
+
 export default {
   updateProfileData,
   updateUserProfilePicture,
@@ -239,4 +283,7 @@ export default {
   updateCourseProgress,
   fetchWallet,
   fetchProgress,
+  fetchInitialChatData,
+  setInstructorChat,
+  fetchUserChat,
 };

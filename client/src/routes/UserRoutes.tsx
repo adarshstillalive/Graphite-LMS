@@ -10,6 +10,7 @@ import OrderDetail from '@/pages/user/OrderDetail';
 import PurchasedCourses from '@/pages/user/PurchasedCourses';
 import Wallet from '@/pages/user/Wallet';
 import commonUserRoutes from './commonUserRoutes';
+import Chat from '@/pages/user/Chat';
 
 const userRoutes = [
   {
@@ -60,6 +61,10 @@ const userRoutes = [
       {
         path: 'wallet',
         element: <Wallet />,
+      },
+      {
+        path: 'chat',
+        element: <Chat />,
       },
     ],
   },

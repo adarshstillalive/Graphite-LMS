@@ -111,10 +111,10 @@ class Course implements ICourse {
     public isApproved?: boolean,
     public isPublished?: boolean,
     public rating?: number,
-    public reviews?: string[],
     public welcomeMessage?: string,
     public courseCompletionMessage?: string,
     public chapters?: IChapter[],
+    public reviews?: string[],
     public createdAt?: Date,
     public updatedAt?: Date,
   ) {}

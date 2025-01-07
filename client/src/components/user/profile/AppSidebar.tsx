@@ -12,10 +12,10 @@ import {
 } from '@/components/ui/sidebar';
 import {
   Heart,
-  Inbox,
   Key,
   Library,
   Logs,
+  MessageSquareText,
   Search,
   Settings,
   ShoppingCart,
@@ -57,9 +57,9 @@ const items = [
     icon: Wallet,
   },
   {
-    title: 'Inbox',
-    url: '#',
-    icon: Inbox,
+    title: 'Chat',
+    url: '/profile/chat',
+    icon: MessageSquareText,
   },
   {
     title: 'Search',

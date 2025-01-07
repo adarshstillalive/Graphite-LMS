@@ -1,6 +1,8 @@
 import { IUserProfileUpdationFormData } from '../../../application/useCases/instructor/instructorProfileUseCases.js';
+import { InitialChatData } from '../../../application/useCases/user/userProfileUseCases.js';
 import { IMongoCourse } from '../../../infrastructure/databases/mongoDB/models/CourseModel.js';
 import { IMongoCourseProgress } from '../../../infrastructure/databases/mongoDB/models/CourseProgress.js';
+import { IMongoMessage } from '../../../infrastructure/databases/mongoDB/models/MessageModel.js';
 import { IMongoUser } from '../../../infrastructure/databases/mongoDB/models/UserModel.js';
 import { IMongoWallet } from '../../../infrastructure/databases/mongoDB/models/Wallet.js';
 
@@ -30,6 +32,9 @@ interface UserProfileRepository {
     userId: string,
     courseId: string,
   ): Promise<IMongoCourseProgress>;
+  fetchInitialChatData(userId: string): Promise<InitialChatData>;
+  setInstructorChat(userId: string, instructorId: string): Promise<void>;
+  fetchUserChat(chatId: string): Promise<IMongoMessage[]>;
 }
 
 export default UserProfileRepository;

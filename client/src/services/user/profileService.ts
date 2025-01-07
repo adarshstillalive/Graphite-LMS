@@ -109,3 +109,26 @@ export const fetchProgressApi = async (
   );
   return response.data;
 };
+
+export const fetchInitialChatData = async (): Promise<ApiResponse> => {
+  const response = await userAxiosInstance.get('/api/profile/chat');
+  return response.data;
+};
+
+export const setInstructorChat = async (
+  instructorId: string
+): Promise<ApiResponse> => {
+  const response = await userAxiosInstance.post('/api/profile/chat', {
+    instructorId,
+  });
+  return response.data;
+};
+
+export const fetchUserMessage = async (
+  chatId: string
+): Promise<ApiResponse> => {
+  const response = await userAxiosInstance.get(
+    `/api/profile/chat/message/${chatId}`
+  );
+  return response.data;
+};

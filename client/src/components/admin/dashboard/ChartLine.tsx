@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { LineChart, CartesianGrid, Line, XAxis } from 'recharts';
+import { BarChart, CartesianGrid, Bar, XAxis, YAxis } from 'recharts';
 import {
   Card,
   CardContent,
@@ -109,23 +109,26 @@ export function ChartLine() {
         <ChartContainer
           config={{ desktop: { label: 'Orders', color: 'black' } }}
         >
-          <LineChart data={chartData} margin={{ left: 12, right: 12 }}>
-            <CartesianGrid vertical={false} />
+          <BarChart
+            data={chartData}
+            margin={{ top: 20, right: 12, left: 12, bottom: 0 }}
+          >
+            <CartesianGrid vertical={false} strokeDasharray="3 3" />
             <XAxis
               dataKey="label"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
             />
+            <YAxis tickLine={false} axisLine={false} allowDecimals={false} />
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-            <Line
+            <Bar
               dataKey="value"
-              type="monotone"
-              stroke="black"
-              strokeWidth={2}
-              dot={false}
+              fill="black"
+              radius={[4, 4, 0, 0]}
+              barSize={60}
             />
-          </LineChart>
+          </BarChart>
         </ChartContainer>
         <CardFooter className="flex-col items-start gap-2 text-sm">
           <div className="flex gap-2 font-medium leading-none">

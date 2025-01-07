@@ -79,6 +79,21 @@ userRoute.get(
   userAuthMiddleware.authorization,
   profileController.fetchProgress,
 );
+userRoute.get(
+  '/api/profile/chat',
+  userAuthMiddleware.authorization,
+  profileController.fetchInitialChatData,
+);
+userRoute.post(
+  '/api/profile/chat',
+  userAuthMiddleware.authorization,
+  profileController.setInstructorChat,
+);
+userRoute.get(
+  '/api/profile/chat/message/:chatId',
+  userAuthMiddleware.authorization,
+  profileController.fetchUserChat,
+);
 
 // Courses
 

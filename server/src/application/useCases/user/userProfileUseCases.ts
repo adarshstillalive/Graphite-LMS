@@ -4,11 +4,18 @@ import UserUploadService from '../../../infrastructure/cloudinary/userUploadServ
 import { IUserProfileUpdationFormData } from '../instructor/instructorProfileUseCases.js';
 import hashPassword, { comparePassword } from '../../../utils/hashPassword.js';
 import UserAuthRepository from '../../../domain/repositories/UserAuthRepository.js';
+import { IMongoUser } from '../../../infrastructure/databases/mongoDB/models/UserModel.js';
+import { IMongoChat } from '../../../infrastructure/databases/mongoDB/models/ChatModel.js';
 
 export interface ChangePasswordCredentials {
   currentPassword: string;
   password: string;
   confirmPassword: string;
+}
+
+export interface InitialChatData {
+  instructors: IMongoUser[];
+  chatList: IMongoChat[];
 }
 
 class UserProfileUseCases {
@@ -188,6 +195,42 @@ class UserProfileUseCases {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log('Usecase: Error in fetching progress', error);
+
+      throw new Error(error);
+    }
+  }
+
+  async fetchInitialChatData(userId: string) {
+    try {
+      return await this.userProfileRepository.fetchInitialChatData(userId);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Usecase: Error in fetching initial data', error);
+
+      throw new Error(error);
+    }
+  }
+
+  async setInstructorChat(userId: string, instructorId: string) {
+    try {
+      return await this.userProfileRepository.setInstructorChat(
+        userId,
+        instructorId,
+      );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Usecase: Error in Adding chat', error);
+
+      throw new Error(error);
+    }
+  }
+
+  async fetchUserChat(chatId: string) {
+    try {
+      return await this.userProfileRepository.fetchUserChat(chatId);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Usecase: Error in fetching messages', error);
 
       throw new Error(error);
     }
