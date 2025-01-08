@@ -11,6 +11,7 @@ import { UploadProvider } from './context/uploadContext';
 import { SheetComponent } from './components/common/SheetComponent';
 import { NotificationProvider } from './context/notificationContext';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
+import { WebSocketProvider } from './context/webSocketContext';
 
 const persistor = persistStore(store);
 
@@ -21,16 +22,19 @@ function App() {
     <PersistGate persistor={persistor}>
       <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
         <Provider store={store}>
-          <PayPalScriptProvider
-            options={{ clientId: import.meta.env.VITE_PAYPAL_CLIENT_ID }}
-          >
-            <NotificationProvider>
-              <UploadProvider>
-                <SheetComponent />
-                <RouterProvider router={appRoute} />
-              </UploadProvider>
-            </NotificationProvider>
-          </PayPalScriptProvider>
+          <WebSocketProvider>
+            <PayPalScriptProvider
+              options={{ clientId: import.meta.env.VITE_PAYPAL_CLIENT_ID }}
+            >
+              <NotificationProvider>
+                <UploadProvider>
+                  <SheetComponent />
+
+                  <RouterProvider router={appRoute} />
+                </UploadProvider>
+              </NotificationProvider>
+            </PayPalScriptProvider>
+          </WebSocketProvider>
           <Toaster />
         </Provider>
       </GoogleOAuthProvider>

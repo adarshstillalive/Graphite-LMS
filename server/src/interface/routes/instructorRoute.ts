@@ -31,6 +31,11 @@ instructorRoute.post(
   userAuthMiddleware.authorization,
   profileController.updateInstructorProfilePicture,
 );
+instructorRoute.get(
+  '/api/profile/chat',
+  userAuthMiddleware.authorization,
+  profileController.fetchInitialChatData,
+);
 
 // Course
 

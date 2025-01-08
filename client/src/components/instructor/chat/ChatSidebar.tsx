@@ -2,32 +2,18 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { UserPlus } from 'lucide-react';
 import { IChat } from '@/interfaces/Chat';
-import { IUserPopulated } from '@/interfaces/User';
 
 interface SidebarProps {
-  instructors: IUserPopulated[];
   chats: IChat[];
   onSelectChat: (chat: IChat) => void;
-  onSelectInstructor: (instructorId: string) => void;
   selectedChatId: string | null;
   online: string[];
 }
 
 const ChatSidebar: React.FC<SidebarProps> = ({
-  instructors,
   chats,
   onSelectChat,
-  onSelectInstructor,
   selectedChatId,
   online,
 }) => {
@@ -35,7 +21,7 @@ const ChatSidebar: React.FC<SidebarProps> = ({
     <div className="w-64 border-r bg-gray-300 border-gray-200">
       <div className="p-4 border-b border-gray-200 flex justify-between">
         <h2 className="text-lg font-semibold">Chats</h2>
-        <DropdownMenu>
+        {/* <DropdownMenu>
           <DropdownMenuTrigger className="focus: outline-none">
             <UserPlus />
           </DropdownMenuTrigger>
@@ -46,10 +32,7 @@ const ChatSidebar: React.FC<SidebarProps> = ({
               <DropdownMenuItem
                 className="h-12 cursor-pointer"
                 key={instructor._id}
-                onClick={() =>
-                  instructor.instructorId._id &&
-                  onSelectInstructor(instructor.instructorId._id)
-                }
+                onClick={() => onSelectInstructor(instructor._id)}
               >
                 <Avatar className="h-8 w-8 mr-2">
                   <AvatarImage
@@ -68,7 +51,7 @@ const ChatSidebar: React.FC<SidebarProps> = ({
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu> */}
       </div>
       <ScrollArea className="h-[calc(80vh-60px)]">
         {chats.length > 0 &&
@@ -83,21 +66,18 @@ const ChatSidebar: React.FC<SidebarProps> = ({
             >
               <Avatar className="h-8 w-8 mr-2">
                 <AvatarImage
-                  src={contact?.instructorId?.profilePicture}
-                  alt={contact?.instructorId?.userId.firstName}
+                  src={contact?.userId?.profilePicture}
+                  alt={contact?.userId.firstName}
                 />
                 <AvatarFallback>
-                  {contact?.instructorId?.userId?.firstName &&
-                    contact?.instructorId?.userId?.firstName[0]}
+                  {contact?.userId?.firstName && contact?.userId?.firstName[0]}
                 </AvatarFallback>
               </Avatar>
               <div className="flex flex-col items-start">
                 <span className="font-medium">
-                  {contact?.instructorId?.userId?.firstName +
-                    ' ' +
-                    contact?.instructorId?.userId?.lastName}
+                  {contact?.userId?.firstName + ' ' + contact?.userId?.lastName}
                 </span>
-                {online.some((c) => c === contact?.instructorId?._id) && (
+                {online.some((c) => c === contact?.userId?._id) && (
                   <span className="text-green-500">Online</span>
                 )}
               </div>

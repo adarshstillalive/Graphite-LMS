@@ -37,3 +37,8 @@ export const updateProfileData = async (
   });
   return response.data;
 };
+
+export const fetchInitialChatData = async (): Promise<ApiResponse> => {
+  const response = await instructorAxiosInstance.get('/api/profile/chat');
+  return response.data;
+};

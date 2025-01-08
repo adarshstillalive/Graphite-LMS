@@ -12,6 +12,7 @@ import Courses from '@/pages/instructor/courses/Courses';
 import CreateCourse from '@/pages/instructor/courses/CreateCourse';
 import CourseDetail from '@/pages/instructor/courses/CourseDetail';
 import EditCourse from '@/pages/instructor/courses/EditCourse';
+import Chat from '@/pages/instructor/Chat';
 
 const instructorRoutes = [
   {
@@ -42,6 +43,7 @@ const instructorRoutes = [
       { path: 'courses/edit/:id', element: <EditCourse /> },
       { path: 'courses/courseDetail/:id', element: <CourseDetail /> },
       { path: 'createCourse', element: <CreateCourse /> },
+      { path: 'chat', element: <Chat /> },
     ],
   },
 ];

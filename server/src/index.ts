@@ -41,19 +41,34 @@ app.use(
   }),
 );
 
-const rooms = {};
 const mongoChatRepository = new MongoChatRepository();
+const users = new Map();
+const socketToUser = new Map();
 io.on('connection', (socket) => {
-  console.log(`User connected: ${socket.id}`);
+  // console.log(`User connected: ${socket.id}`);
+
+  socket.on('userConnected', (userId) => {
+    if (!users.has(userId)) {
+      users.set(userId, new Set());
+    }
+    users.get(userId).add(socket.id);
+    socketToUser.set(socket.id, userId);
+
+    console.log(
+      `User ${userId} connected. Current online users:`,
+      Array.from(users.keys()),
+    );
+    io.emit('updateOnlineUsers', Array.from(users.keys()));
+  });
 
   socket.on('joinRoom', ({ roomId, userName }) => {
     socket.join(roomId);
-    console.log(`${userName} joined the room: ${roomId}`);
+    // console.log(`${userName} joined the room: ${roomId}`);
     socket.to(roomId).emit('User joined', { userName });
   });
 
   socket.on('sendMessage', async ({ roomId, userName, message }) => {
-    console.log(`Message from ${userName} in room ${roomId}: ${message}`);
+    // console.log(`Message from ${userName} in room ${roomId}: ${message}`);
 
     // Save message to DB
     const savedMessage = await mongoChatRepository.saveMessageToDb(
@@ -62,17 +77,8 @@ io.on('connection', (socket) => {
       message.text,
     );
 
-    // Create the message payload to send to the recipient
-    const payload = {
-      userName,
-      message: savedMessage.text,
-      image: savedMessage.image,
-      timeStamp: new Date(),
-      messageId: savedMessage._id,
-    };
-
     // Emit the message to the room (i.e., the other user)
-    io.to(roomId).emit('receiveMessage', payload);
+    io.to(roomId).emit('receiveMessage', savedMessage);
 
     // Optionally: Emit a confirmation to the sender
     socket.emit('messageSent', {
@@ -82,7 +88,17 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    console.log(`User disconnected: ${socket.id}`);
+    const userId = socketToUser.get(socket.id);
+    if (userId) {
+      const socketSet = users.get(userId);
+      socketSet.delete(socket.id);
+      if (socketSet.size === 0) {
+        users.delete(userId);
+        console.log(`User ${userId} went offline.`);
+      }
+      socketToUser.delete(socket.id);
+    }
+    io.emit('updateOnlineUsers', Array.from(users.keys()));
   });
 });
 

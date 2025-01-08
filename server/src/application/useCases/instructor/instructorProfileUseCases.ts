@@ -80,6 +80,19 @@ class InstructorProfileUseCases {
       throw new Error(error);
     }
   }
+
+  async fetchInitialChatData(instructorId: string) {
+    try {
+      return await this.instructorProfileRepository.fetchInitialChatData(
+        instructorId,
+      );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Usecase: Error in fetching initial data', error);
+
+      throw new Error(error);
+    }
+  }
 }
 
 export default InstructorProfileUseCases;

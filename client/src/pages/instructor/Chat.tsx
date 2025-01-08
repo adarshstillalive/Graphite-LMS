@@ -1,16 +1,13 @@
-import ChatSection from '@/components/user/profile/ChatSection';
-import ChatSidebar from '@/components/user/profile/ChatSidebar';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { IMessage } from '@/interfaces/Message';
 import { IChat } from '@/interfaces/Chat';
-import {
-  fetchInitialChatData,
-  fetchUserMessage,
-  setInstructorChat,
-} from '@/services/user/profileService';
-import { IUserPopulated } from '@/interfaces/User';
+import { IUser } from '@/interfaces/User';
+import { fetchInitialChatData } from '@/services/instructor/profileService';
+import ChatSidebar from '@/components/instructor/chat/ChatSidebar';
+import ChatSection from '@/components/instructor/chat/ChatSection';
+import { fetchUserMessage } from '@/services/user/profileService';
 import { useToast } from '@/hooks/use-toast';
 import { useWebSocket } from '@/context/webSocketContext';
 
@@ -20,21 +17,18 @@ const Chat: React.FC = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);
   const [selectedChat, setSelectedChat] = useState<IChat | null>(null);
   const [messages, setMessages] = useState<IMessage[]>([]);
-  const [authorizedInstructors, setAuthorizedInstructors] = useState<
-    IUserPopulated[]
-  >([]);
   const [chatList, setChatList] = useState<IChat[]>([]);
-  const [instructor, setInstructor] = useState<IUserPopulated | null>(null);
+  const [user, setUser] = useState<IUser | null>(null);
   const [online, setOnline] = useState<string[]>([]);
   const [isConnected, setIsConnected] = useState(false);
 
   // Initialize socket connection
   useEffect(() => {
-    if (!socket || !currentUser?._id) return;
+    if (!socket || !currentUser?.instructorId) return;
 
     const handleConnect = () => {
       setIsConnected(true);
-      socket.emit('userConnected', currentUser._id);
+      socket.emit('userConnected', currentUser.instructorId);
     };
 
     const handleDisconnect = () => {
@@ -44,7 +38,7 @@ const Chat: React.FC = () => {
     socket.on('connect', handleConnect);
     socket.on('disconnect', handleDisconnect);
 
-    // If already connected, emit userConnected
+    // If socket is already connected, emit userConnected
     if (socket.connected) {
       handleConnect();
     }
@@ -53,7 +47,7 @@ const Chat: React.FC = () => {
       socket.off('connect', handleConnect);
       socket.off('disconnect', handleDisconnect);
     };
-  }, [socket, currentUser?._id]);
+  }, [socket, currentUser?.instructorId]);
 
   // Handle chat selection
   const handleSelectChat = async (chat: IChat) => {
@@ -63,11 +57,7 @@ const Chat: React.FC = () => {
     try {
       const response = await fetchUserMessage(chat._id);
       setMessages(response.data);
-
-      const matchedInstructor = authorizedInstructors.find(
-        (ins) => ins.instructorId._id === chat.instructorId._id
-      );
-      setInstructor(matchedInstructor || null);
+      setUser(chat.userId || null);
 
       // Join the chat room
       socket.emit('joinRoom', {
@@ -83,13 +73,12 @@ const Chat: React.FC = () => {
     }
   };
 
-  // Fetch initial data
+  // Fetch initial chat data
   useEffect(() => {
     const fetchInitials = async () => {
       try {
         const response = await fetchInitialChatData();
-        setAuthorizedInstructors(response.data.instructors);
-        setChatList(response.data.chatList);
+        setChatList(response.data);
       } catch (error) {
         toast({
           variant: 'destructive',
@@ -123,43 +112,12 @@ const Chat: React.FC = () => {
     };
   }, [socket, isConnected, selectedChat]);
 
-  // Handle instructor selection
-  const handleSelectInstructor = async (instructorId: string) => {
-    if (!isConnected) return;
-
-    try {
-      const matchedInstructor = authorizedInstructors.find(
-        (ins) => ins.instructorId._id === instructorId
-      );
-      console.log(matchedInstructor, 'matched');
-
-      if (matchedInstructor) {
-        await setInstructorChat(instructorId);
-        setInstructor(matchedInstructor);
-
-        // Refetch chat list after setting up new instructor chat
-        const response = await fetchInitialChatData();
-        setChatList(response.data.chatList);
-        const selected = response.data.chatList.find(
-          (chat: IChat) => chat.instructorId._id === instructorId
-        );
-        handleSelectChat(selected);
-      }
-    } catch (error) {
-      console.error('Error selecting instructor:', error);
-      toast({
-        variant: 'destructive',
-        description: 'Failed to connect with instructor',
-      });
-    }
-  };
-
   const handleSendMessage = (content: string) => {
     if (!selectedChat || !currentUser || !socket || !isConnected) return;
 
     const newMessage: IMessage = {
       chatId: selectedChat._id,
-      senderId: currentUser._id,
+      senderId: currentUser.instructorId,
       text: content,
     };
 
@@ -173,18 +131,16 @@ const Chat: React.FC = () => {
   return (
     <div className="flex border -mb-24">
       <ChatSidebar
-        instructors={authorizedInstructors}
         chats={chatList}
         onSelectChat={handleSelectChat}
-        onSelectInstructor={handleSelectInstructor}
         selectedChatId={selectedChat?._id || null}
         online={online}
       />
-      {selectedChat && instructor && currentUser ? (
+      {selectedChat && user && currentUser ? (
         <div className="flex-1">
           <ChatSection
             currentUser={currentUser}
-            instructor={instructor}
+            user={user}
             messages={messages}
             onSendMessage={handleSendMessage}
           />

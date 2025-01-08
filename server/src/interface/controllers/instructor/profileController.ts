@@ -84,8 +84,26 @@ const updateInstructorProfilePicture = async (req: Request, res: Response) => {
   }
 };
 
+const fetchInitialChatData = async (req: Request, res: Response) => {
+  try {
+    const instructorId = String(req.user?.instructorId);
+    if (!instructorId) {
+      throw new Error('Server error');
+    }
+    const result =
+      await instructorProfileUseCases.fetchInitialChatData(instructorId);
+    res
+      .status(200)
+      .json(createResponse(true, 'Initial data fetching successfull', result));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res.status(400).json(createResponse(false, error?.message));
+  }
+};
+
 export default {
   instructorDetails,
   updateInstructorProfilePicture,
   updateProfileData,
+  fetchInitialChatData,
 };

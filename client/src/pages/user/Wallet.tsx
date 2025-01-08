@@ -32,7 +32,7 @@ const Wallet = () => {
           <div className="flex justify-between items-center bg-gray-100 p-4 rounded-lg mb-6">
             <span className="text-lg text-gray-600">Balance</span>
             <span className="text-2xl font-bold text-gray-600">
-              ₹{wallet.balance}
+              ₹{wallet.balance.toFixed(2)}
             </span>
           </div>
 

@@ -7,6 +7,7 @@ import InstructorModel, {
   IMongoInstructor,
 } from '../models/InstructorModel.js';
 import UserModel from '../models/UserModel.js';
+import ChatModel, { IMongoChat } from '../models/ChatModel.js';
 
 class MongoInstructorProfileRepository implements InstructorProfieRepository {
   async fetchInstructor(userId: string): Promise<IMongoInstructor> {
@@ -70,6 +71,19 @@ class MongoInstructorProfileRepository implements InstructorProfieRepository {
       console.log('Mongo Error: Updating profile', error);
 
       throw new Error(error);
+    }
+  }
+
+  async fetchInitialChatData(instructorId: string): Promise<IMongoChat[]> {
+    try {
+      const chatList = await ChatModel.find({ instructorId }).populate(
+        'userId',
+      );
+
+      return chatList;
+    } catch (error) {
+      console.error('Error Fetching initial chat data', error);
+      throw new Error('Mongo error: Fetching initial chat data');
     }
   }
 }
