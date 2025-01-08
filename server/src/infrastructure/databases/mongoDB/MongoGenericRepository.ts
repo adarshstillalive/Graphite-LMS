@@ -208,6 +208,41 @@ class MongoGenericRepository<T> {
       limit,
     };
   }
+
+  async fetchPaginatedCourseSortedByRatingWithPopulatedUserIdForHomePage(
+    page: number,
+    limit: number,
+    filter: object = {},
+  ): Promise<PaginatedResult<T>> {
+    const skip = (page - 1) * limit;
+    const data = await this.model
+      .find({
+        ...filter,
+        isApproved: true,
+        isRejected: false,
+        isPublished: true,
+      })
+      .select('-chapters.episodes.content')
+      .sort({ rating: -1 })
+      .skip(skip)
+      .limit(limit)
+      .collation({ locale: 'en', strength: 2 })
+      .populate('instructorId')
+      .populate('category');
+
+    const total = await this.model.countDocuments({
+      ...filter,
+      isApproved: true,
+      isRejected: false,
+      isPublished: true,
+    });
+    return {
+      data,
+      total,
+      page,
+      limit,
+    };
+  }
   async getPaginatedCoursesWithPopulatedUserIdForProductPage(
     page: number,
     limit: number,

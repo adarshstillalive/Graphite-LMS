@@ -16,8 +16,6 @@ import {
   Library,
   Logs,
   MessageSquareText,
-  Search,
-  Settings,
   ShoppingCart,
   User,
   Wallet,
@@ -62,19 +60,9 @@ const items = [
     icon: MessageSquareText,
   },
   {
-    title: 'Search',
-    url: '#',
-    icon: Search,
-  },
-  {
     title: 'Change password',
     url: '/profile/changePassword',
     icon: Key,
-  },
-  {
-    title: 'Settings',
-    url: '#',
-    icon: Settings,
   },
 ];
 

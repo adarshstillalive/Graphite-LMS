@@ -1,6 +1,6 @@
 import { GoogleLogin } from '@react-oauth/google';
-import { FaFacebook } from 'react-icons/fa';
-import { FaXTwitter } from 'react-icons/fa6';
+// import { FaFacebook } from 'react-icons/fa';
+// import { FaXTwitter } from 'react-icons/fa6';
 import { googleAuth } from '../../../services/user/loginService';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -50,7 +50,7 @@ const SocialAuth = () => {
             </div>
           )} */}
         </div>
-        <button
+        {/* <button
           className="flex items-center justify-center"
           aria-label="Login with Facebook"
         >
@@ -61,7 +61,7 @@ const SocialAuth = () => {
           aria-label="Login with Twitter"
         >
           <FaXTwitter className="text-2xl transition-transform duration-200 hover:scale-125" />
-        </button>
+        </button> */}
       </div>
     </div>
   );

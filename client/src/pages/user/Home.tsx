@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import Categories from '@/components/user/home/Categories';
 import FeaturedCourses from '@/components/user/home/FeaturesCourses';
 import Hero from '@/components/user/home/Hero';
+import HighRatedCourse from '@/components/user/home/HighRatedCourse';
 import Testimonials from '@/components/user/home/Testimonials';
 import { ICategory } from '@/services/admin/courseService';
 import { useState } from 'react';
@@ -35,6 +36,7 @@ const Home = () => {
       )}
       <Hero />
       <FeaturedCourses />
+      <HighRatedCourse />
       <Categories passCategories={(c: ICategory[]) => setCategories(c)} />
       <Testimonials />
     </div>

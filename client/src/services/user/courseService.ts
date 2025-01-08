@@ -32,6 +32,23 @@ export const fetchCoursesForHomePage = async (
   return response.data;
 };
 
+export const fetchHighRatedCoursesForHomePage = async (
+  currentPage: number = 0
+): Promise<ApiResponse> => {
+  const queryParams = new URLSearchParams();
+  if (currentPage > 0) {
+    queryParams.append('page', currentPage.toString());
+  }
+
+  queryParams.append('filter', currentPage.toString());
+
+  const queryString = queryParams.toString();
+  const response = await userAxiosInstance.get(
+    `/api/courses/rating?${queryString}`
+  );
+  return response.data;
+};
+
 export const fetchCoursesForProductsPage = async (
   queryString1: string | undefined,
   sort: SortType,

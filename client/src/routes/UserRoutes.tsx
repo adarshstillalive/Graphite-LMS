@@ -11,11 +11,17 @@ import PurchasedCourses from '@/pages/user/PurchasedCourses';
 import Wallet from '@/pages/user/Wallet';
 import commonUserRoutes from './commonUserRoutes';
 import Chat from '@/pages/user/Chat';
+import UserInstructorProtectedRoute from './protectedRoutes/UserInstructorProtectedRoute';
 
 const userRoutes = [
   {
     path: '',
-    element: <UserLayout />,
+    element: (
+      <UserInstructorProtectedRoute>
+        {' '}
+        <UserLayout />
+      </UserInstructorProtectedRoute>
+    ),
     children: commonUserRoutes,
   },
   {

@@ -20,8 +20,13 @@ const CourseCardWide: React.FC<CourseCardProps> = ({ course }) => {
   const { toast } = useToast();
   const { currentUser } = useSelector((state: RootState) => state.user);
 
-  const isPurchased =
-    currentUser?.purchasedCourses?.some((c) => c._id === course._id) || false;
+  const isPurchased = currentUser?.purchasedCourses?.some(
+    (c) => c._id === course._id
+  );
+  const isCreated = currentUser?._id === course.instructorId._id;
+
+  const shouldShowWishlistButton = !isPurchased && !isCreated;
+  const shouldShowPrice = !isPurchased && !isCreated;
 
   const handleWishlistToggle = async (courseId: string) => {
     try {
@@ -56,7 +61,7 @@ const CourseCardWide: React.FC<CourseCardProps> = ({ course }) => {
         alt={course.title}
         className=" object-cover relative"
       />
-      {!isPurchased && (
+      {shouldShowWishlistButton && (
         <button
           className="absolute top-6 left-2 p-2 bg-black bg-opacity-50 rounded-full hover:bg-opacity-70 transition"
           onClick={(e) => {
@@ -85,7 +90,7 @@ const CourseCardWide: React.FC<CourseCardProps> = ({ course }) => {
                 course.instructorId.lastName}
             </p>
           </div>
-          {!isPurchased && (
+          {shouldShowPrice && (
             <div className="flex flex-col pl-8 items-end">
               <p className="font-semibold text-lg">
                 ₹{course.price.toFixed(2)}

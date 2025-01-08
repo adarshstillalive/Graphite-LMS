@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { IPopulatedCourseCommon } from '@/interfaces/Course';
-import { fetchCoursesForHomePage } from '@/services/user/courseService';
+import { fetchHighRatedCoursesForHomePage } from '@/services/user/courseService';
 import { useEffect, useState } from 'react';
 import { CourseCardHome } from './CourseCardHome';
 
-const FeaturedCourses = () => {
+const HighRatedCourse = () => {
   const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -14,7 +14,7 @@ const FeaturedCourses = () => {
   useEffect(() => {
     const fetchFeaturedCourses = async () => {
       try {
-        const response = await fetchCoursesForHomePage(currentPage);
+        const response = await fetchHighRatedCoursesForHomePage(currentPage);
         const result = response.data;
 
         setCourses(result.data);
@@ -34,9 +34,9 @@ const FeaturedCourses = () => {
     setCurrentPage(page);
   };
   return (
-    <section className="py-16 px-8">
+    <section className="pb-16 px-8">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold mb-8">Featured courses</h2>
+        <h2 className="text-3xl font-bold mb-8">High rated courses</h2>
         <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-6">
           {courses.map((course) => (
             <CourseCardHome key={course._id} course={course} />
@@ -58,4 +58,4 @@ const FeaturedCourses = () => {
   );
 };
 
-export default FeaturedCourses;
+export default HighRatedCourse;

@@ -99,6 +99,10 @@ userRoute.get(
 
 userRoute.get('/api/courses', courseController.fetchPaginatedCourse);
 userRoute.get(
+  '/api/courses/rating',
+  courseController.fetchPaginatedCourseSortedByRating,
+);
+userRoute.get(
   '/api/courses/productpage',
   courseController.fetchPaginatedCourseProductPage,
 );

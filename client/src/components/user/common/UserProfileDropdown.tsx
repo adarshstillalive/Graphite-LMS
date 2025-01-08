@@ -43,12 +43,6 @@ const UserProfileDropdown = () => {
           >
             Profile
           </DropdownMenuItem>
-          <DropdownMenuItem className="text-lg font-light cursor-pointer">
-            Billing
-          </DropdownMenuItem>
-          <DropdownMenuItem className="text-lg font-light cursor-pointer">
-            Settings
-          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>
