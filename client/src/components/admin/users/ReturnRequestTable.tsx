@@ -4,9 +4,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
@@ -29,10 +26,7 @@ interface TableComponentProps {
   onEdit: (request: IPopulatedReturnRequests) => void;
 }
 
-const ReturnRequestTable: React.FC<TableComponentProps> = ({
-  requests,
-  onEdit,
-}) => {
+const ReturnRequestTable: React.FC<TableComponentProps> = ({ requests }) => {
   const navigate = useNavigate();
   return (
     <Table>

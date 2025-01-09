@@ -23,7 +23,8 @@ const CourseCardWide: React.FC<CourseCardProps> = ({ course }) => {
   const isPurchased = currentUser?.purchasedCourses?.some(
     (c) => c._id === course._id
   );
-  const isCreated = currentUser?._id === course.instructorId._id;
+  const isCreated =
+    currentUser?._id === (course.instructorId?._id || course.instructorId);
 
   const shouldShowWishlistButton = !isPurchased && !isCreated;
   const shouldShowPrice = !isPurchased && !isCreated;

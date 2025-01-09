@@ -1,4 +1,3 @@
-import CourseTable from '@/components/admin/course/CourseTable';
 import ReturnRequestTable from '@/components/admin/users/ReturnRequestTable';
 import DataPagination from '@/components/common/DataPagination';
 import SearchAndSort from '@/components/common/SearchAndSort';

@@ -38,24 +38,28 @@ class UserCourseUseCases {
     userId: any | undefined = undefined,
   ) {
     try {
+      const courseData = await this.courseRepository.fetchCourseById(courseId);
       if (userId) {
         const userData = await this.userProfileRepository.fetchUserById(
           String(userId),
         );
+
         if (userData && userData.purchasedCourses) {
           const isPurchased = userData.purchasedCourses.some(
             (course) => String(course._id) === courseId,
           );
+          const isCreated =
+            String(courseData.instructorId._id) === String(userData._id);
 
-          if (isPurchased) {
+          if (isPurchased || isCreated) {
             return await this.courseRepository.fetchPurchasedCourseById(
               courseId,
             );
           }
         }
       }
+      return courseData;
 
-      return await this.courseRepository.fetchCourseById(courseId);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error('Usecase Error: Fetching course', error);

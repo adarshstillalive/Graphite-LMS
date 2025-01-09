@@ -34,7 +34,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ id }) => {
       }
       const isExist =
         currentUser?.cart &&
-        currentUser?.cart.some((item) => item._id === courseId);
+        currentUser?.cart.some((item) => item?._id === courseId);
       if (isExist) {
         await removeFromCart(courseId);
         toast({
@@ -107,19 +107,19 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ id }) => {
               <p>
                 Created by{' '}
                 <Link
-                  to={`/courses/courseDetail/instructorProfile/${course.instructorId._id}`}
+                  to={`/courses/courseDetail/instructorProfile/${course?.instructorId?._id}`}
                 >
                   <span className="font-semibold">
-                    {course.instructorId.firstName}
+                    {course?.instructorId?.firstName}
                   </span>
                 </Link>
               </p>
               <p>
                 <span className="font-light">
-                  {course.category.name} -{' '}
-                  {course.category.subCategory.reduce((acc, curr) => {
-                    if (curr._id === course.subcategory) {
-                      return curr.name;
+                  {course?.category?.name} -{' '}
+                  {course?.category?.subCategory.reduce((acc, curr) => {
+                    if (curr?._id === course?.subcategory) {
+                      return curr?.name;
                     }
                     return acc;
                   }, 'Not found')}
@@ -139,15 +139,15 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ id }) => {
               <div className=" w-full p-12 border-4 border-white bg-gray-900 flex flex-col">
                 <div className="mb-2">
                   <span className="text-2xl text-white font-bold">
-                    ₹{course.price.toFixed(2)}
+                    ₹{course?.price?.toFixed(2)}
                   </span>
                 </div>
                 <Button
                   variant={'outline'}
                   className={`${inputStyle} border-2 mb-2 bg-white`}
-                  onClick={() => handleCart(course._id)}
+                  onClick={() => handleCart(course?._id)}
                 >
-                  {currentUser?.cart?.some((item) => item._id === course._id)
+                  {currentUser?.cart?.some((item) => item?._id === course?._id)
                     ? 'Remove from cart'
                     : 'Add to cart'}
                 </Button>

@@ -237,7 +237,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({
             {/* Expertise Section */}
             <div>
               <FormLabel>Expertise</FormLabel>
-              {form.watch('expertise')?.map((item, index) => (
+              {form.watch('expertise')?.map((_, index) => (
                 <div key={index} className="flex items-center space-x-2 mb-2">
                   <FormField
                     control={form.control}
@@ -272,7 +272,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({
             {/* Qualifications Section */}
             <div>
               <FormLabel>Education</FormLabel>
-              {form.watch('qualifications')?.map((item, index) => (
+              {form.watch('qualifications')?.map((_, index) => (
                 <div key={index} className="flex items-center space-x-2 mb-2">
                   <FormField
                     control={form.control}
@@ -307,7 +307,7 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({
             {/* Social Links Section */}
             <div>
               <FormLabel>Social Links</FormLabel>
-              {form.watch('socialAccounts')?.map((account, index) => (
+              {form.watch('socialAccounts')?.map((_, index) => (
                 <div key={index} className="flex items-center space-x-2 mb-2">
                   <FormField
                     control={form.control}

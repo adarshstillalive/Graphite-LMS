@@ -26,7 +26,7 @@ interface TableComponentProps {
   onEdit: (request: IPopulatedOrder) => void;
 }
 
-const OrderTable: React.FC<TableComponentProps> = ({ orders, onEdit }) => {
+const OrderTable: React.FC<TableComponentProps> = ({ orders }) => {
   const navigate = useNavigate();
   return (
     <Table>

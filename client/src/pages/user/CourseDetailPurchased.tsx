@@ -73,6 +73,7 @@ const CourseDetailPurchased: React.FC<CourseDetailPurchasedProps> = ({
       try {
         if (!id) return;
         const response = await fetchCommonCourse(id, currentUser?._id);
+
         setCourse(response.data);
       } catch (error) {
         console.log(error);
@@ -88,7 +89,11 @@ const CourseDetailPurchased: React.FC<CourseDetailPurchasedProps> = ({
   useEffect(() => {
     const fetchProgress = async () => {
       try {
-        if (!course?._id) return;
+        if (
+          !course?._id ||
+          !currentUser?.purchasedCourses?.some((c) => c._id === course._id)
+        )
+          return;
         const response = await fetchProgressApi(course?._id);
 
         setProgress(response.data);

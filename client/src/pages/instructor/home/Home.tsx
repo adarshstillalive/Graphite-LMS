@@ -19,14 +19,6 @@ const Home = () => {
 
         const fetchedOrders = response.data || [];
 
-        if (!fetchedOrders.length) {
-          toast({
-            variant: 'destructive',
-            description: 'No orders found. Data is currently unavailable.',
-          });
-          return;
-        }
-
         setOrders(fetchedOrders);
       } catch (error) {
         console.error(error);

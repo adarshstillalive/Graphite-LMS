@@ -21,7 +21,7 @@ const TextEditor: React.FC<RichTextEditorProps> = ({
     <div className="rich-text-editor">
       <Editor
         apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
-        onInit={(evt, editor) => (editorRef.current = editor)}
+        onInit={(_, editor) => (editorRef.current = editor)}
         initialValue={initialValue}
         init={{
           height: 500,
