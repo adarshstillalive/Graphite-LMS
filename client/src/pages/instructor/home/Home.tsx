@@ -16,7 +16,6 @@ const Home = () => {
     const fetchOrders = async () => {
       try {
         const response = await fetchInstructorOrders();
-        console.log(response.data);
 
         const fetchedOrders = response.data || [];
 

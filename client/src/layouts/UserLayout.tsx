@@ -34,7 +34,7 @@ export const UserProfileLayout = () => {
       <SidebarProvider>
         <AppSidebar />
         <main className="flex-1">
-          <SidebarTrigger className="fixed opacity-40 hover:opacity-100" />
+          <SidebarTrigger className="fixed top-16 opacity-40 hover:opacity-100" />
           <div className="py-24 px-8">
             <Outlet />
           </div>
