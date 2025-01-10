@@ -29,7 +29,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     credentials: true,
-    origin: process.env.CLIENT_URL,
+    origin: '*',
   },
 });
 const PORT = process.env.PORT || 8080;
@@ -37,7 +37,7 @@ const PORT = process.env.PORT || 8080;
 app.use(
   cors({
     credentials: true,
-    origin: process.env.CLIENT_URL,
+    origin: '*',
   }),
 );
 
