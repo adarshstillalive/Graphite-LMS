@@ -33,6 +33,12 @@ const io = new Server(server, {
   },
 });
 const PORT = process.env.PORT || 8080;
+console.log(
+  'Api ENvvss',
+  process.env.CLOUDINARY_CLOUD_NAME,
+  process.env.CLOUDINARY_API_KEY,
+  process.env.CLOUDINARY_API_SECRET,
+);
 
 app.use(
   cors({
