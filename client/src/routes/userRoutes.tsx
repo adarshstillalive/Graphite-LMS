@@ -18,7 +18,6 @@ const userRoutes = [
     path: '',
     element: (
       <UserInstructorProtectedRoute>
-        {' '}
         <UserLayout />
       </UserInstructorProtectedRoute>
     ),
