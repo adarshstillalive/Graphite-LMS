@@ -1,4 +1,5 @@
 import { UploadedFile } from 'express-fileupload';
+import dotenv from 'dotenv';
 import Course, {
   IChapter,
   ICourse,
@@ -9,6 +10,8 @@ import Course, {
 import CourseRepository from '../../../domain/repositories/instructor/CourseRepository.js';
 import { v2 as cloudinaryV2 } from 'cloudinary';
 import InstructorUploadService from '../../../infrastructure/cloudinary/InstructorUploadService.js';
+
+dotenv.config();
 
 class InstructorCourseUseCases {
   constructor(

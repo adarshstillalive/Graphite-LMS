@@ -1,5 +1,7 @@
 import { OAuth2Client } from 'google-auth-library';
+import dotenv from 'dotenv';
 
+dotenv.config();
 export const signin = async (credential: string) => {
   const client = new OAuth2Client(process.env.OAUTH_CLIENT_ID);
 

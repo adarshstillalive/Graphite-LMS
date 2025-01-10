@@ -1,5 +1,7 @@
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 
+dotenv.config();
 interface Payload {
   email: string;
   role: string;
