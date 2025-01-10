@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IRequestData } from '../../../../application/useCases/user/userOrderUseCases.js';
 import OrderRepository from '../../../../domain/repositories/user/OrderRepository.js';
 import CourseModel from '../models/CourseModel.js';
@@ -56,7 +57,7 @@ class MongoOrderRepository implements OrderRepository {
           'DB Error: User not found or purchasedCourses is missing',
         );
       }
-
+      // @ts-expect-error Not populated
       user.purchasedCourses = [...user.purchasedCourses, ...coursesId];
       user.cart = [];
 
@@ -82,6 +83,7 @@ class MongoOrderRepository implements OrderRepository {
       const progressData = purchasedCourses.map((course) => ({
         userId,
         courseId: course._id,
+        // @ts-expect-error Not populated
         chapters: course.chapters.map((chapter: any) => ({
           chapterId: chapter._id,
           episodes: chapter.episodes.map((episode: any) => ({

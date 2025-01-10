@@ -46,9 +46,11 @@ class UserCourseUseCases {
 
         if (userData && userData.purchasedCourses) {
           const isPurchased = userData.purchasedCourses.some(
+            // @ts-expect-error Not populated
             (course) => String(course._id) === courseId,
           );
           const isCreated =
+            // @ts-expect-error Not populated
             String(courseData.instructorId._id) === String(userData._id);
 
           if (isPurchased || isCreated) {

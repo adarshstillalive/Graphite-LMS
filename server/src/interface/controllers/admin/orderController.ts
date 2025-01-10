@@ -106,7 +106,7 @@ const fetchListingCounts = async (req: Request, res: Response) => {
 const fetchOrdersForChartLine = async (req: Request, res: Response) => {
   try {
     const filter = String(req.query.filter) || 'month';
-
+    // @ts-expect-error Not populated
     const orders = await adminOrderUseCase.fetchOrdersForChartLine(filter);
 
     res

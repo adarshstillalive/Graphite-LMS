@@ -40,8 +40,10 @@ class UserOrderUseCases {
       const cartItems = userData.cart;
       const items = await Promise.all(
         cartItems.map(async (item) => {
+          // @ts-expect-error Not populated
           const convertedPrice = await convert(item.price);
           return {
+            // @ts-expect-error Not populated
             name: item.title,
             quantity: 1,
             unit_amount: {
@@ -75,7 +77,9 @@ class UserOrderUseCases {
       }
       const generatedOrderId = generateOrderId();
       const products = populatedUserData.cart.map((item) => ({
+        // @ts-expect-error Not populated
         courseId: String(item._id),
+        // @ts-expect-error Not populated
         price: item.price,
       }));
 
@@ -89,7 +93,7 @@ class UserOrderUseCases {
       };
 
       await this.orderRepository.createOrder(order);
-
+      // @ts-expect-error Not populated
       const courseIds = populatedUserData.cart.map((item) => String(item._id));
 
       const userData = await this.orderRepository.updateUserWithOrderDetails(
@@ -116,7 +120,9 @@ class UserOrderUseCases {
       }
       const generatedOrderId = generateOrderId();
       const products = populatedUserData.cart.map((item) => ({
+        // @ts-expect-error Not populated
         courseId: String(item._id),
+        // @ts-expect-error Not populated
         price: item.price,
       }));
       const totalAmount = products.reduce((acc, curr) => acc + curr.price, 0);
@@ -130,7 +136,7 @@ class UserOrderUseCases {
       };
       await this.userProfileRepository.debitWallet(userId, totalAmount);
       await this.orderRepository.createOrder(order);
-
+      // @ts-expect-error Not populated
       const courseIds = populatedUserData.cart.map((item) => String(item._id));
 
       const userData = await this.orderRepository.updateUserWithOrderDetails(

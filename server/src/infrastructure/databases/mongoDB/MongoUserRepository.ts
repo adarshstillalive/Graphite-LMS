@@ -11,7 +11,7 @@ class MongoUserRepository implements UserRepository {
       const savedUser = await newUser.save();
 
       await WalletModel.create({ userId: savedUser._id });
-
+      // @ts-expect-error Not populated
       return savedUser.toObject();
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -31,6 +31,7 @@ class MongoUserRepository implements UserRepository {
       if (!userData) {
         throw new Error('Database error');
       }
+      // @ts-expect-error Not populated
       return userData;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -67,7 +68,7 @@ class MongoUserRepository implements UserRepository {
       if (!userData) {
         throw new Error('Database error');
       }
-
+      // @ts-expect-error Not populated
       return userData;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

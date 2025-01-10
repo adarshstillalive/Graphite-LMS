@@ -40,8 +40,9 @@ class MongoInstructorPaymentRepository implements InstructorPaymentRepository {
           `Course or instructor not found for courseId: ${courseId}`,
         );
       }
-
+      // @ts-expect-error Not populated
       const instructorId = course.instructorId.instructorId;
+      // @ts-expect-error Not populated
       const userId = course.instructorId._id;
 
       if (!userId) {
