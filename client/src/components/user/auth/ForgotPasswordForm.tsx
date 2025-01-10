@@ -191,7 +191,11 @@ const ForgotPasswordForm: React.FC<{ onSubmit: (data: FormData) => void }> = ({
               : 'bg-black cursor-pointer hover:bg-gray-900 transition duration-100'
           }`}
         >
-          {isLoading ? <Loader2 className="animate-spin w-6 h-6" /> : 'Sign Up'}
+          {isLoading ? (
+            <Loader2 className="animate-spin w-6 h-6" />
+          ) : (
+            'Change password'
+          )}
         </button>
       </form>
 

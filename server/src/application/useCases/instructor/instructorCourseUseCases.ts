@@ -233,7 +233,7 @@ class InstructorCourseUseCases {
       await this.instructorUploadService.removefile(publicId);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      console.log('Usecase Error: in uploading thumbnail', error);
+      console.log('Usecase Error: in removing thumbnail', error);
 
       throw new Error(error);
     }

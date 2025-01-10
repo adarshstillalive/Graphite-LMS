@@ -70,31 +70,31 @@ instructorRoute.delete(
 );
 
 instructorRoute.post(
-  '/api/course/thumbnail',
+  '/api/thumbnail',
   userAuthMiddleware.authorization,
   courseController.uploadCourseThumbnail,
 );
 
 instructorRoute.delete(
-  '/api/course/thumbnail',
+  '/api/thumbnail',
   userAuthMiddleware.authorization,
   courseController.removeCourseThumbnail,
 );
 
 instructorRoute.patch(
-  '/api/course/publish/:id',
+  '/api/publish/:id',
   userAuthMiddleware.authorization,
   courseController.publishAction,
 );
 
 instructorRoute.post(
-  '/api/course/videoUrl',
+  '/api/videoUrl',
   userAuthMiddleware.authorization,
   courseController.uploadVideoUrl,
 );
 
 instructorRoute.get(
-  '/api/course/upload/videoSign',
+  '/api/upload/videoSign',
   userAuthMiddleware.authorization,
   courseController.getvideoSign,
 );

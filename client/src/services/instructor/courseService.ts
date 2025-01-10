@@ -10,9 +10,7 @@ export const fetchCategoriesFromApi = async (): Promise<ApiResponse> => {
 
 export const cloudinarySignedVideoUploadUrl =
   async (): Promise<ApiResponse> => {
-    const response = await instructorAxiosInstance.get(
-      '/api/course/upload/videoSign'
-    );
+    const response = await instructorAxiosInstance.get('/api/upload/videoSign');
     return response.data;
   };
 
@@ -29,7 +27,7 @@ export const uploadVideoUrlApi = async (
   uploads: UploadState[],
   courseId: string
 ): Promise<ApiResponse> => {
-  const response = await instructorAxiosInstance.post('/api/course/videoUrl', {
+  const response = await instructorAxiosInstance.post('/api/videoUrl', {
     uploads,
     courseId,
   });
@@ -39,15 +37,11 @@ export const uploadVideoUrlApi = async (
 export const uploadCourseThumbnail = async (
   file: FormData
 ): Promise<ApiResponse> => {
-  const response = await instructorAxiosInstance.post(
-    '/api/course/thumbnail',
-    file,
-    {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }
-  );
+  const response = await instructorAxiosInstance.post('/api/thumbnail', file, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
   return response.data;
 };
 
@@ -61,7 +55,7 @@ export const removeCourseThumbnail = async (
   }
   const publicId = `instructor/course/thumbnail/${match[1]}`;
   const response = await instructorAxiosInstance.delete(
-    `/api/course/thumbnail/?publicId=${publicId}`
+    `/api/thumbnail?publicId=${publicId}`
   );
   return response.data;
 };
@@ -80,7 +74,7 @@ export const fetchCourseApi = async (
 
 export const publishAction = async (courseId: string): Promise<ApiResponse> => {
   const response = await instructorAxiosInstance.patch(
-    `/api/course/publish/${courseId}`
+    `/api/publish/${courseId}`
   );
   return response.data;
 };

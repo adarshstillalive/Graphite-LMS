@@ -38,6 +38,7 @@ const ThumbnailDropZone: React.FC<DropzoneProps> = ({
           setIsUploading(true);
           const response = await uploadCourseThumbnail(formData);
           const thumbnailUrl = response.data;
+
           onImageUploadSuccess(thumbnailUrl);
         } catch (error) {
           console.log(error);

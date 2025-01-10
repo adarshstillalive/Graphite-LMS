@@ -139,6 +139,7 @@ const uploadCourseThumbnail = async (req: Request, res: Response) => {
 const removeCourseThumbnail = async (req: Request, res: Response) => {
   try {
     const { publicId } = req.query;
+
     if (typeof publicId !== 'string') {
       throw new Error('Invalid publicId');
     }

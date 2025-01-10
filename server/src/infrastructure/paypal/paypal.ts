@@ -82,8 +82,8 @@ export async function createOrder(items: Items[]): Promise<string> {
       },
     ],
     application_context: {
-      return_url: 'https://localhost:5173/profile/order',
-      cancel_url: 'https://localhost:5173/profile/cart/checkout',
+      return_url: 'https://graphite-lms.vercel.app/profile/order',
+      cancel_url: 'https://graphite-lms.vercel.app/profile/cart/checkout',
       shipping_preference: 'NO_SHIPPING',
       user_action: 'PAY_NOW',
       brand_name: 'Graphite',
