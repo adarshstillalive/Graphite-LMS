@@ -16,6 +16,7 @@ interface CourseRepository {
   fetchInstructor(instructorId: string): Promise<IMongoInstructor>;
   addOrUpdateReview(review: Review): Promise<void>;
   addOrUpdateInstructorReview(review: InstructorReview): Promise<void>;
+  searchCourses(limit: number, filter: object): Promise<IMongoCourse[]>;
 }
 
 export default CourseRepository;

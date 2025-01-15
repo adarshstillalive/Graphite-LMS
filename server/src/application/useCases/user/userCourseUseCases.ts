@@ -101,6 +101,17 @@ class UserCourseUseCases {
       throw new Error(error);
     }
   }
+
+  async searchCourses(limit: number, filter: object) {
+    try {
+      return await this.courseRepository.searchCourses(limit, filter);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log('Usecase Error: Fetching courses', error);
+
+      throw new Error(error);
+    }
+  }
 }
 
 export default UserCourseUseCases;

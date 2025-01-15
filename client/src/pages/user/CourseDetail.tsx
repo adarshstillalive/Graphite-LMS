@@ -93,7 +93,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ id }) => {
       }
     };
     fetchCourse();
-  }, []);
+  }, [id]);
 
   return (
     course && (

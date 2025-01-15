@@ -79,6 +79,22 @@ export const fetchCoursesForProductsPage = async (
   return response.data;
 };
 
+export const searchCourses = async (filter: string): Promise<ApiResponse> => {
+  const queryParams = new URLSearchParams();
+
+  if (filter) {
+    const query = { title: { $regex: filter, $options: 'i' } };
+    queryParams.append('filter', JSON.stringify(query));
+  }
+
+  const queryString = queryParams.toString();
+
+  const response = await userAxiosInstance.get(
+    `/api/courses/search?${queryString}`
+  );
+  return response.data;
+};
+
 export const fetchCategoriesFromApi = async (): Promise<ApiResponse> => {
   const response = await userAxiosInstance.get('/api/categories');
   return response.data;

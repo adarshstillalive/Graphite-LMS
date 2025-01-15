@@ -182,6 +182,23 @@ class MongoCourseRepository implements CourseRepository {
       throw new Error(error);
     }
   }
+
+  async searchCourses(
+    limit: number,
+    filter: object = {},
+  ): Promise<IMongoCourse[]> {
+    const data = await CourseModel.find({
+      ...filter,
+      isApproved: true,
+      isRejected: false,
+      isPublished: true,
+    })
+      .select('-chapters.episodes.content')
+      .limit(limit)
+      .collation({ locale: 'en', strength: 2 });
+
+    return data;
+  }
 }
 
 export default MongoCourseRepository;

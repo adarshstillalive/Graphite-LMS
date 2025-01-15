@@ -59,7 +59,9 @@ export const CourseCardInstructor: React.FC<CourseCardProps> = ({
       className="rounded-none cursor-pointer w-full max-w-[250px] overflow-hidden hover:shadow-md transition-all
                    
                  bg-white dark:bg-gray-900"
-      onClick={() => navigate(`/courses/courseDetail/${course._id}`)}
+      onClick={() =>
+        navigate(`/courses/courseDetail/${course._id}/${isCreated}`)
+      }
     >
       <div className="w-full relative aspect-video overflow-hidden">
         <img

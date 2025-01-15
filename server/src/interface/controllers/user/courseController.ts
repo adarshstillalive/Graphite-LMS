@@ -141,6 +141,34 @@ const fetchPaginatedCourseProductPage = async (req: Request, res: Response) => {
   }
 };
 
+const searchCourses = async (req: Request, res: Response) => {
+  try {
+    const filter = req.query.filter
+      ? JSON.parse(req.query.filter as string)
+      : {};
+
+    const limit = parseInt(req.query.limit as string) || 5;
+    const result = await userCourseUseCases.searchCourses(limit, filter);
+
+    res
+      .status(200)
+      .json(createResponse(true, 'Course fetched successfully', result));
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    res
+      .status(400)
+      .json(
+        createResponse(
+          false,
+          'Controller Error: fetching courses',
+          {},
+          error?.message,
+        ),
+      );
+  }
+};
+
 const fetchCategories = async (req: Request, res: Response) => {
   try {
     const categories = await userCourseUseCases.fetchCategories();
@@ -397,6 +425,7 @@ export default {
   fetchPaginatedCourse,
   fetchPaginatedCourseSortedByRating,
   fetchPaginatedCourseProductPage,
+  searchCourses,
   fetchCategories,
   fetchCourseById,
   fetchInstructor,

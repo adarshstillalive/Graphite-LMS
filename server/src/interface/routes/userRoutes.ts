@@ -106,6 +106,7 @@ userRoute.get(
   '/api/courses/productpage',
   courseController.fetchPaginatedCourseProductPage,
 );
+userRoute.get('/api/courses/search', courseController.searchCourses);
 userRoute.get('/api/categories', courseController.fetchCategories);
 userRoute.get('/api/course/:id', courseController.fetchCourseById);
 userRoute.get(

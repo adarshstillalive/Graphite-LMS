@@ -55,7 +55,9 @@ const CourseCardWide: React.FC<CourseCardProps> = ({ course }) => {
   return (
     <div
       className="flex overflow-hidden hover:shadow-md py-4 border-t-2 relative cursor-pointer"
-      onClick={() => navigate(`/courses/courseDetail/${course._id}`)}
+      onClick={() =>
+        navigate(`/courses/courseDetail/${course._id}/${isCreated}`)
+      }
     >
       <img
         src={course.thumbnail}
