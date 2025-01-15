@@ -13,7 +13,7 @@ const commonUserRoutes = [
     element: <Courses />,
   },
   {
-    path: 'courses/courseDetail/:id',
+    path: 'courses/courseDetail/:id/:isCreated',
     element: <CoursePage />,
   },
   {

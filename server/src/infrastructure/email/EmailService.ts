@@ -19,7 +19,7 @@ class EmailService {
       await this.transporter.sendMail({
         from: process.env.NODEMAILER_USER,
         to: email,
-        subject: 'Your Verification OTP',
+        subject: 'Graphite LMS Mail',
         text: `Your verification OTP is ${otp}`,
       });
     } catch (error) {

@@ -107,22 +107,28 @@ const Courses = () => {
           setQueryString={setQueryString}
           categoryId={categoryId}
         />
-        <main className="flex-1 p-6">
-          <div className="grid ">
-            {courses.map((course: IPopulatedCourse) => (
-              <CourseCardWide key={course._id} course={course} />
-            ))}
+        {courses.length > 0 ? (
+          <main className="flex-1 p-6">
+            <div className="grid ">
+              {courses.map((course: IPopulatedCourse) => (
+                <CourseCardWide key={course._id} course={course} />
+              ))}
+            </div>
+            <div className="flex justify-center py-4">
+              <Button
+                variant={'outline'}
+                disabled={currentPage >= totalPages}
+                onClick={() => setCurrentPage(currentPage + 1)}
+              >
+                Load more
+              </Button>
+            </div>
+          </main>
+        ) : (
+          <div className="flex justify-center items-center w-screen">
+            <h1 className="text-3xl font-bold">No Courses</h1>
           </div>
-          <div className="flex justify-center py-4">
-            <Button
-              variant={'outline'}
-              disabled={currentPage >= totalPages}
-              onClick={() => setCurrentPage(currentPage + 1)}
-            >
-              Load more
-            </Button>
-          </div>
-        </main>
+        )}
       </div>
     </div>
   );

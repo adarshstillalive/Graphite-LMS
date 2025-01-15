@@ -23,7 +23,7 @@ export const CourseCardHome: React.FC<CourseCardProps> = ({ course }) => {
   const isPurchased = currentUser?.purchasedCourses?.some(
     (c) => c._id === course._id
   );
-  const isCreated = currentUser?._id === course.instructorId._id;
+  const isCreated = currentUser?._id === course.instructorId._id || false;
 
   const shouldShowWishlistButton = !isPurchased && !isCreated;
   const shouldShowPrice = !isPurchased && !isCreated;
@@ -54,7 +54,9 @@ export const CourseCardHome: React.FC<CourseCardProps> = ({ course }) => {
       className="rounded-none cursor-pointer w-full max-w-[250px] overflow-hidden hover:shadow-md transition-all
                    
                  bg-white dark:bg-gray-900"
-      onClick={() => navigate(`/courses/courseDetail/${course._id}`)}
+      onClick={() =>
+        navigate(`/courses/courseDetail/${course._id}/${isCreated}`)
+      }
     >
       <div className="w-full relative aspect-video overflow-hidden">
         <img

@@ -60,6 +60,22 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ id }) => {
     }
   };
 
+  const handleBuyNow = async (courseId: string) => {
+    try {
+      if (!currentUser) {
+        navigate('/auth/login');
+      }
+      const isExist =
+        currentUser?.cart &&
+        currentUser?.cart.some((item) => item?._id === courseId);
+      if (!isExist) {
+        await addToCart(courseId);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     const fetchCourse = async () => {
       try {
@@ -155,7 +171,7 @@ const CourseDetail: React.FC<CourseDetailProps> = ({ id }) => {
                   variant={'outline'}
                   className={`${inputStyle} border-2 mb-2 bg-white`}
                   onClick={() => {
-                    handleCart(course._id);
+                    handleBuyNow(course._id);
                     navigate('/profile/cart');
                   }}
                 >

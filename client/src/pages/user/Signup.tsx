@@ -5,7 +5,6 @@ import { createUser, sendOtp } from '../../services/user/loginService';
 import { useDispatch } from 'react-redux';
 import {
   setCurrentUser,
-  setIsInstructor,
   setIsLoading,
   setToken,
 } from '../../redux/slices/user/userSlice';
@@ -73,7 +72,6 @@ const Signup = () => {
       const { user, accessToken } = res.data;
       dispatch(setToken(accessToken));
       dispatch(setCurrentUser(user));
-      dispatch(setIsInstructor(user.isInstructor));
       dispatch(setRole('user'));
       setOtpModalStatus(false);
       navigate('/');

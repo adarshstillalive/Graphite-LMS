@@ -5,20 +5,16 @@ import CourseDetail from './CourseDetail';
 import CourseDetailPurchased from './CourseDetailPurchased';
 
 const CoursePage = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id, isCreated } = useParams<{ id: string; isCreated: string }>();
+  const isCreatedBoolean = isCreated === 'true';
   const { currentUser } = useSelector((state: RootState) => state.user);
-  const { currentInstructor } = useSelector(
-    (state: RootState) => state.instructor
-  );
   const isPurchased =
     currentUser?.purchasedCourses?.some((c) => c._id === id) || false;
-  const isCreated =
-    currentInstructor?.courses?.some((c) => c.courseId === id) || false;
 
   return (
     id && (
       <>
-        {isPurchased || isCreated ? (
+        {isPurchased || isCreatedBoolean ? (
           <CourseDetailPurchased id={id} />
         ) : (
           <CourseDetail id={id} />

@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   setCurrentUser,
-  setIsInstructor,
   setIsLoading,
   setToken,
 } from '../../redux/slices/user/userSlice';
@@ -31,7 +30,6 @@ const Login = () => {
 
       dispatch(setToken(accessToken));
       dispatch(setCurrentUser(user));
-      dispatch(setIsInstructor(user.isInstructor));
       dispatch(setRole('user'));
       navigate('/');
     } catch (error) {
