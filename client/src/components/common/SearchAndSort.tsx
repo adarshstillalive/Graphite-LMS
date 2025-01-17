@@ -28,7 +28,7 @@ const SearchAndSort: React.FC<SearchAndSortProps> = ({
   return (
     <div className="mb-6 flex flex-col sm:flex-row pt-4 gap-4">
       {/* Search Input */}
-      <div className="relative flex-1">
+      <div className="relative flex">
         <FaSearch className="absolute left-3 top-3 text-gray-400" />
         <input
           type="text"
@@ -37,37 +37,41 @@ const SearchAndSort: React.FC<SearchAndSortProps> = ({
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-10 w-10 p-0">
+              <span className="sr-only">Open menu</span>
+              <FaFilter />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Sort</DropdownMenuLabel>
+
+            <DropdownMenuItem
+              onClick={() => setSortHelper({ field, value: 1 })}
+            >
+              aA-zZ
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => setSortHelper({ field, value: -1 })}
+            >
+              zZ-aA
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => setSortHelper({ field: 'createdAt', value: 1 })}
+            >
+              Created (New)
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => setSortHelper({ field: 'createdAt', value: -1 })}
+            >
+              Created (Old)
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Sort Dropdown */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <FaFilter />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Sort</DropdownMenuLabel>
-
-          <DropdownMenuItem onClick={() => setSortHelper({ field, value: 1 })}>
-            aA-zZ
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setSortHelper({ field, value: -1 })}>
-            zZ-aA
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => setSortHelper({ field: 'createdAt', value: 1 })}
-          >
-            Created (New)
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => setSortHelper({ field: 'createdAt', value: -1 })}
-          >
-            Created (Old)
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
     </div>
   );
 };

@@ -52,6 +52,7 @@ const CourseCardWide: React.FC<CourseCardProps> = ({ course }) => {
       });
     }
   };
+
   return (
     <div
       className="bg-white rounded-none shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden cursor-pointer"
@@ -59,7 +60,63 @@ const CourseCardWide: React.FC<CourseCardProps> = ({ course }) => {
         navigate(`/courses/courseDetail/${course._id}/${isCreated}`)
       }
     >
-      <div className="flex flex-col sm:flex-row gap-4">
+      {/* Mobile Layout */}
+      <div className="block sm:hidden w-full max-w-[380px] mx-auto overflow-hidden bg-white dark:bg-gray-900">
+        <div className="w-full relative aspect-video overflow-hidden">
+          <img
+            src={course.thumbnail}
+            alt={course.title}
+            className="h-full w-full object-cover transition-transform duration-300 hover:scale-110"
+          />
+          {shouldShowWishlistButton && (
+            <button
+              className="absolute top-2 right-2 p-2 bg-black bg-opacity-50 rounded-full hover:bg-opacity-70 transition"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleWishlistToggle(course._id ? course._id : '');
+              }}
+              aria-label="Add to Favorites"
+            >
+              <FaHeart
+                className={`text-2xl ${
+                  currentUser?.wishlist?.some((item) => item._id === course._id)
+                    ? 'fill-red-500'
+                    : 'fill-white'
+                }`}
+              />
+            </button>
+          )}
+        </div>
+
+        <div className="py-2 px-4">
+          <h3 className="text-md font-medium text-gray-900 dark:text-white line-clamp-2">
+            {course.title}
+          </h3>
+          <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
+            {course.instructorId.firstName} {course.instructorId.lastName}
+          </p>
+          <p className="text-sm text-gray-500">{course.category.name}</p>
+          <div className="flex justify-between items-center my-2">
+            <div className="flex items-center space-x-1">
+              <MdStar className="h-4 w-4 text-yellow-400" />
+              <span className="text-sm text-gray-800 dark:text-gray-200">
+                {course.rating?.toFixed(1) || 'New'}
+              </span>
+            </div>
+            <div className="flex items-center text-gray-500 dark:text-gray-400 text-sm">
+              <span>{course.chapters?.length || 0} Chapter(s)</span>
+            </div>
+          </div>
+          {shouldShowPrice && (
+            <span className="text-lg font-semibold text-primary">
+              ₹{course.price.toFixed(2)}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Large Screen Layout */}
+      <div className="hidden sm:flex flex-col sm:flex-row gap-4">
         <div className="relative w-full sm:w-64 h-48 sm:h-40 flex-shrink-0">
           <img
             src={course.thumbnail}

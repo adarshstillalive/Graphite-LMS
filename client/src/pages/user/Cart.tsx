@@ -8,11 +8,10 @@ const Cart = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
 
-  // Only calculate subtotal if the cart is not empty
   const subtotal =
     currentUser && currentUser.cart && currentUser.cart.length > 0
       ? currentUser.cart.reduce((sum, item) => sum + item.price, 0)
-      : 0; // Default to 0 if the cart is empty
+      : 0;
 
   const handleCheckout = async () => {
     navigate('/profile/cart/checkout');

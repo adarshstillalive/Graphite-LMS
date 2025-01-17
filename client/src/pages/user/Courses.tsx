@@ -93,7 +93,9 @@ const Courses = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-center py-4 gap-4">
             <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">
-              All Courses
+              {categoryId
+                ? categories.find((cat) => cat._id === categoryId)?.name
+                : 'All Courses'}
             </h1>
             <div className="w-full sm:w-auto">
               <SearchAndSort
@@ -147,7 +149,7 @@ const Courses = () => {
 
           <main className="flex-1">
             {courses.length > 0 ? (
-              <div className="space-y-4">
+              <div className="space-y-4 mt-4">
                 {courses.map((course) => (
                   <CourseCardWide key={course._id} course={course} />
                 ))}

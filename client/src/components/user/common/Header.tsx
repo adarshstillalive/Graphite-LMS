@@ -182,9 +182,11 @@ const Header = () => {
           {currentUser ? (
             role === 'user' && <UserProfileDropdown />
           ) : (
-            <Button className="rounded-none" variant="default">
-              <Link to="/auth/login">Login</Link>
-            </Button>
+            <Link to="/auth/login">
+              <Button className="rounded-none" variant="default">
+                Login
+              </Button>
+            </Link>
           )}
 
           {/* Toggle Buttons */}

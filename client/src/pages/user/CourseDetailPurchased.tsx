@@ -5,6 +5,7 @@ import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import ChapterEpisodeSelector from '@/components/user/course/ChapterEpisodeDropdown';
 import ReviewSectionPurchased from '@/components/user/course/ReviewSectionPurchased';
+import ReviewSectionPurchasedForInstructor from '@/components/user/course/ReviewSectionPurchasedForInstructor';
 import TextContent from '@/components/user/course/TextContent';
 import VideoPlayer from '@/components/user/course/VideoPlayer';
 import { useToast } from '@/hooks/use-toast';
@@ -19,7 +20,7 @@ import {
 import { Clock, FileText, PlayCircle } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 interface CourseDetailPurchasedProps {
   id: string;
@@ -28,6 +29,7 @@ interface CourseDetailPurchasedProps {
 const CourseDetailPurchased: React.FC<CourseDetailPurchasedProps> = ({
   id,
 }) => {
+  const { isCreated } = useParams<{ id: string; isCreated: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [course, setCourse] = useState<IPopulatedCourse>();
@@ -169,19 +171,23 @@ const CourseDetailPurchased: React.FC<CourseDetailPurchasedProps> = ({
                     <>
                       <FileText className="mr-1 h-4 w-4" />
                       <span>Type: {selectedEpisode.type}</span>
-                      <Checkbox
-                        id="progress"
-                        className="rounded-full ml-4"
-                        checked={isCompleted}
-                        onCheckedChange={(checked) => {
-                          if (checked === 'indeterminate') return;
-                          setIsCompleted(checked);
-                          updateProgress(checked ? 100 : 0); // Update server progress
-                        }}
-                      />
-                      <Label htmlFor="progress" className="ml-1">
-                        Mark as completed
-                      </Label>
+                      {!isCreated && (
+                        <>
+                          <Checkbox
+                            id="progress"
+                            className="rounded-full ml-4"
+                            checked={isCompleted}
+                            onCheckedChange={(checked) => {
+                              if (checked === 'indeterminate') return;
+                              setIsCompleted(checked);
+                              updateProgress(checked ? 100 : 0); // Update server progress
+                            }}
+                          />
+                          <Label htmlFor="progress" className="ml-1">
+                            Mark as completed
+                          </Label>
+                        </>
+                      )}
                     </>
                   )}
                 </div>
@@ -252,20 +258,22 @@ const CourseDetailPurchased: React.FC<CourseDetailPurchasedProps> = ({
           </div>
           <div className="bg-white rounded-md shadow-sm">
             <div className="p-4 border-b border-gray-200">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="font-medium">Progress:</span>
-                <div className="relative w-full h-4 overflow-hidden">
-                  <Progress
-                    value={progress?.totalProgress}
-                    className="h-full bg-gray-500"
-                  />
+              {!isCreated && (
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="font-medium">Progress:</span>
+                  <div className="relative w-full h-4 overflow-hidden">
+                    <Progress
+                      value={progress?.totalProgress}
+                      className="h-full bg-gray-500"
+                    />
+                  </div>
+                  <span className="ml-2 text-sm font-medium">
+                    {progress?.totalProgress !== undefined
+                      ? progress?.totalProgress.toFixed(2) + '%'
+                      : '0%'}
+                  </span>
                 </div>
-                <span className="ml-2 text-sm font-medium">
-                  {progress?.totalProgress !== undefined
-                    ? progress?.totalProgress.toFixed(2) + '%'
-                    : '0%'}
-                </span>
-              </div>
+              )}
               <h2 className="text-xl font-semibold">Course Content</h2>
             </div>
 
@@ -277,12 +285,19 @@ const CourseDetailPurchased: React.FC<CourseDetailPurchasedProps> = ({
                 selectedEpisodeId={selectedEpisode?.id}
               />
             </ScrollArea>
-            {currentUser?._id && course._id && (
-              <ReviewSectionPurchased
-                userId={currentUser?._id}
-                courseId={course._id}
-              />
-            )}
+            {currentUser?._id &&
+              course._id &&
+              (!isCreated ? (
+                <ReviewSectionPurchased
+                  userId={currentUser?._id}
+                  courseId={course._id}
+                />
+              ) : (
+                <ReviewSectionPurchasedForInstructor
+                  userId={currentUser?._id}
+                  courseId={course._id}
+                />
+              ))}
           </div>
         </div>
       </div>
