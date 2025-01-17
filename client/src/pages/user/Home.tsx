@@ -18,20 +18,23 @@ const Home = () => {
     const queryString = queryParams.toString();
     navigate(`/courses?${queryString}`);
   };
+
   return (
-    <div>
+    <div className="min-h-screen">
       {categories.length > 0 && (
-        <div className="fixed w-full flex justify-center bg-white">
-          {categories.map((c: ICategory) => (
-            <Button
-              key={c._id}
-              variant={'outline'}
-              className="px-8 border-none"
-              onClick={() => c._id && handleCategoryClick(c._id)}
-            >
-              {c.name}
-            </Button>
-          ))}
+        <div className="fixed w-full flex justify-around bg-white overflow-x-auto py-2 px-4 shadow-sm z-10">
+          <div className="flex space-x-2">
+            {categories.map((c: ICategory) => (
+              <Button
+                key={c._id}
+                variant={'outline'}
+                className="whitespace-nowrap px-4 sm:px-8 border-none"
+                onClick={() => c._id && handleCategoryClick(c._id)}
+              >
+                {c.name}
+              </Button>
+            ))}
+          </div>
         </div>
       )}
       <Hero />

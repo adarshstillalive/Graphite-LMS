@@ -32,16 +32,19 @@ const Categories: React.FC<CategoriesProps> = ({ passCategories }) => {
     };
     fetchCategories();
   }, []);
+
   return (
-    <section className="bg-gray-100 py-16 px-8">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold mb-8">Top Categories</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <section className="bg-gray-100 py-8 sm:py-16 px-4 sm:px-8">
+      <div className="container mx-auto">
+        <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">
+          Top Categories
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
           {categories.map((category) => (
             <Button
               key={category._id}
               variant="outline"
-              className={inputStyle}
+              className={`${inputStyle} w-full text-sm sm:text-base`}
               onClick={() => category._id && handleCategoryClick(category._id)}
             >
               {category.name}

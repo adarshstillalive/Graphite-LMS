@@ -19,6 +19,7 @@ const Courses = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [queryString, setQueryString] = useState<string>();
   const [search, setSearch] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [sortHelper, setSortHelper] = useState({
     field: 'createdAt',
     value: -1,
@@ -73,7 +74,7 @@ const Courses = () => {
           description: 'Error in loading, Refresh the page',
         });
       }
-    }, 300);
+    }, 500);
     return () => {
       clearTimeout(handler);
     };
@@ -87,48 +88,88 @@ const Courses = () => {
   ]);
 
   return (
-    <div className="min-h-screen">
-      <header className="bg-white flex shadow-sm px-12">
-        <div className="max-w-7xl mx-auto py-4 ">
-          <h1 className="text-3xl font-semibold text-gray-900">All Courses</h1>
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-white shadow-sm sticky top-0 z-30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row justify-between items-center py-4 gap-4">
+            <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">
+              All Courses
+            </h1>
+            <div className="w-full sm:w-auto">
+              <SearchAndSort
+                field="title"
+                search={search}
+                setSearch={setSearch}
+                setSortHelper={setSortHelper}
+                placeholder="Enter course name"
+              />
+            </div>
+          </div>
         </div>
-        <SearchAndSort
-          field="title"
-          search={search}
-          setSearch={setSearch}
-          setSortHelper={setSortHelper}
-          placeholder="Enter course name"
-        />
       </header>
 
-      <div className="flex">
-        <Sidebar
-          categories={categories}
-          setQueryString={setQueryString}
-          categoryId={categoryId}
-        />
-        {courses.length > 0 ? (
-          <main className="flex-1 p-6">
-            <div className="grid ">
-              {courses.map((course: IPopulatedCourse) => (
-                <CourseCardWide key={course._id} course={course} />
-              ))}
-            </div>
-            <div className="flex justify-center py-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="lg:hidden py-4">
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          >
+            {isSidebarOpen ? 'Hide Filters' : 'Show Filters'}
+          </Button>
+        </div>
+
+        <div className="flex flex-col lg:flex-row gap-6">
+          <aside
+            className={`
+              ${isSidebarOpen ? 'fixed inset-0 z-40 mt-16 bg-white' : 'hidden'} 
+              lg:relative lg:block lg:w-80 
+              overflow-y-auto
+              transition-all duration-300
+              lg:min-h-screen
+            `}
+          >
+            {isSidebarOpen && (
               <Button
-                variant={'outline'}
-                disabled={currentPage >= totalPages}
-                onClick={() => setCurrentPage(currentPage + 1)}
+                variant="ghost"
+                className="absolute lg:hidden"
+                onClick={() => setIsSidebarOpen(false)}
               >
-                Load more
+                ✕
               </Button>
-            </div>
+            )}
+            <Sidebar
+              categories={categories}
+              setQueryString={setQueryString}
+              categoryId={categoryId}
+            />
+          </aside>
+
+          <main className="flex-1">
+            {courses.length > 0 ? (
+              <div className="space-y-4">
+                {courses.map((course) => (
+                  <CourseCardWide key={course._id} course={course} />
+                ))}
+                <div className="flex justify-center py-4">
+                  <Button
+                    variant="outline"
+                    disabled={currentPage >= totalPages}
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                  >
+                    Load more
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex justify-center items-center min-h-[400px]">
+                <h1 className="text-2xl font-bold text-gray-500">
+                  No Courses Found
+                </h1>
+              </div>
+            )}
           </main>
-        ) : (
-          <div className="flex justify-center items-center w-screen">
-            <h1 className="text-3xl font-bold">No Courses</h1>
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );

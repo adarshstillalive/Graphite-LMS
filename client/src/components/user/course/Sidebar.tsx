@@ -102,14 +102,14 @@ const Sidebar: React.FC<SidebarProps> = ({
   };
 
   return (
-    <aside className="w-80 p-6 border-r">
-      <Accordion type="multiple" className="w-full">
+    <aside className="bg-white p-6">
+      <Accordion type="multiple" className="space-y-4">
         <AccordionItem value="category">
-          <AccordionTrigger className="py-4 text-xl font-semibold">
+          <AccordionTrigger className="text-lg font-semibold">
             Category
           </AccordionTrigger>
           <AccordionContent>
-            <div className="space-y-2">
+            <div className="space-y-3 pt-2">
               {categories.map((category) => (
                 <div key={category._id} className="space-y-2">
                   <div className="flex items-center space-x-2">

@@ -16,7 +16,6 @@ const FeaturedCourses = () => {
       try {
         const response = await fetchCoursesForHomePage(currentPage);
         const result = response.data;
-
         setCourses(result.data);
         setTotalPages(Math.ceil(result.total / 10));
       } catch (error) {
@@ -33,20 +32,33 @@ const FeaturedCourses = () => {
   const handleLoad = (page: number) => {
     setCurrentPage(page);
   };
+
   return (
-    <section className="py-16 px-8">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold mb-8">Featured courses</h2>
-        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-6">
-          {courses.map((course) => (
-            <CourseCardHome key={course._id} course={course} />
-          ))}
+    <section className="py-8 sm:py-16 px-4 sm:px-8">
+      <div className="container mx-auto">
+        <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8">
+          Featured courses
+        </h2>
+        <div className="relative">
+          <div className="overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+            <div className="flex min-w-max">
+              {courses.map((course) => (
+                <div
+                  key={course._id}
+                  className="w-[280px] sm:w-[320px] flex-none"
+                >
+                  <CourseCardHome course={course} />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
         {totalPages > currentPage && (
-          <div className="mt-10 text-center">
+          <div className="mt-6 sm:mt-10 text-center">
             <Button
               variant="outline"
               size="lg"
+              className="w-full sm:w-auto"
               onClick={() => handleLoad(currentPage + 1)}
             >
               Load more
