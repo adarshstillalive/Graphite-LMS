@@ -263,18 +263,11 @@ const Header = () => {
                 </div>
               )}
 
-              {!currentUser && (
-                <Link to="/auth/login" className="block">
-                  <Button className="w-full rounded-none" variant="default">
-                    Login
-                  </Button>
-                </Link>
-              )}
               {currentUser ? (
                 role === 'user' && <UserProfileDropdown />
               ) : (
                 <Link to="/auth/login">
-                  <Button className="rounded-none" variant="default">
+                  <Button className="w-full rounded-none" variant="default">
                     Login
                   </Button>
                 </Link>
