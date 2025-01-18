@@ -10,14 +10,7 @@ import {
   SidebarMenuItem,
   SidebarSeparator,
 } from '@/components/ui/sidebar';
-import {
-  Home,
-  Library,
-  MessageSquareText,
-  Search,
-  Settings,
-  User,
-} from 'lucide-react';
+import { Home, Library, MessageSquareText, User } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
@@ -41,16 +34,6 @@ const items = [
     title: 'Chat',
     url: '/instructor/chat',
     icon: MessageSquareText,
-  },
-  {
-    title: 'Search',
-    url: '#',
-    icon: Search,
-  },
-  {
-    title: 'Settings',
-    url: '#',
-    icon: Settings,
   },
 ];
 

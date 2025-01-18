@@ -6,6 +6,7 @@ import InstructorPieChart from '@/components/instructor/dashboard/InstructorPieC
 import { useToast } from '@/hooks/use-toast';
 import { fetchInstructorOrders } from '@/services/instructor/orderService';
 import OrderTable from '@/components/instructor/dashboard/OrderTable';
+import { Card, CardContent } from '@/components/ui/card';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -16,9 +17,7 @@ const Home = () => {
     const fetchOrders = async () => {
       try {
         const response = await fetchInstructorOrders();
-
         const fetchedOrders = response.data || [];
-
         setOrders(fetchedOrders);
       } catch (error) {
         console.error(error);
@@ -46,12 +45,18 @@ const Home = () => {
   }, [dispatch]);
 
   return (
-    <div className="p-4">
-      <div className="space-y-6">
-        <div>
-          <InstructorPieChart orders={orders} />
-        </div>
-        <OrderTable orders={orders} />
+    <div className="container mx-auto py-6 space-y-6">
+      <div className="grid grid-cols-1 gap-6 justify-center">
+        <Card className=" justify-center flex lg:col-span-2">
+          <CardContent className="p-6">
+            <InstructorPieChart orders={orders} />
+          </CardContent>
+        </Card>
+        <Card className="rounded-none lg:col-span-2">
+          <CardContent className="p-6">
+            <OrderTable orders={orders} />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

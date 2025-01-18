@@ -25,11 +25,9 @@ const refreshTokenApi = async (req: Request, res: Response) => {
       .json(createResponse(true, 'Access token created successfully', data));
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    res
-      .status(400)
-      .json(
-        createResponse(false, 'Refresh access token error', {}, error?.message),
-      );
+    console.log(error);
+
+    throw new Error('Token error');
   }
 };
 

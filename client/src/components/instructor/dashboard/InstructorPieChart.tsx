@@ -53,14 +53,14 @@ const InstructorPieChart: React.FC<IInstructorPieChartProps> = ({ orders }) => {
   }, [orders]);
 
   return (
-    <div className="flex flex-col rounded-none">
-      <div className="items-center pb-0">
-        <h2 className="text-lg font-bold text-center">Sales Statistics</h2>
+    <div className="flex flex-col max-w-[200px] space-y-4">
+      <div className="text-center">
+        <h2 className="text-xl font-bold md:text-2xl">Sales Statistics</h2>
       </div>
-      <div className="flex-1 pb-0">
+      <div className="w-full">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
+          className="mx-auto aspect-square w-full max-w-md"
         >
           <PieChart>
             <ChartTooltip
@@ -71,7 +71,8 @@ const InstructorPieChart: React.FC<IInstructorPieChartProps> = ({ orders }) => {
               data={chartData}
               dataKey="visitors"
               nameKey="category"
-              innerRadius={60}
+              innerRadius="50%"
+              outerRadius="80%"
               strokeWidth={5}
             >
               <Label
@@ -87,14 +88,14 @@ const InstructorPieChart: React.FC<IInstructorPieChartProps> = ({ orders }) => {
                         <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className="fill-foreground text-3xl font-bold"
+                          className="fill-foreground text-2xl md:text-3xl font-bold"
                         >
                           {orders.length}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
-                          className="fill-muted-foreground"
+                          className="fill-muted-foreground text-sm md:text-base"
                         >
                           Order(s)
                         </tspan>
@@ -107,10 +108,10 @@ const InstructorPieChart: React.FC<IInstructorPieChartProps> = ({ orders }) => {
           </PieChart>
         </ChartContainer>
       </div>
-      <div className="flex-col gap-2 text-sm">
-        <div className="leading-none flex justify-center text-muted-foreground">
-          Total orders and completed payments.
-        </div>
+      <div className="text-center">
+        <p className="text-sm text-muted-foreground md:text-base">
+          Total orders and completed payments
+        </p>
       </div>
     </div>
   );

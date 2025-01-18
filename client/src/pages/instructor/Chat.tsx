@@ -179,7 +179,7 @@ const Chat: React.FC = () => {
             onSendMessage={handleSendMessage}
           />
         ) : (
-          <div className="flex-1 flex items-center justify-center bg-zinc-50">
+          <div className="flex-1 flex items-center justify-center bg-zinc-200">
             <div className="text-center">
               <h3 className="text-xl font-semibold text-zinc-700">
                 Welcome to Messages
