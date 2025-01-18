@@ -32,77 +32,82 @@ const ChatSidebar: React.FC<SidebarProps> = ({
   online,
 }) => {
   return (
-    <div className="w-64 border-r bg-gray-300 border-gray-200">
-      <div className="p-4 border-b border-gray-200 flex justify-between">
-        <h2 className="text-lg font-semibold">Chats</h2>
+    <div className="flex flex-col h-full">
+      {/* Sidebar Header */}
+      <div className="px-6 h-16 flex items-center justify-between border-b border-zinc-200">
+        <h2 className="text-lg font-semibold text-zinc-900">Messages</h2>
         <DropdownMenu>
-          <DropdownMenuTrigger className="focus: outline-none">
-            <UserPlus />
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="hover:bg-zinc-100">
+              <UserPlus className="h-5 w-5 text-zinc-700" />
+            </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="min-w-[16rem]">
-            <DropdownMenuLabel>Instructors</DropdownMenuLabel>
+          <DropdownMenuContent align="end" className="w-72">
+            <DropdownMenuLabel>New Conversation</DropdownMenuLabel>
             <DropdownMenuSeparator />
             {instructors.map((instructor) => (
               <DropdownMenuItem
-                className="h-12 cursor-pointer"
                 key={instructor._id}
+                className="p-3 cursor-pointer"
                 onClick={() =>
                   instructor.instructorId._id &&
                   onSelectInstructor(instructor.instructorId._id)
                 }
               >
-                <Avatar className="h-8 w-8 mr-2">
-                  <AvatarImage
-                    src={instructor.profilePicture}
-                    alt={instructor.firstName}
-                  />
-                  <AvatarFallback>
-                    {instructor.firstName && instructor.firstName[0]}
+                <Avatar className="h-9 w-9">
+                  <AvatarImage src={instructor.profilePicture} />
+                  <AvatarFallback className="bg-zinc-200 text-zinc-700">
+                    {instructor.firstName?.[0]}
                   </AvatarFallback>
                 </Avatar>
-                <div className="flex flex-col items-start">
-                  <span className="font-medium">
+                <div className="ml-3">
+                  <p className="font-medium text-zinc-900">
                     {instructor.firstName + ' ' + instructor.lastName}
-                  </span>
+                  </p>
                 </div>
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <ScrollArea className="h-[calc(80vh-60px)]">
-        {chats.length > 0 &&
-          chats.map((contact) => (
+
+      {/* Chat List */}
+      <ScrollArea className="flex-1 px-3">
+        <div className="space-y-1 py-3">
+          {chats.map((chat) => (
             <Button
-              key={contact._id}
+              key={chat._id}
               variant="ghost"
-              className={`w-full justify-start px-4 py-8 ${
-                selectedChatId === contact._id ? 'bg-gray-100' : ''
-              }`}
-              onClick={() => onSelectChat(contact)}
+              className={`
+                w-full px-3 py-3 h-auto flex items-center gap-3
+                ${
+                  selectedChatId === chat._id
+                    ? 'bg-zinc-100 text-zinc-900'
+                    : 'text-zinc-700 hover:bg-zinc-50'
+                }
+              `}
+              onClick={() => onSelectChat(chat)}
             >
-              <Avatar className="h-8 w-8 mr-2">
-                <AvatarImage
-                  src={contact?.instructorId?.profilePicture}
-                  alt={contact?.instructorId?.userId.firstName}
-                />
-                <AvatarFallback>
-                  {contact?.instructorId?.userId?.firstName &&
-                    contact?.instructorId?.userId?.firstName[0]}
+              <Avatar className="h-10 w-10 flex-shrink-0">
+                <AvatarImage src={chat?.instructorId?.profilePicture} />
+                <AvatarFallback className="bg-zinc-200 text-zinc-700">
+                  {chat?.instructorId?.userId?.firstName?.[0]}
                 </AvatarFallback>
               </Avatar>
-              <div className="flex flex-col items-start">
-                <span className="font-medium">
-                  {contact?.instructorId?.userId?.firstName +
+              <div className="flex-1 text-left">
+                <p className="font-medium">
+                  {chat?.instructorId?.userId?.firstName +
                     ' ' +
-                    contact?.instructorId?.userId?.lastName}
-                </span>
-                {online.some((c) => c === contact?.instructorId?._id) && (
-                  <span className="text-green-500">Online</span>
-                )}
+                    chat?.instructorId?.userId?.lastName}
+                </p>
+                {chat?.instructorId?._id &&
+                  online.includes(chat?.instructorId?._id) && (
+                    <p className="text-sm text-emerald-600">Online</p>
+                  )}
               </div>
             </Button>
           ))}
+        </div>
       </ScrollArea>
     </div>
   );

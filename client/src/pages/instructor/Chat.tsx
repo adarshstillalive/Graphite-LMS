@@ -10,6 +10,7 @@ import ChatSection from '@/components/instructor/chat/ChatSection';
 import { fetchUserMessage } from '@/services/user/profileService';
 import { useToast } from '@/hooks/use-toast';
 import { useWebSocket } from '@/context/webSocketContext';
+import { Menu } from 'lucide-react';
 
 const Chat: React.FC = () => {
   const socket = useWebSocket();
@@ -21,7 +22,7 @@ const Chat: React.FC = () => {
   const [user, setUser] = useState<IUser | null>(null);
   const [online, setOnline] = useState<string[]>([]);
   const [isConnected, setIsConnected] = useState(false);
-
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
   // Initialize socket connection
   useEffect(() => {
     if (!socket || !currentUser?.instructorId) return;
@@ -51,7 +52,7 @@ const Chat: React.FC = () => {
 
   // Handle chat selection
   const handleSelectChat = async (chat: IChat) => {
-    if (!currentUser || !socket || !isConnected) return;
+    if (!currentUser || !socket) return;
 
     setSelectedChat(chat);
     try {
@@ -113,7 +114,7 @@ const Chat: React.FC = () => {
   }, [socket, isConnected, selectedChat]);
 
   const handleSendMessage = (content: string) => {
-    if (!selectedChat || !currentUser || !socket || !isConnected) return;
+    if (!selectedChat || !currentUser || !socket) return;
 
     const newMessage: IMessage = {
       chatId: selectedChat._id,
@@ -129,27 +130,67 @@ const Chat: React.FC = () => {
   };
 
   return (
-    <div className="flex border -mb-24">
-      <ChatSidebar
-        chats={chatList}
-        onSelectChat={handleSelectChat}
-        selectedChatId={selectedChat?._id || null}
-        online={online}
-      />
-      {selectedChat && user && currentUser ? (
-        <div className="flex-1">
+    <div className="flex -mb-24 bg-zinc-50">
+      {/* Mobile Overlay */}
+      {showMobileSidebar && (
+        <div
+          className="fixed inset-0 bg-black/30 z-10 lg:hidden"
+          onClick={() => setShowMobileSidebar(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div
+        className={`
+          fixed lg:static inset-y-0 left-0 z-10
+          w-80 bg-white border-r border-zinc-200
+          transform transition-transform duration-200 ease-in-out
+          ${showMobileSidebar ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        `}
+      >
+        <ChatSidebar
+          chats={chatList}
+          onSelectChat={(chat) => {
+            handleSelectChat(chat);
+            setShowMobileSidebar(false);
+          }}
+          selectedChatId={selectedChat?._id || null}
+          online={online}
+        />
+      </div>
+
+      {/* Main Chat Area */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Mobile Header */}
+        <div className="lg:hidden flex items-center px-4 h-16 border-b border-zinc-200 bg-white">
+          <button
+            onClick={() => setShowMobileSidebar(true)}
+            className="p-2 hover:bg-zinc-100 rounded-md"
+          >
+            <Menu className="w-6 h-6 text-zinc-700" />
+          </button>
+        </div>
+
+        {selectedChat && user && currentUser ? (
           <ChatSection
             currentUser={currentUser}
             user={user}
             messages={messages}
             onSendMessage={handleSendMessage}
           />
-        </div>
-      ) : (
-        <div className="flex-1 flex items-center justify-center">
-          <p className="text-gray-500">Select a contact to start chatting</p>
-        </div>
-      )}
+        ) : (
+          <div className="flex-1 flex items-center justify-center bg-zinc-50">
+            <div className="text-center">
+              <h3 className="text-xl font-semibold text-zinc-700">
+                Welcome to Messages
+              </h3>
+              <p className="text-zinc-500 mt-2">
+                Select a student to start chatting
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

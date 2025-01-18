@@ -39,58 +39,71 @@ const ChatSection: React.FC<ChatProps> = ({
   };
 
   return (
-    <div className="w-full bg-white border border-gray-200 rounded-md">
-      <div className="bg-gray-300 flex flex-row items-center space-x-4 p-4 border-b border-gray-200">
-        <Avatar>
+    <div className="flex flex-col justify-between flex-1 h-full">
+      {/* Chat Header */}
+      <div className="flex items-center px-6 h-16 bg-white border-b border-zinc-200">
+        <Avatar className="h-10 w-10">
           <AvatarImage src={user.profilePicture} />
-          <AvatarFallback>{user.firstName && user.firstName[0]}</AvatarFallback>
+          <AvatarFallback className="bg-zinc-200 text-zinc-700">
+            {user.firstName?.[0]}
+          </AvatarFallback>
         </Avatar>
-        <div>
-          <h2 className="text-lg font-semibold">
+        <div className="ml-4">
+          <h2 className="font-semibold text-zinc-900">
             {user.firstName + ' ' + user.lastName}
           </h2>
-          <p className="text-sm text-muted-foreground capitalize">
-            {/* {otherUser} */}
-          </p>
+          <p className="text-sm text-zinc-500">Student</p>
         </div>
       </div>
-      <div className="h-[60vh] overflow-y-auto scrollbar-hide p-4">
-        {messages.map((m, index) => (
-          <div
-            key={index}
-            className={`mb-4 flex ${
-              m?.senderId === currentUser.instructorId
-                ? 'justify-end'
-                : 'justify-start'
-            }`}
-          >
+
+      {/* Messages Area */}
+      <div className="h-[60vh] overflow-y-auto px-6 py-4 scrollbar-hide bg-zinc-50">
+        <div className="space-y-4">
+          {messages.map((message, index) => (
             <div
-              className={`max-w-[70%] p-3 rounded-lg ${
-                m?.senderId === currentUser.instructorId
-                  ? 'bg-black text-white'
-                  : 'bg-gray-200 text-black'
+              key={index}
+              className={`flex ${
+                message.senderId === currentUser.instructorId
+                  ? 'justify-end'
+                  : 'justify-start'
               }`}
             >
-              <p>{m?.text}</p>
-              <span className="text-xs opacity-70">
-                {m?.createdAt && new Date(m?.createdAt).toLocaleTimeString()}
-              </span>
+              <div
+                className={`
+                  max-w-[75%] px-4 py-3 rounded-2xl
+                  ${
+                    message.senderId === currentUser.instructorId
+                      ? 'bg-black text-white'
+                      : 'bg-white text-zinc-900 border border-zinc-200'
+                  }
+                `}
+              >
+                <p className="text-sm">{message.text}</p>
+                <span className="text-xs mt-1 block opacity-70">
+                  {message.createdAt &&
+                    new Date(message.createdAt).toLocaleTimeString()}
+                </span>
+              </div>
             </div>
-          </div>
-        ))}
-        <div ref={messagesEndRef} />{' '}
-        {/* Ensure we always scroll to this point */}
+          ))}
+        </div>
+        <div ref={messagesEndRef} />
       </div>
-      <div className="bg-gray-300 p-4 border-t border-gray-200">
-        <form onSubmit={handleSubmit} className="flex w-full space-x-2">
+
+      {/* Input Area */}
+      <div className="p-4 bg-white border-t border-zinc-200">
+        <form onSubmit={handleSubmit} className="flex space-x-4">
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your message..."
-            className="flex-grow h-12 rounded-none bg-gray-100"
+            placeholder="Type a message..."
+            className="flex-1 h-12 bg-zinc-50 border-zinc-200 focus:ring-black"
           />
-          <Button type="submit" className="h-12 rounded-full">
-            <SendHorizonal />
+          <Button
+            type="submit"
+            className="h-12 px-6 bg-black hover:bg-zinc-800 text-white"
+          >
+            <SendHorizonal className="h-5 w-5" />
           </Button>
         </form>
       </div>

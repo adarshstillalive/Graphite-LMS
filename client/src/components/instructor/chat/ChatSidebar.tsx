@@ -18,71 +18,46 @@ const ChatSidebar: React.FC<SidebarProps> = ({
   online,
 }) => {
   return (
-    <div className="w-64 border-r bg-gray-300 border-gray-200">
-      <div className="p-4 border-b border-gray-200 flex justify-between">
-        <h2 className="text-lg font-semibold">Chats</h2>
-        {/* <DropdownMenu>
-          <DropdownMenuTrigger className="focus: outline-none">
-            <UserPlus />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="min-w-[16rem]">
-            <DropdownMenuLabel>Instructors</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {instructors.map((instructor) => (
-              <DropdownMenuItem
-                className="h-12 cursor-pointer"
-                key={instructor._id}
-                onClick={() => onSelectInstructor(instructor._id)}
-              >
-                <Avatar className="h-8 w-8 mr-2">
-                  <AvatarImage
-                    src={instructor.profilePicture}
-                    alt={instructor.firstName}
-                  />
-                  <AvatarFallback>
-                    {instructor.firstName && instructor.firstName[0]}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col items-start">
-                  <span className="font-medium">
-                    {instructor.firstName + ' ' + instructor.lastName}
-                  </span>
-                </div>
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu> */}
+    <div className="flex flex-col h-full">
+      {/* Sidebar Header */}
+      <div className="px-6 h-16 flex items-center border-b border-zinc-200">
+        <h2 className="text-lg font-semibold text-zinc-900">Students</h2>
       </div>
-      <ScrollArea className="h-[calc(80vh-60px)]">
-        {chats.length > 0 &&
-          chats.map((contact) => (
+
+      {/* Chat List */}
+      <ScrollArea className="flex-1 px-3">
+        <div className="space-y-1 py-3">
+          {chats.map((chat) => (
             <Button
-              key={contact._id}
+              key={chat._id}
               variant="ghost"
-              className={`w-full justify-start px-4 py-8 ${
-                selectedChatId === contact._id ? 'bg-gray-100' : ''
-              }`}
-              onClick={() => onSelectChat(contact)}
+              className={`
+                w-full px-3 py-3 h-auto flex items-center gap-3
+                ${
+                  selectedChatId === chat._id
+                    ? 'bg-zinc-100 text-zinc-900'
+                    : 'text-zinc-700 hover:bg-zinc-50'
+                }
+              `}
+              onClick={() => onSelectChat(chat)}
             >
-              <Avatar className="h-8 w-8 mr-2">
-                <AvatarImage
-                  src={contact?.userId?.profilePicture}
-                  alt={contact?.userId.firstName}
-                />
-                <AvatarFallback>
-                  {contact?.userId?.firstName && contact?.userId?.firstName[0]}
+              <Avatar className="h-10 w-10 flex-shrink-0">
+                <AvatarImage src={chat?.userId?.profilePicture} />
+                <AvatarFallback className="bg-zinc-200 text-zinc-700">
+                  {chat?.userId?.firstName?.[0]}
                 </AvatarFallback>
               </Avatar>
-              <div className="flex flex-col items-start">
-                <span className="font-medium">
-                  {contact?.userId?.firstName + ' ' + contact?.userId?.lastName}
-                </span>
-                {online.some((c) => c === contact?.userId?._id) && (
-                  <span className="text-green-500">Online</span>
+              <div className="flex-1 text-left">
+                <p className="font-medium">
+                  {chat?.userId?.firstName + ' ' + chat?.userId?.lastName}
+                </p>
+                {online.includes(chat?.userId?._id) && (
+                  <p className="text-sm text-emerald-600">Online</p>
                 )}
               </div>
             </Button>
           ))}
+        </div>
       </ScrollArea>
     </div>
   );
